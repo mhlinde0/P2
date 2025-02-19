@@ -1,3 +1,6 @@
+# js-filer
+*.js
+
 # Logs
 logs
 *.log
