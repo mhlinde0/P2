@@ -1,5 +1,5 @@
 sudo git pull
 
-cd backend 
 sudo npm install
-npm run dev
+
+sudo node /backend/src/server.ts

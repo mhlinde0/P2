@@ -13,12 +13,12 @@ jobs:
 
     - name: Install dependencies
       run: |
-        cd backend/ && npm install
+        npm install
 
     - name: install typescript
       run: |
-        cd backend/ && npm install -D typescript
+        npm install -D typescript
 
     - name: Compile TypeScript files
       run: |
-        tsc --noEmit
+        tsc 
