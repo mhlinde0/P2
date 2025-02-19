@@ -2,7 +2,7 @@ name: typescript can compile
 # a test that the program can compile, run and terminate
 
 on:
-  pull_request:
+  push:
 
 jobs:
   can_run:
