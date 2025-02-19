@@ -1,3 +1,3 @@
 sudo git pull
 
-cd backend && npm install
+cd backend && sudo npm install
