@@ -7,12 +7,8 @@ app.use(express.json());
 
 // A simple test route
 app.get('/', (req, res) => {
-  res.send('Hello World! Your server is up and running.');
+  res.send('Velkommen til vores seje battleship sænke slagskibe type beat.');
 });
 
-
-app.get('/nichzarcummingtonite', (req, res) => {
-  res.send('🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈🙈');
-});
 
 export default app;
