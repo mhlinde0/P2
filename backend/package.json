@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node src/server.ts"
   },
   "repository": {
     "type": "git",
@@ -18,12 +20,11 @@
   },
   "homepage": "https://github.com/mhlinde0/P2#readme",
   "devDependencies": {
+    "@types/express": "^5.0.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   },
-  "scripts": {
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "ts-node src/server.ts"
+  "dependencies": {
+    "express": "^4.21.2"
   }
-
 }
