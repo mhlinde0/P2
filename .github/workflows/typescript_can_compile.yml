@@ -11,16 +11,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: go to backend folder
-      run: cd backend/
-
     - name: Install dependencies
       run: |
-        npm install
+        cd backend/ && npm install
 
     - name: install typescript
       run: |
-        npm install -D typescript
+        cd backend/ && npm install -D typescript
 
     - name: Compile TypeScript files
       run: |
