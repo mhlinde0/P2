@@ -1,0 +1,84 @@
+body {
+    background-image: url("../resources/Battleships.png");
+    background-color: #cccccc;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    height: 100vh;
+    margin: 0;
+
+    color: rgb(240, 240, 240);
+
+    font-family: "Black Ops One", serif;
+    font-weight: 400;
+    font-style: normal;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   }
+
+.LogoWrapper{
+    margin-top: center;
+    align-items: auto;
+    height: 10px;
+    width: 10px;
+}
+
+.LoginWrapper{
+    position: relative;
+    width: 350px;
+    height: 350px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.692);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.507);
+    display: flex;
+    justify-content: center;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.CreateAccountWrapper{
+    position: relative;
+    width: 350px;
+    height: 350px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.692);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.507);
+    display: flex;
+    justify-content: center;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+.FormWrapper{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+input[type=submit] {
+    background-color: #0066da;
+    color: white;
+    padding: 10px 15px;
+    margin: 8px auto;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+input[type=submit]:hover {
+    background-color: #0058bd;
+}
