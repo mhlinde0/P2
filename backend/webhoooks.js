@@ -1,19 +1,18 @@
-import app from "./app";
-
-const { exec } = require("child_process");
-const bodyParser = require("body-parser");
+import app from "./app.js";
+import { exec } from "child_process";
+import bodyParser from "body-parser";
 
 app.use(bodyParser.json());
 
 app.post("/pull-install-deploy", (req, res) => {
   const payload = req.body;
-  console.log("recieved webhook");
+  console.log("received webhook");
   if (payload.ref === "refs/heads/master") {
     console.log("Changes detected on main. Pulling latest changes...");
 
-    exec("sh pull-install-deploy.sh", (err: any, stdout: any, stderr: any) => {
+    exec("sh pull-install-deploy.sh", (err, stdout, stderr) => {
       if (err) {
-        console.error(`Error: ${stderr}`);  
+        console.error(`Error: ${stderr}`);
         return res.status(500).send("Git pull failed");
       }
       console.log(`Git Pull Output: ${stdout}`);

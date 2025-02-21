@@ -1,30 +1,30 @@
 {
-  "name": "p2",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "ts-node backend/src/server.ts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mhlinde0/P2.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/mhlinde0/P2/issues"
-  },
-  "homepage": "https://github.com/mhlinde0/P2#readme",
-  "devDependencies": {
-    "@types/express": "^5.0.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
-  },
-  "dependencies": {
-    "express": "^4.21.2"
-  }
-}
+    "name": "p2",
+    "version": "1.0.0",
+    "description": "Multiplayer game project",
+    "private": true,
+    "scripts": {
+      "install": "npm install --workspaces",
+      "start": "concurrently \"npm start --workspace=backend\" \"npm start --workspace=frontend\"",
+      "dev": "concurrently \"npm run dev --workspace=backend\" \"npm run dev --workspace=frontend\""
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mhlinde0/P2.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/mhlinde0/P2/issues"
+    },
+    "homepage": "https://github.com/mhlinde0/P2#readme",
+    "workspaces": [
+      "frontend",
+      "backend",
+      "shared"
+    ],
+    "devDependencies": {
+      "concurrently": "^8.2.0"
+    }
+}  
