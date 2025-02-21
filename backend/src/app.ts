@@ -8,7 +8,7 @@ app.use(express.json());
 
 // A simple test route
 app.get('/', (req, res) => {
-  res.send('P2!!!');
+  res.send('En eller anden tekst her som viser at det virker!!!');
 });
 
 const { exec } = require("child_process");
