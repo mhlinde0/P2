@@ -7,7 +7,7 @@ app.use(express.json());
 
 // A simple test route
 app.get('/', (req, res) => {
-  res.send('En eller anden tekst her som viser at det virker!!!');
+  res.send('jakob er utilfreds');
 });
 
 import './webhoooks'
