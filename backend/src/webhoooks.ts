@@ -7,7 +7,7 @@ app.use(bodyParser.json());
 
 app.post("/pull-install-deploy", (req, res) => {
     const payload = req.body;
-
+    console.log("recieved webhook")
     if (payload.ref === "refs/heads/main") {
         console.log("Changes detected on main. Pulling latest changes...");
 
