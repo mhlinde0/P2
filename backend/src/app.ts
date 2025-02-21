@@ -7,7 +7,7 @@ app.use(express.json());
 
 // A simple test route
 app.get('/', (req, res) => {
-  res.send('jakob er utilfreds');
+  res.send(' BATTLE SHIP');
 });
 
 import './webhoooks'
