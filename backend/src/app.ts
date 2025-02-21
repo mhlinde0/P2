@@ -10,6 +10,4 @@ app.get('/', (req, res) => {
   res.send(' BATTLE SHIP!!!!!!');
 });
 
-import './webhoooks'
-
 export default app;
