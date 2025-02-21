@@ -1,6 +1,5 @@
 import express from 'express';
 
-
 const app = express();
 
 // Middleware to parse JSON bodies
@@ -11,6 +10,6 @@ app.get('/', (req, res) => {
   res.send('En eller anden tekst her som viser at det virker!!!');
 });
 
-
+import './webhoooks'
 
 export default app;
