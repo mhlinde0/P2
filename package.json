@@ -1,10 +1,8 @@
 {
     "name": "p2",
     "version": "1.0.0",
-    "description": "Multiplayer game project",
     "private": true,
     "scripts": {
-      "install": "npm install --workspaces",
       "start": "concurrently \"npm start --workspace=backend\" \"npm start --workspace=frontend\"",
       "dev": "concurrently \"npm run dev --workspace=backend\" \"npm run dev --workspace=frontend\""
     },
@@ -21,10 +19,9 @@
     "homepage": "https://github.com/mhlinde0/P2#readme",
     "workspaces": [
       "frontend",
-      "backend",
-      "shared"
+      "backend"
     ],
     "devDependencies": {
       "concurrently": "^8.2.0"
     }
-}  
+  }  
