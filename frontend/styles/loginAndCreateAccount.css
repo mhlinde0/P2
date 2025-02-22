@@ -19,12 +19,21 @@ body {
    }
 
 .LogoWrapper{
-    margin-top: center;
-    align-items: auto;
-    height: 10px;
-    width: 10px;
+    position: absolute;
+    top: -70px;
+    left: 50%;
+    transform: translate(-50%);
+    width: 700px;
+    max-width: 90%;
+    height: 250px;
 }
 
+.logo {
+    object-fit: contain;
+    display: block;
+    width: 100%;
+    height: auto;
+}
 .LoginWrapper{
     position: relative;
     width: 350px;
