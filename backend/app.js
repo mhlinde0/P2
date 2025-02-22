@@ -17,4 +17,9 @@ app.use(router);
 // Initialize webhooks AFTER app is created
 setupWebhooks(app);
 
+// 404 handler
+app.use((req, res) => {
+    res.status(404).send("Page not found");
+});
+
 export default app;
