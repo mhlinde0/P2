@@ -13,17 +13,19 @@
 <body>
 
 <div class="LogoWrapper">
-    <img src="../resources/battleshipsLogo.png" alt="Battleships Logo" class="logo">
+    <img src="../resources/battleshipsLogoBoardered.png" alt="Battleships Logo" class="logo">
 </div>
 
 <div class="LoginWrapper">
     <div class="FormWrapper">
         <h2> Login</h2>
-        <form>
-            <label for="Username">Username</label><br>
-            <input type="text" placeholder="Username"><br>
+        <form id="loginForm">
+            <label for="username">Username</label><br>
+            <input type="text" id="username" placeholder="Username" name="username"><br>
             <label for="password">Password</label><br>
-            <input type="password" placeholder="Password"><br>
+            <input type="password" id="password" placeholder="Password" name="password"><br>
+            <input type="checkbox" id="rememberMe" name="rememberMe">
+            <label for="rememberMe" id="rememberMeLabel">Remember me</label> <br>
             <input type="submit" value="Login" required>
         </form>
         <p>Not registered?
@@ -33,5 +35,6 @@
         </p>
     </div>
 </div>
+    <script src="../scripts/rememberMe.js"></script>
 </body>
 </html>
