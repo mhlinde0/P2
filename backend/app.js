@@ -1,6 +1,7 @@
 import express from 'express';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import router from './routes.js';
 import setupWebhooks from './webhooks.js';
 
 const app = express();
@@ -11,14 +12,7 @@ const __dirname = dirname(__filename);
 // Middleware before routes
 app.use(express.static(join(__dirname, '..', 'frontend')));
 app.use(express.json());
-
-app.get('/', (req, res) => {
-    res.send('ser du dette virker lortet');
-});
-
-app.get('/login', (req, res) => {
-    res.sendFile(join(__dirname, '..', 'frontend', 'templates', 'login.html'));
-});
+app.use(router);
 
 // Initialize webhooks AFTER app is created
 setupWebhooks(app);
