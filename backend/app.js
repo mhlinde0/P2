@@ -1,4 +1,5 @@
 import express from 'express';
+import setupWebhooks from './webhooks.js';
 
 const app = express();
 
@@ -7,9 +8,10 @@ app.use(express.json());
 
 // A simple test route
 app.get('/', (req, res) => {
-  res.send('BATTLE SHIP');
+  res.send('ser du dette virker lortet');
 });
 
-import './webhoooks.js'
+// Initialize webhooks AFTER app is created
+setupWebhooks(app);
 
 export default app;
