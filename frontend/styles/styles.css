@@ -1,1 +1,47 @@
-body {background-color: #515A6B;}
+:root {
+    --background-color: #515A6B;
+    --secondary-color: #cccccc;
+    --text-color1: rgb(0, 0, 0);
+    --text-color2: rgb(240, 240, 240);
+    --blue-color: #0066da;
+    --purple-color: #b649ff;
+
+}
+
+
+
+html {
+    font-family: "Black Ops One", serif; 
+    color: var(--text-color1);
+    font-weight: 400;
+    font-style: normal;
+    margin: 0;
+    padding: 0;
+}
+
+
+body {
+    background-color: var(--background-color);
+}
+
+.flex {
+    display: flex;
+}
+
+.justify-align-center {
+    justify-content: center;
+    align-items: center;
+}
+
+input {
+    border: none;
+    border-radius: 2px;
+}
+
+a {
+    color: var(--purple-color);
+}
+
+p {
+    margin: 5px 0;
+}
