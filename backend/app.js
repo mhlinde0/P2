@@ -1,17 +1,25 @@
 import express from 'express';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import router from './routes.js';
 import setupWebhooks from './webhooks.js';
 
 const app = express();
+// Create __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-// Middleware to parse JSON bodies
+// Middleware before routes
+app.use(express.static(join(__dirname, '..', 'frontend')));
 app.use(express.json());
-
-// A simple test route
-app.get('/', (req, res) => {
-  res.send('ser du dette virker lortet');
-});
+app.use(router);
 
 // Initialize webhooks AFTER app is created
 setupWebhooks(app);
+
+// 404 handler
+app.use((req, res) => {
+    res.status(404).send("Page not found");
+});
 
 export default app;
