@@ -1,40 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="../styles/styles.css">
-    <link rel="stylesheet" href="../styles/loginAndCreateAccount.css">
+    <link rel="stylesheet" href="../styles/auth.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
 </head>
-<body>
 
-<div class="LogoWrapper">
-    <img src="../resources/battleshipsLogoBoardered.png" alt="Battleships Logo" class="logo">
-</div>
+<body class="flex justify-align-center">
 
-<div class="LoginWrapper">
-    <div class="FormWrapper">
-        <h2> Login</h2>
-        <form id="loginForm">
-            <label for="username">Username</label><br>
-            <input type="text" id="username" placeholder="Username" name="username"><br>
-            <label for="password">Password</label><br>
-            <input type="password" id="password" placeholder="Password" name="password"><br>
-            <input type="checkbox" id="rememberMe" name="rememberMe">
-            <label for="rememberMe" id="rememberMeLabel">Remember me</label> <br>
-            <input type="submit" value="Login" required>
-        </form>
-        <p>Not registered?
-            <a href="/register" style="text-decoration: none;">
+
+    <div class="LogoWrapper">
+        <img src="../resources/battleshipsLogoBoardered.png" alt="Battleships Logo" class="logo">
+    </div>
+
+    <div class="LoginWrapper flex justify-align-center">
+        <div class="FormWrapper">
+            <h2> Login</h2>
+            <form id="loginForm">
+                <label for="username">Username</label><br>
+                <input type="text" id="username" placeholder="Username" name="username"><br>
+                <label for="password">Password</label><br>
+                <input type="password" id="password" placeholder="Password" name="password"><br>
+                <input type="checkbox" id="rememberMe" name="rememberMe">
+                <label for="rememberMe" id="rememberMeLabel">Remember me</label> <br>
+                <input type="submit" value="Login" required>
+            </form>
+            <p>Not registered? </p>
+            <a href="CreateAccount.html" style="text-decoration: none;">
                 Register here
             </a>
-        </p>
+        </div>
     </div>
-</div>
     <script src="../scripts/rememberMe.js"></script>
 </body>
+
 </html>
