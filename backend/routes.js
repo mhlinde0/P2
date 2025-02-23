@@ -21,4 +21,5 @@ router.get('/register', (req, res) => {
   res.sendFile(join(__dirname, '..', 'frontend', 'templates', 'register.html'));
 });
 
+
 export default router;
