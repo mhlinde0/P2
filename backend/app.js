@@ -8,7 +8,7 @@ app.use(express.json());
 
 // A simple test route
 app.get('/', (req, res) => {
-  res.send('ser du det her så  virker lortet måske');
+  res.send('ser du det her så  virker lortet måsk');
 });
 
 // Initialize webhooks AFTER app is created
