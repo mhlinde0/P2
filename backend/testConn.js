@@ -1,5 +1,4 @@
 // testConn.js
-
 import dotenv from 'dotenv';
 dotenv.config(); // Load variables from .env into process.env
 
