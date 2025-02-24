@@ -17,7 +17,7 @@ app.use(express.json());
 
 // Register routes
 app.use(staticRoutes);
-//app.use(userRoutes);
+app.use(userRoutes);
 
 // Initialize webhooks AFTER app is created
 setupWebhooks(app);
