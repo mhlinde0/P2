@@ -3,25 +3,25 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-      "start": "concurrently \"npm start --workspace=backend\" \"npm start --workspace=frontend\"",
-      "dev": "concurrently \"npm run dev --workspace=backend\" \"npm run dev --workspace=frontend\""
+        "start": "concurrently \"npm start --workspace=backend\" \"npm start --workspace=frontend\"",
+        "dev": "concurrently \"npm run dev --workspace=backend\" \"npm run dev --workspace=frontend\""
     },
     "repository": {
-      "type": "git",
-      "url": "https://github.com/mhlinde0/P2.git"
+        "type": "git",
+        "url": "https://github.com/mhlinde0/P2.git"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "bugs": {
-      "url": "https://github.com/mhlinde0/P2/issues"
+        "url": "https://github.com/mhlinde0/P2/issues"
     },
     "homepage": "https://github.com/mhlinde0/P2#readme",
     "workspaces": [
-      "frontend",
-      "backend"
+        "frontend",
+        "backend"
     ],
     "devDependencies": {
-      "concurrently": "^8.2.0"
+        "concurrently": "^8.2.0"
     }
-  }  
+}
