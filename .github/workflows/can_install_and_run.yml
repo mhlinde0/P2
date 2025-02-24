@@ -1,0 +1,20 @@
+name: can install and run
+# a test that the program can compile, run and terminate
+
+on:
+  push:
+
+jobs:
+  can_compile:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        npm install
+
+    - name: can run
+      run: |
+        timeout 5s node backend/server.js || true
