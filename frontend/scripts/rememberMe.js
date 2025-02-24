@@ -2,12 +2,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const loginForm = document.getElementById("loginForm");
     const rememberMeBox = document.getElementById("rememberMe");
 
-    if (document.cookie.includes("rememberMe=true")) {
-        const username = getCookie("username");
-        const password = getCookie("password");
-
-        document.getElementById("username").value = username;
-        document.getElementById("password").value = password;
+    if (getCookie("rememberMe") === "true") {
+        document.getElementById("username").value = getCookie("username");
+        document.getElementById("password").value = getCookie("password");
 
         rememberMeBox.checked = true;
     }
@@ -28,36 +25,21 @@ document.addEventListener("DOMContentLoaded", function() {
             setCookie("rememberMe", "", -1);
         }
 
-        // Her skal selve login ske
-        console.log("Username", username);
-        console.log("Password", password);
     })
 
-    // Function to set a cookie
-    function setCookie(name, value, days) {
+    const setCookie = (name, value, days) => {
         const date = new Date();
 
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
         const expires = "expires=" + date.toUTCString();
-        document.cookie = name + "=" + value + ";" + expires + ";path=/";
-    }
+        document.cookie = `${name}=${value}; ${expires}; path=/`;
+    };
 
-    // Function to get a cookie
-    function getCookie(name) {
-        const decodedCookie = decodeURIComponent(document.cookie)
-        const cookies = decodedCookie.split(';');
-
-        for (let i = 0; i < cookies.length; i++) {
-            let cookie = cookies [i];
-
-            while (cookie.charAt(0)  === ' ') {
-                cookie = cookie.substring(1)
-            }
-
-            if (cookie.indexOf(name + "=") === 0) {
-                return cookie.substring(name.length + 1);
-            }
-        }
-    return '';
-    }
+    const getCookie = (name) => {
+        return document.cookie
+            .split(';')
+            .map(cookie => cookie.trim())
+            .find(cookie => cookie.startsWith(name + "="))
+            ?.split('=')[1] || "";
+    };
 })
