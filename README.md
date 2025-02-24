@@ -4,10 +4,10 @@ An online battleships game
 https://play-battleship.com
 #### Tech stack
 **Backend**
-- Node/Express.js
-- MongoDB hosted with atlas
+- Node/Express.js 
+- MongoDB atlas for database
 - Deployed on Rasberry pi (Nginx reverse proxy)
-- websockets for realtime
+- socket.io for websockets (realtime multiplayer)
 
 **Frontend**
 - Vanilla js - game logic
