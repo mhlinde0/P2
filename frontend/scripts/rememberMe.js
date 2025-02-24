@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (rememberMeBox.checked) {
             setCookie("username", username, 5);
             setCookie("password", password, 5);
-            setCookie("rememberMe", true, 7);
+            setCookie("rememberMe", true, 5);
         } else {
             setCookie("username", "", -1);
             setCookie("password", "", -1);
