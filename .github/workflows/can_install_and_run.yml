@@ -1,0 +1,20 @@
+name: typescript can compile
+# a test that the program can compile, run and terminate
+
+on:
+  push:
+
+jobs:
+  can_compile:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        npm install
+
+    - name: Compile TypeScript files
+      run: |
+        node /backend/server.js
