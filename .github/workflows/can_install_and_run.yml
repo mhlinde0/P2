@@ -17,4 +17,4 @@ jobs:
 
     - name: can run
       run: |
-        node backend/server.js
+        timeout 5s node backend/server.js
