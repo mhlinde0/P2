@@ -2,7 +2,7 @@
 
 
 body {
-    background-image: url("../resources/Battleships.png");
+    background-image: url("../resources/images/Battleships.png");
     background-color: var(--secondary-color);
     background-repeat: no-repeat;
     background-position: center;
