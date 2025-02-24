@@ -1,0 +1,24 @@
+@import url('./styles.css'); /* import main styles*/
+
+.headerLink {
+    color: inherit;
+    text-decoration: none;
+}
+
+.headerLink:hover {
+    color:inherit; 
+    text-decoration:none; 
+    cursor:pointer; 
+}
+
+.headerWrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    position: fixed;
+    top: -50;
+    width: 100%;
+    padding: 30 30px;
+    text-align: center;
+    font-size: clamp(20px, 2.5vw, 30px);
+  }
+  
