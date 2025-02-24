@@ -3,12 +3,15 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-      "start": "echo \"Starting frontend...\"",
-      "dev": "echo \"Running frontend dev script...\"",
-      "test": "echo \"Error: no test specified\" && exit 1"
+        "start": "echo \"Starting frontend...\"",
+        "dev": "echo \"Running frontend dev script...\"",
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
-    "description": ""
-}  
+    "description": "",
+    "dependencies": {
+        "howler": "^2.2.4"
+    }
+}
