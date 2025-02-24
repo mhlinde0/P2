@@ -18,3 +18,7 @@ jobs:
     - name: can run
       run: |
         timeout 5s node backend/server.js || true
+
+    - name: can start 
+      run: |
+        timeout 5s npm start || true
