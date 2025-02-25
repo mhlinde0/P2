@@ -5,7 +5,7 @@ on:
   push:
     paths-ignore:
       - 'README.md'
-      - 'backend/config/'
+      - 'backend/config/db.js'
 jobs:
   can_compile:
     runs-on: ubuntu-latest
