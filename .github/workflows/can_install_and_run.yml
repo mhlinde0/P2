@@ -3,7 +3,9 @@ name: can install and run
 
 on:
   push:
-
+    paths-ignore:
+      - 'README.md'
+      - 'backend/config/'
 jobs:
   can_compile:
     runs-on: ubuntu-latest
