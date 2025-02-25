@@ -15,8 +15,7 @@ async function connectDB() {
         console.log('Connected to the DB via Mongoose');
     } catch (err) {
         console.error('Error connecting to the DB', err);
-
-        process.exit(1);
+        // process.exit(1);
     }
 }
 
