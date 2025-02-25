@@ -3,9 +3,7 @@ name: can install and run
 
 on:
   push:
-    paths-ignore:
-      - 'README.md'
-      - 'backend/config/db.js'
+
 jobs:
   can_compile:
     runs-on: ubuntu-latest
@@ -19,7 +17,7 @@ jobs:
 
     - name: can run
       run: |
-        timeout 5s node backend/server.js 
+        timeout 5s node backend/server.js
 
     - name: can start 
       run: |
