@@ -3,7 +3,8 @@ name: can install and run
 
 on:
   push:
-
+env:
+  DB_ENV: ${{ secrets.DB_URI }}
 jobs:
   can_compile:
     runs-on: ubuntu-latest
