@@ -10,7 +10,7 @@ const __dirname = dirname(__filename);
 
 // Define your routes
 staticRoutes.get('/', (req, res) => {
-    res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'index.html'));
+    res.sendFile(join(__dirname, '..', '..', 'frontend', 'index.html'));
 });
 
 staticRoutes.get('/login', (req, res) => {
