@@ -21,8 +21,8 @@ staticRoutes.get('/register', (req, res) => {
     res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'register.html'));
 });
 
-staticRoutes.get('/findGame', (req, res) => {
-    res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'findGame.html'));
+staticRoutes.get('/joinGame', (req, res) => {
+    res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'joinGame.html'));
 });
 
 staticRoutes.get('/createGame', (req, res) => {

@@ -5,7 +5,6 @@
     --text-color2: rgb(240, 240, 240);
     --blue-color: #0066da;
     --purple-color: #b649ff;
-
 }
 
 
@@ -18,7 +17,6 @@ html {
     margin: 0;
     padding: 0;
 }
-
 
 body {
     background-color: var(--background-color);
