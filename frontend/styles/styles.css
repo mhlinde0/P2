@@ -35,6 +35,7 @@ body {
 
 .logo {
     width: 400px;
+    z-index: -1;
 }
 .center {
     display: block;

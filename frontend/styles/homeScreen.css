@@ -1,5 +1,28 @@
 @import url('./styles.css'); /* import main styles*/
 
+
+#profileButton img {
+    width: 80px;
+    z-index: 1;
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    padding: 5px;
+    transition: 0.4s all;
+    border: 3px solid rgba(0, 0, 0, 0);
+    border-radius: 10px;
+}
+
+#profileButton img:hover {
+    background-color: orange;
+    cursor: pointer;
+}
+
+#profileButton {
+    width: 100px;
+    height: 100px;
+}
+
 .headerLink {
     display: block;
     background-color: var(--black);

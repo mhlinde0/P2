@@ -29,5 +29,13 @@ staticRoutes.get('/createGame', (req, res) => {
     res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'createGame.html'));
 });
 
+staticRoutes.get('/profile', (req, res) => {
+    res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'profile.html'));
+});
+
+staticRoutes.get('/settings', (req, res) => {
+    res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'settings.html'));
+});
+
 
 export default staticRoutes;
