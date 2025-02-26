@@ -43,7 +43,6 @@ body {
     margin-right: auto;
 }
 
-
 .flex {
     display: flex;
 }
@@ -60,6 +59,7 @@ input {
 
 a {
     color: var(--link-color);
+    cursor: pointer;
 }
 
 p {
