@@ -1,27 +1,46 @@
+/* import font*/
+@import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&family=Red+Hat+Text:ital,wght@0,300..700;1,300..700&display=swap');
+
+/*Define color palette*/
 :root {
-    --background-color: #515A6B;
-    --secondary-color: #cccccc;
-    --text-color1: rgb(0, 0, 0);
-    --text-color2: rgb(240, 240, 240);
-    --blue-color: #0066da;
-    --purple-color: #b649ff;
-
+    --background: #515A6B;
+    --secondary: #cccccc;
+    --text1: rgb(0, 0, 0);
+    --text2: rgb(240, 240, 240);
+    --blue: #0066da;
+    --link-color: rgb(248,143,58);
+    --orange: rgb(248,143,58);
+    --black: rgb(0, 0, 0);
 }
-
-
 
 html {
     font-family: "Black Ops One", serif; 
-    color: var(--text-color1);
+    color: var(--text1);
     font-weight: 400;
     font-style: normal;
     margin: 0;
     padding: 0;
 }
 
-
 body {
-    background-color: var(--background-color);
+    background-image: url("../resources/images/Battleships.png");
+    background-color: var(--secondary);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    height: 100vh;
+    /* 100vh betyder 100% af viewport*/
+    color: var(--text2);
+}
+
+.logo {
+    width: 400px;
+    z-index: -1;
+}
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .flex {
@@ -39,7 +58,8 @@ input {
 }
 
 a {
-    color: var(--purple-color);
+    color: var(--link-color);
+    cursor: pointer;
 }
 
 p {

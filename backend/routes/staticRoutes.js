@@ -10,7 +10,7 @@ const __dirname = dirname(__filename);
 
 // Define your routes
 staticRoutes.get('/', (req, res) => {
-    res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'index.html'));
+    res.sendFile(join(__dirname, '..', '..', 'frontend', 'index.html'));
 });
 
 staticRoutes.get('/login', (req, res) => {
@@ -21,12 +21,20 @@ staticRoutes.get('/register', (req, res) => {
     res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'register.html'));
 });
 
-staticRoutes.get('/findGame', (req, res) => {
-    res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'findGame.html'));
+staticRoutes.get('/joinGame', (req, res) => {
+    res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'joinGame.html'));
 });
 
 staticRoutes.get('/createGame', (req, res) => {
     res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'createGame.html'));
+});
+
+staticRoutes.get('/profile', (req, res) => {
+    res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'profile.html'));
+});
+
+staticRoutes.get('/settings', (req, res) => {
+    res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'settings.html'));
 });
 
 
