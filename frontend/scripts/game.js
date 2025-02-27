@@ -1,16 +1,32 @@
 const gameBoardWrapper = document.querySelector("#gameBoardWrapper");
 
-function createBoard() {
+const width = 10;
+const height = 10;
+
+function createBoards() {
     const leftGameBoardWrapper = document.createElement("div");
     leftGameBoardWrapper.classList.add("gameBoard");
+    
+    gameBoardWrapper.append(leftGameBoardWrapper);
+    createSquares(leftGameBoardWrapper);
 
     const rightGameBoardWrapper = document.createElement("div");
     rightGameBoardWrapper.classList.add("gameBoard");
 
-    gameBoardWrapper.append(leftGameBoardWrapper);
     gameBoardWrapper.append(rightGameBoardWrapper);
+    createSquares(rightGameBoardWrapper);
+
 }
 
-createBoard();
+function createSquares(gameboard) {
+    for (let i = 0; i < width * height; i++) {
+        const square = document.createElement("div");
+        square.classList.add("square");
+        square.id = "square" + i;
+        gameboard.append(square);
+    }
+    
+}
 
-console.log(gameBoardWrapper);
+
+createBoards();
