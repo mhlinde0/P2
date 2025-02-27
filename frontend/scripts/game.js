@@ -3,6 +3,7 @@ const gameBoardWrapper = document.querySelector("#gameBoardWrapper");
 const width = 10;
 const height = 10;
 
+
 function createBoards() {
     const leftGameBoardWrapper = document.createElement("div");
     leftGameBoardWrapper.classList.add("gameBoard");
@@ -28,5 +29,30 @@ function createSquares(gameboard) {
     
 }
 
+let currentHoveredShip = null;
+
+const ships = document.querySelectorAll(".shipSelectionWrapper div");
+
+ships.forEach(function(ship) {
+    ship.addEventListener("mouseover", function(event) {
+        currentHoveredShip = this;
+        console.log("Hovered ship set:", currentHoveredShip);
+    });
+
+    ship.addEventListener("mouseout", function(event) {
+        currentHoveredShip = null;
+        console.log("Mouse left ship");
+    })
+});
+
+document.addEventListener("keydown", function(event) {
+    if (event.key.toLowerCase() === "r" && currentHoveredShip) {
+        let currentRotation = parseInt(currentHoveredShip.getAttribute("data-rotation") || "0", 10);
+        let newRotation = (currentRotation + 90) % 360;
+        currentHoveredShip.style.transform = "rotate(" + newRotation + "deg)";
+        currentHoveredShip.setAttribute("data-rotation", newRotation);
+        console.log("Rotated ship to:", newRotation);
+    }
+});
 
 createBoards();
