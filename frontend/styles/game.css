@@ -1,0 +1,53 @@
+.shipSelectionWrapper {
+    width: 500px;
+    height: 200px;
+    background-color:gray;
+    border: 2px black;
+    border-style: solid;
+    display: flex;
+}
+
+.carrierSize5 {
+    height: 100px;
+    width: 20px;
+    background-color: red;
+    border-style: solid;
+    border: 1px black;
+    margin: 30px;
+}
+
+.battleshipSize4 {
+    height: 80px;
+    width: 20px;
+    background-color: blue;
+    border-style: solid;
+    border: 1px black;
+    margin: 30px;
+}
+
+.cruiserSize3 {
+    height: 60px;
+    width: 20px;
+    background-color: yellow;
+    border-style: solid;
+    border: 1px black;
+    margin: 30px;
+}
+
+.submarineSize3 {
+    height: 60px;
+    width: 20px;
+    background-color: green;
+    border-style: solid;
+    border: 1px black;
+    margin: 30px;
+}
+
+.destroyerSize2 {
+    height: 40px;
+    width: 20px;
+    background-color: purple;
+    border-style: solid;
+    border: 1px black;
+    margin: 30px;
+}
