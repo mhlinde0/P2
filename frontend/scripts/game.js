@@ -1,10 +1,10 @@
 const gameBoardWrapper = document.getElementById("gameBoardWrapper");
 
-// board pixels
+// board size in squares
 const width = 10;
 const height = 10;
 
-
+// Creates 2 game boards
 function createBoards() {
     const leftGameBoardWrapper = document.createElement("div");
     leftGameBoardWrapper.classList.add("gameBoard");
@@ -20,6 +20,7 @@ function createBoards() {
 
 }
 
+// Creates 100 squares to fill the game boards
 function createSquares(gameboard) {
     for (let i = 0; i < width * height; i++) {
         const square = document.createElement("div");
@@ -29,13 +30,13 @@ function createSquares(gameboard) {
     }
 }
 
-// gets array of ship elements
-const ships = document.querySelectorAll(".ship");
+// Gets array of ship divs
+const shipsDiv = document.querySelectorAll(".ship");
 
 let currentHoveredShip = null;
 
 // Select a ship when hovered
-ships.forEach((ship) => {
+shipsDiv.forEach((ship) => {
     ship.addEventListener("mouseover", (event) => {
         currentHoveredShip = ship;
         console.log("Hovered ship set:", currentHoveredShip);
@@ -58,5 +59,23 @@ document.addEventListener("keydown", (event) => {
         console.log("Rotated ship to:", newRotation);
     }
 });
+
+//Creates class for ships and places in array
+class ship {
+    constructor(name, length) {
+        this.name = name;
+        this.length = length;
+    }
+}
+
+const destroyer = new ship("destroyer", 2);
+const submarine = new ship("submarine", 3);
+const cruiser = new ship("cruiser", 3);
+const battleship = new ship("battleship", 2);
+const carrier = new ship("carrier", 2);
+
+const shipsClass = [destroyer, submarine, cruiser, battleship, carrier];
+
+console.log(shipsClass);
 
 createBoards();

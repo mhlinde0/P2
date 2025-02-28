@@ -83,3 +83,10 @@ body {
     border-style: solid;
     margin: 30px;
 }
+
+#randomizeWrapper {
+    margin: auto;
+    width: 50%;
+    height: 25px;
+    width: 80px;
+}
