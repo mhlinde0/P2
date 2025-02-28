@@ -1,3 +1,4 @@
+#!/bin/sh
 sudo git pull
 
 sudo npm install
