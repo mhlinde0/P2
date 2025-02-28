@@ -1,5 +1,6 @@
-const gameBoardWrapper = document.querySelector("#gameBoardWrapper");
+const gameBoardWrapper = document.getElementById("gameBoardWrapper");
 
+// board pixels
 const width = 10;
 const height = 10;
 
@@ -26,27 +27,30 @@ function createSquares(gameboard) {
         square.id = "square" + i;
         gameboard.append(square);
     }
-    
 }
+
+// gets array of ship elements
+const ships = document.querySelectorAll(".ship");
 
 let currentHoveredShip = null;
 
-const ships = document.querySelectorAll(".shipSelectionWrapper div");
-
-ships.forEach(function(ship) {
-    ship.addEventListener("mouseover", function(event) {
-        currentHoveredShip = this;
+// Select a ship when hovered
+ships.forEach((ship) => {
+    ship.addEventListener("mouseover", (event) => {
+        currentHoveredShip = ship;
         console.log("Hovered ship set:", currentHoveredShip);
     });
 
-    ship.addEventListener("mouseout", function(event) {
+    ship.addEventListener("mouseout", (event) => {
         currentHoveredShip = null;
         console.log("Mouse left ship");
     })
 });
 
-document.addEventListener("keydown", function(event) {
+// Rotate ship when pressing r
+document.addEventListener("keydown", (event) => {
     if (event.key.toLowerCase() === "r" && currentHoveredShip) {
+        console.log(currentHoveredShip.getAttribute('id'))
         let currentRotation = parseInt(currentHoveredShip.getAttribute("data-rotation") || "0", 10);
         let newRotation = (currentRotation + 90) % 360;
         currentHoveredShip.style.transform = "rotate(" + newRotation + "deg)";
