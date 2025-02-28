@@ -3,7 +3,10 @@ import { exec } from "child_process";
 
 export default function setupWebhooks(app) {
   app.post("/pull-install-deploy", (req, res) => {
-    console.log("date: ", Date())
+
+    res.status(200).send(`recieved webhook ${Date().toString()}`);
+    
+    /*
     try {
         const payload = req.body;
         console.log("received webhook");
@@ -27,5 +30,6 @@ export default function setupWebhooks(app) {
         console.error("Webhook error:", error);
         res.status(500).send("Internal server error");
     }
+        */
     });
 }
