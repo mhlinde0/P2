@@ -30,6 +30,14 @@ body {
     box-sizing: border-box;
 }
 
+.occupiedSquare {
+    height: 30px;
+    width: 30px;
+    border: 1px black;
+    border-style: solid;
+    box-sizing: border-box;
+    background-color: red;
+}
 .shipSelectionWrapper {
     width: 500px;
     height: 200px;
