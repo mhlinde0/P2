@@ -3,6 +3,7 @@ import { exec } from "child_process";
 
 export default function setupWebhooks(app) {
   app.post("/pull-install-deploy", (req, res) => {
+    console.log("date: ", Date())
     try {
         const payload = req.body;
         console.log("received webhook");
