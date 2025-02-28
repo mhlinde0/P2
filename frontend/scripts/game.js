@@ -38,6 +38,7 @@ function createBoards() {
 
 // Gets array of ship divs
 const shipsDiv = document.querySelectorAll(".ship");
+const occupiedSquareArray = [];
 
 // Creates 100 squares to fill the game boards and adds drag and drop functionalty to them
 function createSquares(gameboard) {
@@ -85,7 +86,6 @@ function createSquares(gameboard) {
                 }
             }
 
-            const occupiedSquareArray = [];
             coveredSquares.forEach(index => {
                 const occupiedSquare = document.getElementById("square" + index);
                 if (occupiedSquare) {
@@ -94,8 +94,6 @@ function createSquares(gameboard) {
                 }
             })
 
-            console.log(draggedShip, draggedShipLength);
-            console.log("Ship placed covering squares:", coveredSquares);
             console.log(occupiedSquareArray);
 
         })
@@ -117,12 +115,10 @@ let currentHoveredShip = null;
 shipsDiv.forEach((ship) => {
     ship.addEventListener("mouseover", (event) => {
         currentHoveredShip = ship;
-        console.log("Hovered ship set:", currentHoveredShip);
     });
 
     ship.addEventListener("mouseout", (event) => {
         currentHoveredShip = null;
-        console.log("Mouse left ship");
     })
 });
 
@@ -134,7 +130,6 @@ document.addEventListener("keydown", (event) => {
         let newRotation = (currentRotation + 90) % 360;
         currentHoveredShip.style.transform = "rotate(" + newRotation + "deg)";
         currentHoveredShip.setAttribute("data-rotation", newRotation);
-        console.log("Rotated ship to:", newRotation);
     }
 });
 
