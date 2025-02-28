@@ -1,9 +1,7 @@
 const gameBoardWrapper = document.getElementById("gameBoardWrapper");
-
 // board size in squares
 const width = 10;
 const height = 10;
-
 //Creates class for ships and places in array
 class ship {
     constructor(name, length) {
@@ -11,13 +9,11 @@ class ship {
         this.length = length;
     }
 }
-
 const destroyer = new ship("destroyer", 2);
 const submarine = new ship("submarine", 3);
 const cruiser = new ship("cruiser", 3);
 const battleship = new ship("battleship", 4);
 const carrier = new ship("carrier", 5);
-
 const shipsClass = [destroyer, submarine, cruiser, battleship, carrier];
 
 // Creates 2 game boards
@@ -76,14 +72,39 @@ function createSquares(gameboard) {
             const draggedShipRotation = parseInt(draggedShipElement.getAttribute("data-rotation") || "0", 10);
 
             let coveredSquares = [];
-            if (draggedShipRotation % 180 === 0) {
-                for (let j = 0; j < draggedShipLength; j++) {
-                    coveredSquares.push(droppedSquare + j * width);
 
+            const squareNumberStart = droppedSquare
+            const startColumn = (squareNumberStart -1) % width;
+            const startRow =  Math.floor((squareNumberStart -1) / width);
+
+            if (draggedShipRotation % 180 === 0) {
+                if (startRow + draggedShipLength > height) {
+                    alert("Ship is out of bounds.");
+                    return;
+                }
+
+                for (let j = 0; j < draggedShipLength; j++) {
+                    let droppedSquareIndex = droppedSquare + j * width;
+                    const squareElement = document.getElementById("square" + droppedSquareIndex);
+                    if (occupiedSquareArray.includes(squareElement)) {
+                        alert("Ship overlaps another ship.");
+                        return;
+                    }
+                    coveredSquares.push(droppedSquare + j * width);
                     }
                 }
               else {
+                if (startColumn + draggedShipLength > height) {
+                    alert("Ship is out of bounds.");
+                    return;
+                }
                 for (j = 0; j < draggedShipLength; j++) {
+                    let droppedSquareIndex = droppedSquare + j;
+                    const squareElement = document.getElementById("square" + droppedSquareIndex);
+                    if (occupiedSquareArray.includes(squareElement)) {
+                        alert("Ship overlaps another ship.");
+                        return;
+                    }
                     coveredSquares.push(droppedSquare + j);
                 }
             }
