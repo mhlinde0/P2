@@ -91,6 +91,7 @@ function createSquares(gameboard) {
                         return;
                     }
                     coveredSquares.push(droppedSquare + j * width);
+                    document.getElementById(draggedShipElement.id).style.display = "none";
                     }
                 }
               else {
@@ -106,6 +107,7 @@ function createSquares(gameboard) {
                         return;
                     }
                     coveredSquares.push(droppedSquare + j);
+                    document.getElementById(draggedShipElement.id).style.display = "none";
                 }
             }
 
@@ -125,9 +127,9 @@ function createSquares(gameboard) {
     }
 }
 
-
 shipsDiv.forEach(ship => {
     ship.addEventListener("dragstart", (event) => {
+        event.dataTransfer.setDragImage(ship, 0, 0);
         event.dataTransfer.setData("text/plain", ship.id);
     })
 })
