@@ -45,7 +45,7 @@ function createSquares(gameboard) {
     for (let i = 0; i < width * height; i++) {
         const square = document.createElement("div");
         square.classList.add("square");
-        square.id = "square" + i;
+        square.id = "square" + (i + 1);
 
         square.addEventListener("dragover", (event) => {
             event.preventDefault();
@@ -79,8 +79,10 @@ function createSquares(gameboard) {
             if (draggedShipRotation % 180 === 0) {
                 for (let j = 0; j < draggedShipLength; j++) {
                     coveredSquares.push(droppedSquare + j * width);
+
+                    }
                 }
-            } else {
+              else {
                 for (j = 0; j < draggedShipLength; j++) {
                     coveredSquares.push(droppedSquare + j);
                 }
