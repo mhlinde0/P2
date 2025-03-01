@@ -36,7 +36,7 @@ export function setIsLoggedIn(bool) {
 
 export function volume() {
     getStates()
-    return states.isLoggedIn;
+    return states.volume;
 }
 
 export function setVolume(vol) {
