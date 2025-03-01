@@ -39,19 +39,15 @@ async function login() {
     const password = document.getElementById("password").value
     try {
         isLoading(true);
+        let User = {username: username, email: "email", password: password, id: "userId"}
+        
+        // API CALL TO CHECK IF USER EXISTS, AND RETURN USER OBJECT
 
-        // API CALL TO LOGIN
-
-        //Update frontend userState
-
-        setUser(username);
-        console.log("user", getUser())
-        if (getUser()) {
-            setIsLoggedIn(true);
-            console.log("is signed in")
-        }
+        // Update frontend userState
+        setUser(User);
+        setIsLoggedIn(true);
         setRememberMeCookies();
-        window.location.href = "/"
+        window.location.href = "/"; // go to front page
     }
     catch (err) {
         console.log(err);

@@ -1,26 +1,34 @@
-import { isLoading, setUser, getUser } from './state.js';
+import { isLoading, setUser, getUser, setIsLoggedIn } from './state.js';
 
 const registerForm = document.getElementById("registerForm");
 
-const username = document.getElementById("username").value
-const password = document.getElementById("password").value
-const email = document.getElementById("email").value
 
-
+registerForm.addEventListener("submit", (e) => {
+    e.preventDefault()
+    registerUser();
+})
 
 async function registerUser() {
+    const username = document.getElementById("username").value
+    const password = document.getElementById("password").value
+    const repeatPassword = document.getElementById("password").value
+    const email = document.getElementById("email").value
+
     try {
         isLoading(true);
-        const user = { username: username, password: password, id: generateUserId() }
+        const User = { username: username, email: email, password: password, id: generateUserId() }
+
+
         // API CALL TO REGISTER USER
 
-        //Update frontend userState
-
-        setUser(user);
-        console.log(user)
+        // Update frontend userState
+        setUser(User);
+        setIsLoggedIn(true);
+        console.log("usr", getUser());
+        window.location.href = "/"; // go to front page
     }
 
-    catch {
+    catch(err) {
         console.log(err);
     }
     isLoading(false);
