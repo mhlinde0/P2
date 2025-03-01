@@ -1,6 +1,8 @@
 import './audioManager.js'
-import { isLoggedIn, setIsLoggedIn } from './state.js'
+import { isLoggedIn, setIsLoggedIn, getUser, setUser } from './state.js'
 
+setUser('brian');
+console.log(getUser())
 
 document.addEventListener("click", () => {
     isLoggedIn() ? setIsLoggedIn(false) : setIsLoggedIn(true);

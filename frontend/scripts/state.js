@@ -1,15 +1,26 @@
-const states = {
+let states = {
     isLoading: false,
     isLoggedIn: true, // 
     user: null, // keeps the current user object
 }
 
+function saveState() {
+    localStorage.setItem("states", JSON.stringify(states));
+}
+function getStates() {
+    const storedState = JSON.parse(localStorage.getItem("states")) || {isLoading: false, isLoggedIn: false, user: null};
+    return storedState
+}
+
 export function getUser() {
+    states = getStates()
+    
     return states.user;
 }
 
 export function setUser(user) {
     states.user = user;
+    saveState();
 }
 
 export function isLoggedIn() {
