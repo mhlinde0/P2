@@ -1,3 +1,5 @@
+import {setUser, getUser, setIsLoggedIn, isLoggedIn} from './state.js'
+
 document.addEventListener("DOMContentLoaded", function() {
     const setCookie = (name, value, days) => {
         const date = new Date();
@@ -44,6 +46,10 @@ document.addEventListener("DOMContentLoaded", function() {
             setCookie("password", "", -1);
             setCookie("rememberMe", "", -1);
         }
+
+        setUser(username);
+        setIsLoggedIn(true);
+        console.log("user", username)
 
     })
 

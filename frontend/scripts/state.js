@@ -1,20 +1,21 @@
-let states = {
+const defaultStates = {
     isLoading: false,
     isLoggedIn: true, // 
     user: null, // keeps the current user object
+    volume: 1,
 }
+
+let states = defaultStates;
 
 function saveState() {
     localStorage.setItem("states", JSON.stringify(states));
 }
 function getStates() {
-    const storedState = JSON.parse(localStorage.getItem("states")) || {isLoading: false, isLoggedIn: false, user: null};
-    return storedState
+    states = JSON.parse(localStorage.getItem("states")) || defaultStates;
 }
 
 export function getUser() {
-    states = getStates()
-    
+    getStates()
     return states.user;
 }
 
@@ -24,11 +25,23 @@ export function setUser(user) {
 }
 
 export function isLoggedIn() {
+    getStates()
     return states.isLoggedIn;
 }
 
 export function setIsLoggedIn(bool) {
     states.isLoggedIn = bool;
+    saveState()
+}
+
+export function volume() {
+    getStates()
+    return states.isLoggedIn;
+}
+
+export function setVolume(vol) {
+    states.volume = vol;
+    saveState()
 }
 
 function displayLoader(e) {
