@@ -1,8 +1,16 @@
+export const GameStates = Object.freeze({
+    NOT_IN_GAME: 'notInGame',
+    GAME_CREATED: 'gameCreated',
+    IN_GAME: 'inGame'
+});
+
 const defaultStates = {
     isLoading: false,
     isLoggedIn: true, // 
     user: null, // keeps the current user object
     volume: 1,
+    gameState: GameStates.NOT_IN_GAME,
+    currentGameId: null,
 }
 
 let states = defaultStates;
@@ -43,6 +51,27 @@ export function setVolume(vol) {
     states.volume = vol;
     saveState()
 }
+
+export function getGameState() {
+    getStates()
+    return states.gameState;
+}
+
+export function setGameState(gameState) {
+    states.gameState = gameState;
+    saveState()
+}
+
+export function getGameId() {
+    getStates()
+    return states.currentGameId;
+}
+
+export function setGameId(id) {
+    states.currentGameId = id;
+    saveState()
+}
+
 
 function displayLoader(e) {
     const loader = document.createElement("div")

@@ -1,8 +1,14 @@
 import './audioManager.js'
+import { getGameState, setGameState, setGameId, getGameId, GameStates} from "./state.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById('gameId').innerHTML = "GAME ID: " + generateGameId();
-});
+
+if (getGameState() == GameStates.NOT_IN_GAME) {
+    setGameId(generateGameId());
+    setGameState(GameStates.GAME_CREATED)
+}
+
+document.getElementById('gameId').innerHTML = "GAME ID: " + getGameId();
+
 
 // Generates random 6 character ID
 function generateGameId() {
