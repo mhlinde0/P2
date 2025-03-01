@@ -1,5 +1,5 @@
 import './audioManager.js'
-import { getGameState, setGameState, setGameId, getGameId, GameStates} from "./state.js";
+import { getGameState, setGameState, setGameId, getGameId, GameStates } from "./state.js";
 
 
 if (getGameState() == GameStates.NOT_IN_GAME) {
@@ -15,12 +15,12 @@ function generateGameId() {
     let gameId = ""
 
     for (let i = 0; i < 6; i++) {
-        if (Math.random()<0.5) {
-            const randomLetterCode = Math.floor(Math.random()*25)+65; 
-            gameId += String.fromCharCode(randomLetterCode) 
+        if (Math.random() < 0.5) {
+            const randomLetterCode = Math.floor(Math.random() * 25) + 65;
+            gameId += String.fromCharCode(randomLetterCode)
         } else {
-            gameId += String(Math.floor(Math.random()*9))
-        }   
+            gameId += String(Math.floor(Math.random() * 9))
+        }
     }
     return gameId;
 }
