@@ -1,9 +1,7 @@
+import './audioManager.js'
 
 document.addEventListener("DOMContentLoaded", () => {
-
     document.getElementById('gameId').innerHTML = "GAME ID: " + generateGameId();
-
-
 });
 
 // Generates random 6 character ID

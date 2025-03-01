@@ -1,24 +1,24 @@
 const states = {
     isLoading: false,
-    isLoggedIn: false, // 
+    isLoggedIn: true, // 
     user: null, // keeps the current user object
 }
-
-
-
-
 
 export function getUser() {
     return states.user;
 }
 
-
 export function setUser(user) {
     states.user = user;
 }
 
+export function isLoggedIn() {
+    return states.isLoggedIn;
+}
 
-
+export function setIsLoggedIn(bool) {
+    states.isLoggedIn = bool;
+}
 
 function displayLoader(e) {
     const loader = document.createElement("div")
