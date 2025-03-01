@@ -6,7 +6,7 @@ export const GameStates = Object.freeze({
 
 const defaultStates = {
     isLoading: false,
-    isLoggedIn: true, // 
+    isLoggedIn: false, // 
     user: null, // keeps the current user object
     volume: 1,
     gameState: GameStates.NOT_IN_GAME,
