@@ -1,19 +1,33 @@
-const gameStates = {
+const states = {
     isLoading: false,
     isLoggedIn: false, // 
-    user: null, // keeps the current user logged in
+    user: null, // keeps the current user object
 }
+
+
+
+
+
+export function getUser() {
+    return states.user;
+}
+
+
+export function setUser(user) {
+    states.user = user;
+}
+
+
+
 
 function displayLoader(e) {
     const loader = document.createElement("div")
     loader.id = "loader";
     document.body.appendChild(loader);
-    console.log("loader", loader)
 
     const screenCover = document.createElement("div")
     screenCover.id = "screenCover";
     document.body.appendChild(screenCover);
-    console.log("loader", screenCover)
 }
 
 function removeLoader() {
@@ -21,9 +35,10 @@ function removeLoader() {
     document.body.removeChild(document.getElementById("screenCover"))
 
 }
+
 export function isLoading(bool) {
     console.log("setting isLoading to", bool)
-    gameStates.isLoading = bool;
+    states.isLoading = bool;
 
     if (bool) {
         displayLoader();

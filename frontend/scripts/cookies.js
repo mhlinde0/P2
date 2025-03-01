@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", function() {
-    isLoading(true)
-    
     const setCookie = (name, value, days) => {
         const date = new Date();
 
