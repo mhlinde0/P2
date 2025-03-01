@@ -1,0 +1,42 @@
+#loader {
+    position: absolute; 
+    z-index: 1;
+    left: 0; 
+    right: 0; 
+    top: 50vh;
+    margin-inline: auto; 
+    height: 75px;
+    width: 75px;
+    background-color: rgba(255, 0, 0, 0);
+    border-bottom: 10px solid var(--orange);
+    border-left: 10px solid var(--orange);
+    border-right: 10px solid var(--orange);
+    border-top: 10px solid var(--black);
+    border-radius: 50%;
+
+    animation-name: spin;
+    animation-duration: 5000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear; 
+}
+
+#screenCover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.151);
+
+}
+
+
+@keyframes spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}

@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
+    isLoading(true)
     
     const setCookie = (name, value, days) => {
         const date = new Date();
@@ -28,6 +29,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     loginForm?.addEventListener("submit", function(event) {
+
+
+
         event?.preventDefault();
 
         const username = document.getElementById("username").value
