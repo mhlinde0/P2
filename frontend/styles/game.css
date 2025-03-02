@@ -1,15 +1,33 @@
 @import url(styles.css);
 
-
 body {
     background-image: none;
     background-color: var(--background);
 }
+
 .gameBoard {
     background-color:var(--secondary);
     display: grid;
     grid-template-columns: repeat(10,1fr);
+}
 
+
+.functionWrapper {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    text-align: center; 
+}
+
+.infoBox {
+    width: auto;
+    display: inline-block;
+    padding: .9%;
+    border: 2px solid rgba(255, 255, 255, 0.692);
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.507);
+    margin: 10px;
 }
 
 #gameBoardWrapper{
@@ -114,8 +132,8 @@ body {
 }
 
 #randomizeWrapper {
-    margin: auto;
-    width: 50%;
     height: 25px;
-    width: 80px;
 }
+
+
+
