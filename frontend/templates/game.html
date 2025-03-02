@@ -11,12 +11,15 @@
 </head>
 
 <body>
-    <div class="infoBox">
-        <p>Press R to rotate ships</p>
-    </div>
+    <div class="gameContainer">
+        <div class="gameBoardInfoBoxWrapper flex justify-align-center">
+            <div class="infoBox">
+                <p>Press R to rotate ships</p>
+            </div>
 
-    <div id="gameBoardWrapper" class="center"></div>
-    <div class="functionWrapper " >
+            <div id="gameBoardWrapper" class="center"></div>
+        </div>
+    <div class="functionWrapper">
         <div class="shipSelectionWrapper center">
             <div id="carrierSize5" class="ship" draggable="true"></div>
             <div id="battleshipSize4"class="ship" draggable="true"></div>
@@ -34,6 +37,7 @@
         </div>
     </div> 
     <script src="../scripts/game.js"></script>
+    </div>
 </body>
 
 </html>
