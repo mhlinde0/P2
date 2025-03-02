@@ -7,8 +7,15 @@ const userRoutes = express.Router();
 app.use(express.json()); //json data in body -middleware
 
 // Get all users
-userRoutes.get("/", (req, res) => {
-  res.json({ mssg: "GET ALL USERS" }); // Dummy
+userRoutes.get("/users",async (req, res) => {
+  try {
+    const users = await User.find({});//empty means all
+    res.status(200).json({success: true, data: users})
+
+  }catch (error){
+    console.log("error fetching users :", error.message);
+    res.status(500).json({success:false, message: "Server error"});
+  }
 });
 
 // Get a single user
