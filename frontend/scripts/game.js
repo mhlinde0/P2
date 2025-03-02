@@ -1,4 +1,4 @@
-import './audioManager.js'
+//import './audioManager.js'
 
 const gameBoardWrapper = document.getElementById("gameBoardWrapper");
 // board size in squares
