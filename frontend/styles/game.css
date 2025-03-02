@@ -92,6 +92,27 @@ body {
     margin: 30px;
 }
 
+#carrierSize5:hover {
+    background-color: rgb(225, 0, 0);
+}
+
+#battleshipSize4:hover {
+
+    background-color: rgb(0, 0, 225);
+}
+
+#cruiserSize3:hover {
+    background-color: rgb(225, 225, 0);
+}
+
+#submarineSize3:hover {
+    background-color: rgb(0, 103, 0);
+}
+
+#destroyerSize2:hover {
+    background-color: rgb(103, 0, 103);
+}
+
 #randomizeWrapper {
     margin: auto;
     width: 50%;
