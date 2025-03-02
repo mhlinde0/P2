@@ -24,27 +24,33 @@ function createBoards() {
     leftGameBoardWrapper.classList.add("gameBoard");
     
     gameBoardWrapper.append(leftGameBoardWrapper);
-    createSquares(leftGameBoardWrapper);
+    createSquares(leftGameBoardWrapper, "left");
 
     const rightGameBoardWrapper = document.createElement("div");
     rightGameBoardWrapper.classList.add("gameBoard");
 
     gameBoardWrapper.append(rightGameBoardWrapper);
-    createSquares(rightGameBoardWrapper);
+    createSquares(rightGameBoardWrapper, "right");
 
 }
 
 // Array of ship divs
 const shipsDiv = document.querySelectorAll(".ship");
 // Array of squares that are filled by ships
-const occupiedSquareArray = [];
+const occupiedSquareArrayLeft = [];
+const occupiedSquareArrayRight = [];
 
 // Creates 100 squares to fill the game boards and adds drag and drop functionalty to them
-function createSquares(gameboard) {
+function createSquares(gameboard, side) {
     for (let i = 0; i < width * height; i++) {
         const square = document.createElement("div");
         square.classList.add("square");
-        square.id = "square" + (i + 1);
+        square.classList.add(side);
+
+        square.id = side + "square" + (i + 1);
+
+        square.dataset.side = side;
+        square.dataset.index = i + 1;
 
         square.addEventListener("dragover", (event) => {
             event.preventDefault();
@@ -60,6 +66,7 @@ function onShipDrop(event) {
     event.preventDefault();
 
     const square = event.currentTarget;
+    const side = square.dataset.side;
     const shipId = event.dataTransfer.getData("text/plain"); // text/plain fortæller at dataen vi leder efter er ren tekst
     const draggedShipElement = document.getElementById(shipId);
     let draggedShip = null;
@@ -77,7 +84,7 @@ function onShipDrop(event) {
         draggedShip = carrier;
     }
 
-    const droppedSquare = parseInt(square.id.replace("square", ""), 10); // Finder firkantens tal ved at fjerne "square" og give resten som en int
+    const droppedSquare = parseInt(square.dataset.index, 10);
     const draggedShipLength = draggedShip.length;
     const draggedShipRotation = parseInt(draggedShipElement.getAttribute("data-rotation") || "0", 10); // Finder skibets nuværende rotation ved at finde attributen "data-rotation" og give den som en int
 
@@ -104,16 +111,16 @@ function onShipDrop(event) {
         }
     }
 
-    if (checkForOverlap(coveredSquares)) {
+    if (checkForOverlap(coveredSquares, side)) {
         alert("Ship overlaps another ship.");
         return;
     }
 
     draggedShipElement.style.display = "none"; // Gør html elementet usynligt når skibet bliver placeret
 
-    assignOccupiedSquares(coveredSquares);
+    assignOccupiedSquares(coveredSquares, side);
 
-    console.log(occupiedSquareArray);
+    console.log(occupiedSquareArrayLeft)
 }
 
 function checkForOutOfBounds(startRow, startColumn, shipLength, rotation) {
@@ -125,10 +132,12 @@ function checkForOutOfBounds(startRow, startColumn, shipLength, rotation) {
 }
 
 // Tjekker om der allerede befinder sig et skib på de ønskede squares
-function checkForOverlap(coveredSquares) {
+function checkForOverlap(coveredSquares, side) {
+    const occupiedArray = side === "left" ? occupiedSquareArrayLeft : occupiedSquareArrayRight;
+    
     for (let i = 0; i < coveredSquares.length; i++) {
-        const squareElement = document.getElementById("square" + coveredSquares[i]);
-        if (occupiedSquareArray.includes(squareElement)) {
+        const squareElement = document.getElementById(side + "square" + (coveredSquares[i] + 1));
+        if (occupiedArray.includes(squareElement)) {
             return true;
         }
     }
@@ -136,15 +145,20 @@ function checkForOverlap(coveredSquares) {
 }
 
 // Tilføjer elementet occupiedSquare til de squares med skibe på
-function assignOccupiedSquares(coveredSquares) {
+function assignOccupiedSquares(coveredSquares, side) {
     coveredSquares.forEach(index => {
-        const squareElement = document.getElementById("square" + index);
+        const squareElement = document.getElementById(side + "square" + (index + 1));
         if (squareElement) {
             squareElement.classList.add("occupiedSquare");
-            occupiedSquareArray.push(squareElement);
+            if (side === "left") {
+                occupiedSquareArrayLeft.push(squareElement);
+            } else if (side === "right") {
+                occupiedSquareArrayRight.push(squareElement);
+            }
         }
     });
 }
+
 
 
 shipsDiv.forEach(ship => {
@@ -178,5 +192,21 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-
 createBoards();
+
+function resetShipPlacement() {
+    const squares = document.querySelectorAll(".square");
+    squares.forEach(square => square.classList.remove("occupiedSquare"));
+
+    occupiedSquareArrayLeft.length = 0;
+    occupiedSquareArrayRight.length = 0;
+
+    const ships = document.getElementsByClassName("ship");
+    for (let i = 0; i < ships.length; i++) {
+        ships[i].style.display = "block";
+        ships[i].style.transform = "rotate(0deg)";
+        ships[i].setAttribute("data-rotation", "0");
+    }
+}
+
+document.getElementById("resetButton").addEventListener("click", resetShipPlacement);
