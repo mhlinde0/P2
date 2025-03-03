@@ -11,11 +11,25 @@
 </head>
 
 <body>
-    <div class="gameContainer">
-        <div class="gameBoardInfoBoxWrapper flex justify-align-center">
-            <div class="infoBox">
-                <p>Press R to rotate ships</p>
-            </div>
+
+    <div id="gameBoardWrapper" class="center"></div>
+   
+    <div id="randomizeWrapper">
+        <input type="button" value="Randomize">
+    </div>
+
+    <div id="randomizeWrapper">
+        <input id="resetButton" type="button" value="Reset">
+    </div>
+
+    <div class="shipSelectionWrapper center">
+        <div id="carrierSize5" class="ship" draggable="true"></div>
+        <div id="battleshipSize4"class="ship" draggable="true"></div>
+        <div id="submarineSize3" class="ship" draggable="true"></div>
+        <div id="cruiserSize3" class="ship" draggable="true"></div>
+        <div id="destroyerSize2" class="ship" draggable="true"></div>
+    </div>
+
 
             <div id="gameBoardWrapper" class="center"></div>
         </div>

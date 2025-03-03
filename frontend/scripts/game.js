@@ -136,7 +136,7 @@ function checkForOverlap(coveredSquares, side) {
     const occupiedArray = side === "left" ? occupiedSquareArrayLeft : occupiedSquareArrayRight;
     
     for (let i = 0; i < coveredSquares.length; i++) {
-        const squareElement = document.getElementById(side + "square" + (coveredSquares[i] + 1));
+        const squareElement = document.getElementById(side + "square" + (coveredSquares[i]));
         if (occupiedArray.includes(squareElement)) {
             return true;
         }
@@ -147,7 +147,7 @@ function checkForOverlap(coveredSquares, side) {
 // Tilføjer elementet occupiedSquare til de squares med skibe på
 function assignOccupiedSquares(coveredSquares, side) {
     coveredSquares.forEach(index => {
-        const squareElement = document.getElementById(side + "square" + (index + 1));
+        const squareElement = document.getElementById(side + "square" + (index));
         if (squareElement) {
             squareElement.classList.add("occupiedSquare");
             if (side === "left") {
