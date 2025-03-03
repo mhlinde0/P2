@@ -13,7 +13,7 @@ if (gameId) {
 }
 
 // Generates random 6 character ID
-export function generateGameId() {
+function generateGameId() {
     let gameId = ""
 
     for (let i = 0; i < 6; i++) {
@@ -27,5 +27,6 @@ export function generateGameId() {
     return gameId;
 }
 
+export { generateGameId }
 
 
