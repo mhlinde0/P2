@@ -1,5 +1,4 @@
 name: unit tests  
-# a test that the program can compile, run and terminate
 
 on:
   push:
@@ -14,6 +13,7 @@ jobs:
     - name: Install dependencies
       run: |
         npm install
+        npm install --save-dev jsdom
 
     - name: run test
       run: |
