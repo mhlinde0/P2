@@ -18,6 +18,7 @@ let states = defaultStates;
 function saveState() {
     localStorage.setItem("states", JSON.stringify(states));
 }
+
 function getStates() {
     states = JSON.parse(localStorage.getItem("states")) || defaultStates;
 }

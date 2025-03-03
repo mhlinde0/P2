@@ -4,7 +4,7 @@ import { isLoading, setUser, getUser, setIsLoggedIn } from './state.js';
 const loginForm = document.getElementById("loginForm");
 const rememberMeBox = document.getElementById("rememberMe");
 
-document.addEventListener("DOMContentLoaded", rememberMe)
+document.addEventListener("DOMContentLoaded", rememberMe);
 
 function rememberMe(e) {
     e.preventDefault();
@@ -16,8 +16,8 @@ function rememberMe(e) {
 }
 
 function setRememberMeCookies() {
-    const username = document.getElementById("username").value
-    const password = document.getElementById("password").value
+    const username = document.getElementById("username").value || "";
+    const password = document.getElementById("password").value || "";
     if (rememberMeBox.checked) {
         setCookie("username", username, 5);
         setCookie("password", password, 5);
@@ -35,8 +35,8 @@ loginForm.addEventListener("submit", (e) => {
 })
 
 async function login() {
-    const username = document.getElementById("username").value
-    const password = document.getElementById("password").value
+    const username = document.getElementById("username").value || ""
+    const password = document.getElementById("password").value || ""
     try {
         isLoading(true);
         let User = {username: username, email: "email", password: password, id: "userId"}

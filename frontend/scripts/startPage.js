@@ -1,4 +1,3 @@
-import './audioManager.js'
 import { isLoggedIn, setIsLoggedIn, getUser, setUser } from './state.js'
 console.log(isLoggedIn())
 

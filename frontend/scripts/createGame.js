@@ -1,4 +1,4 @@
-import './audioManager.js'
+
 import { getGameState, setGameState, setGameId, getGameId, GameStates } from "./state.js";
 
 
@@ -7,8 +7,10 @@ if (getGameState() == GameStates.NOT_IN_GAME) {
     setGameState(GameStates.GAME_CREATED)
 }
 
-document.getElementById('gameId').innerHTML = "GAME ID: " + getGameId();
-
+const gameId = document.getElementById("gameId");
+if (gameId) {
+    gameId.innerHTML = "GAME ID: " + getGameId();
+}
 
 // Generates random 6 character ID
 function generateGameId() {
@@ -24,3 +26,7 @@ function generateGameId() {
     }
     return gameId;
 }
+
+export { generateGameId }
+
+

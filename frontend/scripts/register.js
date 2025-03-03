@@ -2,15 +2,14 @@ import { isLoading, setUser, getUser, setIsLoggedIn } from './state.js';
 
 const registerForm = document.getElementById("registerForm");
 
-
-registerForm.addEventListener("submit", (e) => {
+registerForm?.addEventListener("submit", (e) => {
     e.preventDefault()
     registerUser();
 })
 
 async function registerUser() {
-    const username = document.getElementById("username").value
-    const password = document.getElementById("password").value
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
     const repeatPassword = document.getElementById("password").value
     const email = document.getElementById("email").value
 
@@ -57,5 +56,4 @@ function generateUserId() {
     return userId;
 }
 
-
-
+export {generateUserId}
