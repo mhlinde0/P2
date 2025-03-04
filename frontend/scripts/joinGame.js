@@ -1,4 +1,3 @@
-import './audioManager.js'
 
 const form = document.querySelector('form');
 
