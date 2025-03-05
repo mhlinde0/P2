@@ -28,10 +28,8 @@
         "vitest": "^3.0.7"
     },
     "dependencies": {
-        "howler": "^2.2.4"
-        "concurrently": "^8.2.0"
-    },
-    "dependencies": {
+        "howler": "^2.2.4",
+        "concurrently": "^8.2.0",
         "dotenv": "^16.4.7",
         "mongodb": "^6.13.1"
     }
