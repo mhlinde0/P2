@@ -4,7 +4,8 @@
     "private": true,
     "scripts": {
         "start": "concurrently \"npm start --workspace=backend\" \"npm start --workspace=frontend\"",
-        "dev": "concurrently \"npm run dev --workspace=backend\" \"npm run dev --workspace=frontend\""
+        "dev": "concurrently \"npm run dev --workspace=backend\" \"npm run dev --workspace=frontend\"",
+        "test": "vitest"
     },
     "repository": {
         "type": "git",
@@ -22,6 +23,12 @@
         "backend"
     ],
     "devDependencies": {
+        "concurrently": "^8.2.0",
+        "jsdom": "^26.0.0",
+        "vitest": "^3.0.7"
+    },
+    "dependencies": {
+        "howler": "^2.2.4"
         "concurrently": "^8.2.0"
     },
     "dependencies": {

@@ -1,14 +1,37 @@
-import './audioManager.js'
+
 import { getGameState, setGameState, setGameId, getGameId, GameStates } from "./state.js";
 
 
-if (getGameState() == GameStates.NOT_IN_GAME) {
-    setGameId(generateGameId());
-    setGameState(GameStates.GAME_CREATED)
+document.addEventListener("DOMContentLoaded", ()=>{
+
+    /* Create game, if not in game*/
+    if (getGameState() == GameStates.NOT_IN_GAME) {
+        createGame();
+    }
+    
+    /* Set game ID on the UI if game is created*/
+    if (getGameState() == GameStates.GAME_CREATED) {
+        const gameId = document.getElementById("gameId");
+        if (gameId) {
+            gameId.innerHTML = "GAME ID: " + getGameId();
+        }
+    }
+})
+
+async function createGame() {
+    try {
+        const gameId = generateGameId()
+
+        // funktionskald til backend om at generere game
+
+        // hvis game er genereret i backend:
+        setGameId(gameId);
+        setGameState(GameStates.GAME_CREATED)
+    } catch (err) {
+        console.log(err)
+
+    }
 }
-
-document.getElementById('gameId').innerHTML = "GAME ID: " + getGameId();
-
 
 // Generates random 6 character ID
 function generateGameId() {
@@ -24,3 +47,8 @@ function generateGameId() {
     }
     return gameId;
 }
+
+
+export { generateGameId }
+
+

@@ -12,8 +12,8 @@
 
 .ProfileInfoWrapper {
     display: flex;
-    flex-direction: column; /* Align items vertically */
-    align-items: flex-start; /* Align items to the left */
+    flex-direction: column; 
+    align-items: flex-start; 
     padding: 20%;
 }
 
