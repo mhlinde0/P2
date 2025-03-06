@@ -1,4 +1,3 @@
-
 const gameBoardWrapper = document.getElementById("gameBoardWrapper");
 // board size in squares
 const boardWidth = 10;
@@ -22,6 +21,9 @@ const shipsDiv = document.querySelectorAll(".ship");
 // Array of squares that are filled by ships
 const occupiedSquareArrayLeft = [];
 const occupiedSquareArrayRight = [];
+
+const leftSquareArray = [];
+const rightSquareArray = [];
 
 let currentHoveredShip = null;
 
@@ -51,15 +53,25 @@ function createSquares(gameboard, side) {
 
         square.id = side + "square" + (i + 1);
 
+        if (side === "left") {
+            leftSquareArray.push(square);
+        } else {
+            rightSquareArray.push(square);
+        }
+
         square.dataset.side = side;
         square.dataset.index = i + 1;
 
-        square.addEventListener("dragover", (event) => {
+        // Tilføjer nødvendige event listeners til alle squares når de bliver lavet
+        square.addEventListener("dragover", (event) => { 
             event.preventDefault();
         })
 
         square.addEventListener("drop", onShipDrop);
 
+        square.addEventListener("click", fireCannon); 
+
+        // Tilføjer square div til gameboard div
         gameboard.append(square);
     }
 }
@@ -235,7 +247,6 @@ function resetShipPlacement() {
     squares.forEach(square => square.classList.remove("occupiedSquare"));
 
     occupiedSquareArrayLeft.length = 0;
-    occupiedSquareArrayRight.length = 0;
 
     // Finder elementer med class "ship" og gør dem synlige igen og fjerne rotation)
     const ships = document.getElementsByClassName("ship");
@@ -293,10 +304,30 @@ function randomizeShipPlacement(boardSide) {
     console.log(boardSide === "left" ? occupiedSquareArrayLeft : occupiedSquareArrayRight);
 }
 
-createBoards();
 
-// Event listeners for reset og randomize knap der kalder deres respektive funktioner når klikket
+function fireCannon(event) {
+    
+    const firedAtSquare = event.currentTarget
+    if (leftSquareArray.includes(firedAtSquare)) {
+        alert("Cannot fire at your own board");
+        return;
+    } else if (occupiedSquareArrayRight.includes(firedAtSquare)) {
+        firedAtSquare.classList.remove("occupiedSquare");
+        firedAtSquare.classList.add("hitSquare");
+
+        console.log("Hit shot");
+    } else {
+        firedAtSquare.classList.add("missedSquare");
+
+        console.log("Missed shot");
+    }
+    console.log(firedAtSquare.id);
+}
+
+// Event listeners der kalder deres respektive funktioner
 document.getElementById("resetButton").addEventListener("click", resetShipPlacement);
 document.getElementById("randomizeButton").addEventListener("click", () => randomizeShipPlacement("left"));
+
+createBoards();
 
 randomizeShipPlacement("right");

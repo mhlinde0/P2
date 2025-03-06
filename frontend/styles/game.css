@@ -56,6 +56,32 @@ body {
     box-sizing: border-box;
     background-color: red;
 }
+
+/* Laver et rødt kryds på hitSquare ved at dele background-image op i 2 med hældningen 45% (den er transparent fra start til 50% - 1px og 50% + 1px til slut*/
+.hitSquare { 
+    background-image: 
+    linear-gradient(45deg, transparent calc(50% - 1px), red calc(50% - 1px), red calc(50% + 1px), transparent calc(50% + 1px)),
+    linear-gradient(-45deg, transparent calc(50% - 1px), red calc(50% - 1px), red calc(50% + 1px), transparent calc(50% + 1px));
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.missedSquare {
+    position: relative;
+  }
+  
+.missedSquare::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px; 
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .shipSelectionWrapper {
     width: 500px;
     height: 200px;
