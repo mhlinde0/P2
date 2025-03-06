@@ -1,8 +1,8 @@
 
 const gameBoardWrapper = document.getElementById("gameBoardWrapper");
 // board size in squares
-const width = 10;
-const height = 10;
+const boardWidth = 10;
+const boardHeight = 10;
 //Creates class for ships and places in array
 class ship {
     constructor(name, length) {
@@ -16,6 +16,14 @@ const cruiser = new ship("cruiser", 3);
 const battleship = new ship("battleship", 4);
 const carrier = new ship("carrier", 5);
 const shipsClass = [destroyer, submarine, cruiser, battleship, carrier];
+
+// Array of ship divs
+const shipsDiv = document.querySelectorAll(".ship");
+// Array of squares that are filled by ships
+const occupiedSquareArrayLeft = [];
+const occupiedSquareArrayRight = [];
+
+let currentHoveredShip = null;
 
 // Creates 2 game boards
 function createBoards() {
@@ -33,15 +41,10 @@ function createBoards() {
 
 }
 
-// Array of ship divs
-const shipsDiv = document.querySelectorAll(".ship");
-// Array of squares that are filled by ships
-const occupiedSquareArrayLeft = [];
-const occupiedSquareArrayRight = [];
 
 // Creates 100 squares to fill the game boards and adds drag and drop functionalty to them
 function createSquares(gameboard, side) {
-    for (let i = 0; i < width * height; i++) {
+    for (let i = 0; i < boardWidth * boardHeight; i++) {
         const square = document.createElement("div");
         square.classList.add("square");
         square.classList.add(side);
@@ -70,6 +73,8 @@ function onShipDrop(event) {
     const draggedShipElement = document.getElementById(shipId);
     let draggedShip = null;
 
+    
+
     // finder hvilken class ship vi skal bruge ud fra html elementet
     if (draggedShipElement.id === "destroyerSize2") {
         draggedShip = destroyer;
@@ -87,10 +92,15 @@ function onShipDrop(event) {
     const draggedShipLength = draggedShip.length;
     const draggedShipRotation = parseInt(draggedShipElement.getAttribute("data-rotation") || "0", 10); // Finder skibets nuværende rotation ved at finde attributen "data-rotation" og give den som en int
 
-    const startColumn = (droppedSquare - 1) % width;
-    const startRow = Math.floor((droppedSquare - 1) / width);
+    const startColumn = (droppedSquare - 1) % boardWidth;
+    const startRow = Math.floor((droppedSquare - 1) / boardWidth);
 
     let coveredSquares = [];
+
+    if (checkForBoardSide(side)) {
+        alert("Cannot place ships on opponent's board");
+        return;
+    }
 
     if (draggedShipRotation % 180 === 0) { // Hvis % 180 === 0 er sandt betyder det at skibet er lodret 
         if (checkForOutOfBounds(startRow, startColumn, draggedShipLength, draggedShipRotation)) {
@@ -98,7 +108,7 @@ function onShipDrop(event) {
             return;
         }
         for (let j = 0; j < draggedShipLength; j++) { // Hvis skibet kan være der bliver felterne placeret i arrayet
-            coveredSquares.push(droppedSquare + j * width);
+            coveredSquares.push(droppedSquare + j * boardWidth);
         }
     } else { // Hvis det ikke er sandt % 180 === 0 betyder det at skibet er vandret
         if (checkForOutOfBounds(startRow, startColumn, draggedShipLength, draggedShipRotation)) {
@@ -115,6 +125,7 @@ function onShipDrop(event) {
         return;
     }
 
+
     draggedShipElement.style.display = "none"; // Gør html elementet usynligt når skibet bliver placeret
 
     assignOccupiedSquares(coveredSquares, side);
@@ -122,15 +133,24 @@ function onShipDrop(event) {
     console.log(occupiedSquareArrayLeft)
 }
 
+// Tjekker om skibet er ude for spillebrættet
 function checkForOutOfBounds(startRow, startColumn, shipLength, rotation) {
     if (rotation % 180 === 0) { // Hvis lodret
-        return (startRow + shipLength > height);
+        return (startRow + shipLength > boardHeight);
     } else { // Hvis vandret
-        return (startColumn + shipLength > width);
+        return (startColumn + shipLength > boardWidth);
     }
 }
 
-// Tjekker om der allerede befinder sig et skib på de ønskede squares
+// Tjekker hvilken side spilleren forsøger at placere skibet
+function checkForBoardSide(side) {
+    if (side === "right") {
+        return true;
+    }
+    return false;
+}
+
+// Tjekker om der allerede befinder sig et skib på de ønskede felter
 function checkForOverlap(coveredSquares, side) {
     const occupiedArray = side === "left" ? occupiedSquareArrayLeft : occupiedSquareArrayRight;
     
@@ -162,12 +182,30 @@ function assignOccupiedSquares(coveredSquares, side) {
 
 shipsDiv.forEach(ship => {
     ship.addEventListener("dragstart", (event) => {
-        event.dataTransfer.setDragImage(ship, 0, 0);
+        let cloneImageShip = ship.cloneNode(true);
+
+        // Sætter skibet rotation (transform) til klonens
+        const style = getComputedStyle(ship);
+        cloneImageShip.style.transform = style.transform
+
+        // Placerer klonen så den ikke er synlig
+        cloneImageShip.style.position = "absolute";
+        cloneImageShip.style.top = "-2000px";
+        cloneImageShip.style.left = "-2000px";
+
+        document.body.appendChild(cloneImageShip);
+
+        // Sætter klonen til at være drag image
+        event.dataTransfer.setDragImage(cloneImageShip, 0, 0);
         event.dataTransfer.setData("text/plain", ship.id);
+
+        // Fjerne klonen efter event queuen (timeren er sat til 0 millisekunder)
+        setTimeout(() => {
+            document.body.removeChild(cloneImageShip);
+        }, 0);
     })
 })
 
-let currentHoveredShip = null;
 
 // Select a ship when hovered
 shipsDiv.forEach((ship) => {
@@ -191,15 +229,15 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-createBoards();
-
 function resetShipPlacement() {
-    const squares = document.querySelectorAll(".square");
+    // Finder alle left elementer og fjerner occupiedSquare classen hvis de har den
+    const squares = document.querySelectorAll(".left");
     squares.forEach(square => square.classList.remove("occupiedSquare"));
 
     occupiedSquareArrayLeft.length = 0;
     occupiedSquareArrayRight.length = 0;
 
+    // Finder elementer med class "ship" og gør dem synlige igen og fjerne rotation)
     const ships = document.getElementsByClassName("ship");
     for (let i = 0; i < ships.length; i++) {
         ships[i].style.display = "block";
@@ -208,4 +246,57 @@ function resetShipPlacement() {
     }
 }
 
+function randomizeShipPlacement(boardSide) {
+    resetShipPlacement();
+
+    // Går over arrayet af ship classes for at placere alle skibene
+    shipsClass.forEach (ship => {
+        let placed = false;
+
+        while (!placed) {
+            // Sætter skibets rotation til 0 hvis et tilfældigt tal fra 0-1 er mindre en 0.5
+            let rotation = Math.random() < 0.5 ? 0 : 90;
+
+            let row = Math.floor(Math.random() * boardHeight);
+            let col = Math.floor(Math.random() * boardWidth);
+
+            if (checkForOutOfBounds(row, col, ship.length, rotation)) continue; // Prøver en ny position
+
+            let droppedSquare = row * boardWidth + col + 1;
+            let coveredSquares = [];
+
+            if (rotation % 180 === 0) {
+                for (let j = 0; j < ship.length; j++) { // Lodret placering
+                    coveredSquares.push(droppedSquare + j * boardWidth);
+                }
+            } else {
+                for (let j = 0; j < ship.length; j++) { // Vandret placering
+                    coveredSquares.push(droppedSquare + j);
+                }
+            }
+
+            if (checkForOverlap(coveredSquares, boardSide)) {
+                continue;
+            }
+
+            assignOccupiedSquares(coveredSquares, boardSide);
+
+            if (boardSide === "left") {
+            // Finder skibets id og gemmer elementet når placeret
+            const shipElement = document.getElementById(ship.name + "Size" + ship.length);
+            shipElement.style.display = "none";
+            }
+            
+            placed = true;
+        }
+    })
+    console.log(boardSide === "left" ? occupiedSquareArrayLeft : occupiedSquareArrayRight);
+}
+
+createBoards();
+
+// Event listeners for reset og randomize knap der kalder deres respektive funktioner når klikket
 document.getElementById("resetButton").addEventListener("click", resetShipPlacement);
+document.getElementById("randomizeButton").addEventListener("click", () => randomizeShipPlacement("left"));
+
+randomizeShipPlacement("right");
