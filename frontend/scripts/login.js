@@ -1,3 +1,4 @@
+
 import { setCookie, getCookie } from './cookies.js';
 import { isLoading, setUser, getUser, setIsLoggedIn } from './state.js';
 
@@ -39,15 +40,23 @@ async function login() {
     const password = document.getElementById("password").value || ""
     try {
         isLoading(true);
-        let User = {username: username, email: "email", password: password, id: "userId"}
         
-        // API CALL TO CHECK IF USER EXISTS, AND RETURN USER OBJECT
+        const route = "/routes/api/userroutes/67c47e32284facdd8a51ab0d"
+        const response = await fetch(route);
+    
+        if (!response.ok) {
+            throw new Error("User not found");
+        }
+
+        const data = await response.json();
+        console.log("Fetched User: ", data);
 
         // Update frontend userState
-        setUser(User);
+        setUser(data.user);
+        console.log("user set", getUser())
         setIsLoggedIn(true);
         setRememberMeCookies();
-        window.location.href = "/"; // go to front page
+        // window.location.href = "/"; // go to front page
     }
     catch (err) {
         console.log(err);
