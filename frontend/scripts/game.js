@@ -324,10 +324,54 @@ function fireCannon(event) {
     console.log(firedAtSquare.id);
 }
 
+function createTargetList() {
+    let targetList = [];
+    for (let i = 1; i <= 100; i++) {
+        targetList.push(i);
+    }
+    console.log(targetList);
+    return targetList
+}
+
+function botFireCannon() {
+    
+    const firedAtSquare = document.getElementById(`leftsquare${getNextRandomTarget()}`);
+    
+    if (rightSquareArray.includes(firedAtSquare)) {
+        alert("bot should not fire at its own board");
+        return;
+    } else if (occupiedSquareArrayLeft.includes(firedAtSquare)) {
+        firedAtSquare.classList.remove("occupiedSquare");
+        firedAtSquare.classList.add("hitSquare");
+
+        console.log("Hit shot");
+    } else {
+        firedAtSquare.classList.add("missedSquare");
+
+        console.log("Missed shot");
+    }
+    console.log("Bot fired at:",firedAtSquare.id);
+}
+
+function getNextRandomTarget() {  
+    const randomIndex = Math.floor(Math.random() * targetList.length);
+    const randomTarget = targetList[randomIndex];
+    targetList.splice(randomIndex, 1);
+    
+    return randomTarget;
+  }
+  
+
 // Event listeners der kalder deres respektive funktioner
 document.getElementById("resetButton").addEventListener("click", resetShipPlacement);
 document.getElementById("randomizeButton").addEventListener("click", () => randomizeShipPlacement("left"));
 
 createBoards();
+let targetList = createTargetList() //creates bots target list botFirecannon will not work without this
+botFireCannon()
+botFireCannon()
+botFireCannon()
+botFireCannon()
+botFireCannon()
 
 randomizeShipPlacement("right");
