@@ -157,6 +157,18 @@ body {
     background-color: rgb(103, 0, 103);
 }
 
+.square.right {
+    background-color: var(--secondary);
+}
+
+.square.right:hover {
+    filter: brightness(80%);
+}
+
+.square.right.missedSquare:hover {
+    background-color: inherit; 
+}
+
 #randomizeWrapper {
     height: 25px;
 }
