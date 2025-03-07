@@ -8,26 +8,42 @@ registerForm?.addEventListener("submit", (e) => {
 })
 
 async function registerUser() {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    const repeatPassword = document.getElementById("password").value
-    const email = document.getElementById("email").value
-
+    const user = { 
+        name: document.getElementById("username").value, 
+        email: document.getElementById("password").value, 
+        password: document.getElementById("email").value, 
+    }
+    console.log("user: ", user)
     try {
         isLoading(true);
-        const User = { username: username, email: email, password: password, id: generateUserId() }
-
 
         // API CALL TO REGISTER USER
+        const route = "/routes/api/userroutes/register/"
+
+        const response = await fetch(route, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(user)
+        });
+
+        if (!response.ok) {
+            throw new Error("User could not be registeredfound");
+        }
+
+        const data = await response.json();
+        console.log("Response: ", data);
 
         // Update frontend userState
-        setUser(User);
+        setUser(user);
+        console.log("current user", user)
         setIsLoggedIn(true);
         console.log("usr", getUser());
-        window.location.href = "/"; // go to front page
+        // window.location.href = "/"; // go to front page
     }
 
-    catch(err) {
+    catch (err) {
         console.log(err);
     }
     isLoading(false);
@@ -56,4 +72,4 @@ function generateUserId() {
     return userId;
 }
 
-export {generateUserId}
+export { generateUserId }

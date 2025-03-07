@@ -16,7 +16,7 @@ userRoutes.get("/", getAllUsers);
 userRoutes.get("/:id", getUser);
 
 // POST a new user
-userRoutes.post("/", createUser);
+userRoutes.post("/register/", createUser);
 
 // Delete a user
 userRoutes.delete("/:id", deleteUser);
