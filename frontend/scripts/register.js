@@ -10,8 +10,8 @@ registerForm?.addEventListener("submit", (e) => {
 async function registerUser() {
     const user = { 
         name: document.getElementById("username").value, 
-        email: document.getElementById("password").value, 
-        password: document.getElementById("email").value, 
+        email: document.getElementById("email").value, 
+        password: document.getElementById("password").value, 
     }
     console.log("user: ", user)
     try {
@@ -33,14 +33,13 @@ async function registerUser() {
         }
 
         const data = await response.json();
-        console.log("Response: ", data);
+        console.log("Response: ", data.data);
 
         // Update frontend userState
-        setUser(user);
-        console.log("current user", user)
+        setUser(data.data);
         setIsLoggedIn(true);
-        console.log("usr", getUser());
-        // window.location.href = "/"; // go to front page
+        console.log("New user:", getUser());
+        window.location.href = "/"; // go to front page
     }
 
     catch (err) {
