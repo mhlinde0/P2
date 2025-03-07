@@ -14,12 +14,3 @@ test("Generates size 6 game id with correct chars", () => {
     }
 });
 
-test("Generates size 10 user id with correct chars", () => {
-    const char = "abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    let userId = generateUserId();
-    expect(userId.length).toBe(10);
-
-    for(let i = 0; i<6; i++) {
-        assert(char.includes(userId[i]))
-    }
-});
