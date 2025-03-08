@@ -1,6 +1,6 @@
 
 import { setCookie, getCookie } from './cookies.js';
-import { isLoading, setUser, getUser, setIsLoggedIn } from './state.js';
+import { setLoading, setUser, User } from './state.js';
 
 const loginForm = document.getElementById("loginForm");
 const rememberMeBox = document.getElementById("rememberMe");
@@ -39,7 +39,7 @@ async function login() {
     const username = document.getElementById("username").value || ""
     const password = document.getElementById("password").value || ""
     try {
-        isLoading(true);
+        setLoading(true);
         
         const route = "/routes/api/userroutes/67c47e32284facdd8a51ab0d"
         const response = await fetch(route);
@@ -53,13 +53,13 @@ async function login() {
 
         // Update frontend userState
         setUser(data.user);
-        console.log("user set", getUser())
+        console.log("user set", User())
         setRememberMeCookies();
-        // window.location.href = "/"; // go to front page
+        window.location.href = "/"; // go to front page
     }
     catch (err) {
         console.log(err);
     }
-    isLoading(false);
+    setLoading(false);
 }
 

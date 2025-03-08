@@ -10,9 +10,9 @@ const defaultStates = {
     currentGameId: null,
 }
 
-// let isLoading = false;
 let states = defaultStates;
 let isLoading = false;
+
 function saveState() {
     localStorage.setItem("states", JSON.stringify(states));
 }
@@ -26,9 +26,7 @@ export const User = () => {
 }
 
 export function setUser(user) {
-    User = user;
     localStorage.setItem("user", JSON.stringify(user));
-    states.user = user;
     saveState();
 }
 

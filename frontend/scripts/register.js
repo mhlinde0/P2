@@ -1,4 +1,4 @@
-import { isLoading, setUser, getUser, setIsLoggedIn } from './state.js';
+import { setLoading, setUser, User } from './state.js';
 
 const registerForm = document.getElementById("registerForm");
 
@@ -15,7 +15,7 @@ async function registerUser() {
     }
     console.log("user: ", user)
     try {
-        isLoading(true);
+        setLoading(true);
 
         // API CALL TO REGISTER USER
         const route = "/routes/api/userroutes/register/"
@@ -38,14 +38,14 @@ async function registerUser() {
         // Update frontend userState
         setUser(data.data);
         setIsLoggedIn(true);
-        console.log("New user:", getUser());
+        console.log("New user:", User());
         window.location.href = "/"; // go to front page
     }
 
     catch (err) {
         console.log(err);
     }
-    isLoading(false);
+    setLoading(false);
 }
 
 
