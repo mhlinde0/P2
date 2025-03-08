@@ -16,7 +16,7 @@ https://play-battleship.com
 
 **Features**
 - Create a profile
-- Join game via game id (or create a game)
+- Join game via Battle Number (or create a game)
 - Play game 
 	- Communicate through live chat
 - Displaying of game result

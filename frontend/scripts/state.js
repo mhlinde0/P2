@@ -7,7 +7,7 @@ export const GameStates = Object.freeze({
 const defaultStates = {
     volume: 1,
     gameState: GameStates.NOT_IN_GAME,
-    currentGameId: null,
+    currentBattleNumber: null,
 }
 
 let states = defaultStates;
@@ -51,13 +51,13 @@ export function setGameState(gameState) {
     saveState()
 }
 
-export function getGameId() {
+export function getBattleNumber() {
     getStates()
-    return states.currentGameId;
+    return states.currentBattleNumber;
 }
 
-export function setGameId(id) {
-    states.currentGameId = id;
+export function setBattleNumber(id) {
+    states.currentBattleNumber = id;
     saveState()
 }
 

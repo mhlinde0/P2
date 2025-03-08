@@ -1,5 +1,5 @@
 
-import { User, getGameState, setGameState, setGameId, getGameId, GameStates } from "./state.js";
+import { User, getGameState, setGameState, setBattleNumber, getBattleNumber, GameStates } from "./state.js";
 
 if (!User()) {
     window.location.href = "/login"; // go to front page
@@ -11,23 +11,23 @@ document.addEventListener("DOMContentLoaded", () => {
         createGame();
     }
 
-    /* Set game ID on the UI if game is created*/
+    /* Set Battle Number on the UI if game is created*/
     if (getGameState() == GameStates.GAME_CREATED) {
-        const gameId = document.getElementById("gameId");
-        if (gameId) {
-            gameId.innerHTML = "GAME ID: " + getGameId();
+        const battleNumber = document.getElementById("battleNumber");
+        if (battleNumber) {
+            battleNumber.innerHTML = "Battle Number: " + getBattleNumber();
         }
     }
 })
 
 async function createGame() {
     try {
-        const gameId = generateGameId()
+        const battleNumber = generateBattleNumber();
 
         // funktionskald til backend om at generere game
 
         // hvis game er genereret i backend:
-        setGameId(gameId);
+        setBattleNumber(battleNumber);
         setGameState(GameStates.GAME_CREATED)
     } catch (err) {
         console.log(err)
@@ -36,21 +36,21 @@ async function createGame() {
 }
 
 // Generates random 6 character ID
-function generateGameId() {
-    let gameId = ""
+function generateBattleNumber() {
+    let battleNumber = ""
 
     for (let i = 0; i < 6; i++) {
         if (Math.random() < 0.5) {
             const randomLetterCode = Math.floor(Math.random() * 25) + 65;
-            gameId += String.fromCharCode(randomLetterCode)
+            battleNumber += String.fromCharCode(randomLetterCode)
         } else {
-            gameId += String(Math.floor(Math.random() * 9))
+            battleNumber += String(Math.floor(Math.random() * 9))
         }
     }
-    return gameId;
+    return battleNumber;
 }
 
 
-export { generateGameId }
+export { generateBattleNumber }
 
 

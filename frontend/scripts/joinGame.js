@@ -13,9 +13,9 @@ form.addEventListener("submit", (e) => {
 })
 
 function findGame() {
-    const gameId = document.querySelector('input').value;
+    const battleNumber = document.querySelector('input').value;
 
-    if (gameId.length === 6) {
-        window.location.replace(`/Game:${gameId}`);
+    if (battleNumber.length === 6) {
+        window.location.replace(`/Game:${battleNumber}`);
     }
 }
