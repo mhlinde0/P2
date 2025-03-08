@@ -5,16 +5,14 @@ export const GameStates = Object.freeze({
 });
 
 const defaultStates = {
-    isLoading: false,
-    isLoggedIn: false, // 
-    user: null, // keeps the current user object
     volume: 1,
     gameState: GameStates.NOT_IN_GAME,
     currentGameId: null,
 }
 
+// let isLoading = false;
 let states = defaultStates;
-
+let isLoading = false;
 function saveState() {
     localStorage.setItem("states", JSON.stringify(states));
 }
@@ -23,25 +21,17 @@ function getStates() {
     states = JSON.parse(localStorage.getItem("states")) || defaultStates;
 }
 
-export function getUser() {
-    getStates()
-    return states.user;
+export const User = () => {
+    return JSON.parse(localStorage.getItem("user")) || null;
 }
 
 export function setUser(user) {
+    User = user;
+    localStorage.setItem("user", JSON.stringify(user));
     states.user = user;
     saveState();
 }
 
-export function isLoggedIn() {
-    getStates()
-    return states.isLoggedIn;
-}
-
-export function setIsLoggedIn(bool) {
-    states.isLoggedIn = bool;
-    saveState()
-}
 
 export function volume() {
     getStates()
@@ -73,7 +63,7 @@ export function setGameId(id) {
     saveState()
 }
 
-
+/* LOAD SCREEN*/
 function displayLoader(e) {
     const loader = document.createElement("div")
     loader.id = "loader";
@@ -90,10 +80,8 @@ function removeLoader() {
 
 }
 
-export function isLoading(bool) {
-    console.log("setting isLoading to", bool)
-    states.isLoading = bool;
-
+export const setLoading = (bool) => {
+    isLoading = bool;
     if (bool) {
         displayLoader();
     } else {

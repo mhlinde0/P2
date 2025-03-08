@@ -42,10 +42,12 @@
 }
 
 .headerWrapper {
-
+    height: 80vh;
     width: 350px;
     padding: 30 30px;
     text-align: center;
     font-size: clamp(16px, 2.5vw, 16px);
+
+    align-content: center;
 }
   

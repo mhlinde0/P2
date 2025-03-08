@@ -1,7 +1,6 @@
 
 import { getGameState, setGameState, setGameId, getGameId, GameStates } from "./state.js";
 
-
 document.addEventListener("DOMContentLoaded", ()=>{
 
     /* Create game, if not in game*/

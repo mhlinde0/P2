@@ -1,5 +1,10 @@
-import { generateGameId } from "../frontend/scripts/createGame";
-import { generateUserId } from "../frontend/scripts/register";
+import {generateGameId } from "../frontend/scripts/createGame";
+import "../frontend/scripts/login";
+import "../frontend/scripts/register";
+import "../frontend/scripts/cookies";
+import "../frontend/scripts/game.js";
+import "../frontend/scripts/settings.js";
+import "../frontend/scripts/state.js";
 
 import { assert, expect, test, it} from "vitest";
 
@@ -9,8 +14,11 @@ test("Generates size 6 game id with correct chars", () => {
     let gameId = generateGameId();
     expect(gameId.length).toBe(6);
 
-    for(let i = 0; i<6; i++) {
-        assert(char.includes(gameId[i]))
+    // run test 1000 times
+    for (let i = 0; i < 1000; i++) {
+        for(let i = 0; i<6; i++) {
+            assert(char.includes(gameId[i]))
+        }
     }
 });
 

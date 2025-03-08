@@ -34,7 +34,8 @@ body {
 }
 
 .logo {
-    width: 400px;
+    height: 20vh;
+
     z-index: -1;
 }
 .center {

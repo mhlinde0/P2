@@ -30,7 +30,7 @@ function setRememberMeCookies() {
     }
 }
 
-loginForm.addEventListener("submit", (e) => {
+loginForm?.addEventListener("submit", (e) => {
     e.preventDefault()
     login();
 })
@@ -54,7 +54,6 @@ async function login() {
         // Update frontend userState
         setUser(data.user);
         console.log("user set", getUser())
-        setIsLoggedIn(true);
         setRememberMeCookies();
         // window.location.href = "/"; // go to front page
     }
