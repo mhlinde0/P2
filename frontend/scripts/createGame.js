@@ -1,13 +1,16 @@
 
-import { getGameState, setGameState, setGameId, getGameId, GameStates } from "./state.js";
+import { User, getGameState, setGameState, setGameId, getGameId, GameStates } from "./state.js";
 
-document.addEventListener("DOMContentLoaded", ()=>{
+if (!User()) {
+    window.location.href = "/login"; // go to front page
+}
 
+document.addEventListener("DOMContentLoaded", () => {
     /* Create game, if not in game*/
     if (getGameState() == GameStates.NOT_IN_GAME) {
         createGame();
     }
-    
+
     /* Set game ID on the UI if game is created*/
     if (getGameState() == GameStates.GAME_CREATED) {
         const gameId = document.getElementById("gameId");
