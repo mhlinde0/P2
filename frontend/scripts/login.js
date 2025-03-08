@@ -1,6 +1,6 @@
 
 import { setCookie, getCookie } from './cookies.js';
-import { isLoading, setUser, getUser, setIsLoggedIn } from './state.js';
+import { setLoading, setUser, User } from './state.js';
 
 const loginForm = document.getElementById("loginForm");
 const rememberMeBox = document.getElementById("rememberMe");
@@ -30,7 +30,7 @@ function setRememberMeCookies() {
     }
 }
 
-loginForm.addEventListener("submit", (e) => {
+loginForm?.addEventListener("submit", (e) => {
     e.preventDefault()
     login();
 })
@@ -39,12 +39,20 @@ async function login() {
     const username = document.getElementById("username").value || ""
     const password = document.getElementById("password").value || ""
     try {
-        isLoading(true);
+        setLoading(true);
         
-        const route = "/routes/api/userroutes/67c47e32284facdd8a51ab0d"
-        const response = await fetch(route);
+        const route = "/routes/api/userroutes/login/"
+        const response = await fetch(route, {
+            method: "POST", // Using POST for sending credentials
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username, password }) // Pass credentials in the body
+        });
+
     
         if (!response.ok) {
+            window.alert(`${response.status}: Invalid username or password`);
             throw new Error("User not found");
         }
 
@@ -53,14 +61,13 @@ async function login() {
 
         // Update frontend userState
         setUser(data.user);
-        console.log("user set", getUser())
-        setIsLoggedIn(true);
+        console.log("user set", User())
         setRememberMeCookies();
-        // window.location.href = "/"; // go to front page
+        window.location.href = "/"; // go to front page
     }
     catch (err) {
         console.log(err);
     }
-    isLoading(false);
+    setLoading(false);
 }
 

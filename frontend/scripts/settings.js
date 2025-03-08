@@ -1,10 +1,10 @@
 import { volume, setVolume } from './state.js'
 
-const volumeInput = document.getElementById('volume');
+const volumeElmmt = document.getElementById('volume');
 
-volumeInput.value = volume();
+// volumeElmmt?.value = volume();
 
-volumeInput.addEventListener("change", (e) => {
+volumeElmmt?.addEventListener("change", (e) => {
     setVolume(e.target.value)
 })
 

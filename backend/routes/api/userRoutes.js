@@ -1,6 +1,6 @@
 import express from "express";
 
-import {getAllUsers, getUser, createUser, deleteUser} from "../../controllers/userController.js";
+import {getAllUsers, getUser, createUser, deleteUser, login} from "../../controllers/userController.js";
 
 //const app = express();
 
@@ -14,6 +14,10 @@ userRoutes.get("/", getAllUsers);
 
 // Get a single user
 userRoutes.get("/:id", getUser);
+
+
+// POST a new user
+userRoutes.post("/login/", login);
 
 // POST a new user
 userRoutes.post("/register/", createUser);
