@@ -1,11 +1,6 @@
-import { User, setLoading, setUser } from './state.js'
+import { User, setUser } from './state.js'
 
-
-console.log("User:", User())
-setLoading(true)
-
-
-
+/* CHANGE DISPLAY IF USER IS NOT LOGGED IN*/
 if (User()) {
     document.getElementById("joinGame").style.visibility = "visible"
     document.getElementById("createGame").style.visibility = "visible"
@@ -19,13 +14,11 @@ if (User()) {
     document.getElementById("signOut").style.visibility = "hidden"
 }
 
-setLoading(false)
 
 const signOutButton = document.getElementById("signOut");
 signOutButton.addEventListener("click", signOut)
 
 function signOut() {
-    setUser(null);
-    console.log("logOut")
+    setUser(null); // Removes user from browser storage
     window.location.reload()
 }

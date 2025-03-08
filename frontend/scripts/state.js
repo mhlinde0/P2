@@ -1,90 +1,42 @@
-export const GameStates = Object.freeze({
-    NOT_IN_GAME: 'notInGame',
-    GAME_CREATED: 'gameCreated',
-    IN_GAME: 'inGame'
-});
-
-const defaultStates = {
-    volume: 1,
-    gameState: GameStates.NOT_IN_GAME,
-    currentBattleNumber: null,
-}
-
-let states = defaultStates;
-let isLoading = false;
-
-function saveState() {
-    localStorage.setItem("states", JSON.stringify(states));
-}
-
-function getStates() {
-    states = JSON.parse(localStorage.getItem("states")) || defaultStates;
-}
-
+/* GETS THE USER FROM BROWSER STORAGE TO CHECK IF LOGGED IN*/
 export const User = () => {
     return JSON.parse(localStorage.getItem("user")) || null;
 }
 
+/* SAVES THE USER IN BROWSER STORAGE, SO WE WONT GET LOGGED OUT EACH TIME WE LEAVE PAGE*/
 export function setUser(user) {
     localStorage.setItem("user", JSON.stringify(user));
-    saveState();
 }
 
+/* GETS THE GAME FROM BROWSER STORAGE */
+export const Game = () => {
+    return JSON.parse(localStorage.getItem("game")) || null;
+}
 
+/* SAVES THE GAME FROM BROWSER STORAGE */
+export function saveGame(game) {
+    localStorage.setItem("game", JSON.stringify(game));
+}
+
+/* GETS VOLUME SETTINGS FROM BROWSER */
 export function volume() {
-    getStates()
-    return states.volume;
+    return JSON.parse(localStorage.getItem("volume")) || null;
 }
 
-export function setVolume(vol) {
-    states.volume = vol;
-    saveState()
+/* SAVES VOLUME SETTINGS IN BROWSER */
+export function setVolume(volume) {
+    localStorage.setItem("volume", JSON.stringify(volume));
 }
 
-export function getGameState() {
-    getStates()
-    return states.gameState;
+/* GETS VOLUME SETTINGS FROM BROWSER */
+export function darkMode() {
+    return JSON.parse(localStorage.getItem("darkMode")) || false;
 }
 
-export function setGameState(gameState) {
-    states.gameState = gameState;
-    saveState()
+/* SAVES VOLUME SETTINGS IN BROWSER */
+export function setDarkMode(bool) {
+    localStorage.setItem("darkMode", JSON.stringify(bool));
 }
 
-export function getBattleNumber() {
-    getStates()
-    return states.currentBattleNumber;
-}
 
-export function setBattleNumber(id) {
-    states.currentBattleNumber = id;
-    saveState()
-}
-
-/* LOAD SCREEN*/
-function displayLoader(e) {
-    const loader = document.createElement("div")
-    loader.id = "loader";
-    document.body.appendChild(loader);
-
-    const screenCover = document.createElement("div")
-    screenCover.id = "screenCover";
-    document.body.appendChild(screenCover);
-}
-
-function removeLoader() {
-    document.body.removeChild(document.getElementById("loader"))
-    document.body.removeChild(document.getElementById("screenCover"))
-
-}
-
-export const setLoading = (bool) => {
-    isLoading = bool;
-    if (bool) {
-        displayLoader();
-    } else {
-        removeLoader();
-    }
- 
-}
 

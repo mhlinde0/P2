@@ -1,6 +1,7 @@
 
 import { setCookie, getCookie } from './cookies.js';
-import { setLoading, setUser, User } from './state.js';
+import { setLoading } from './loading.js';
+import { setUser, User } from './state.js';
 
 const loginForm = document.getElementById("loginForm");
 const rememberMeBox = document.getElementById("rememberMe");

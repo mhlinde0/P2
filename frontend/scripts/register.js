@@ -1,5 +1,5 @@
-import { setLoading, setUser, User } from './state.js';
-
+import { setUser, User } from './state.js';
+import { setLoading } from './loading.js';
 const registerForm = document.getElementById("registerForm");
 
 registerForm?.addEventListener("submit", (e) => {
