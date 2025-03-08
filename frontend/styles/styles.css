@@ -53,6 +53,11 @@ body {
     align-items: center;
 }
 
+.wrapper80vh {
+    height: 80vh;
+    align-content: center;
+}
+
 
 input {
     border: none;
