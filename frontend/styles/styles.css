@@ -53,8 +53,8 @@ body {
     align-items: center;
 }
 
-.wrapper80vh {
-    height: 80vh;
+.wrapper {
+    height: 65vh;
     align-content: center;
 }
 
