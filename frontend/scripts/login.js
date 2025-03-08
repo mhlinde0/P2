@@ -52,6 +52,7 @@ async function login() {
 
     
         if (!response.ok) {
+            window.alert(`${response.status}: Invalid username or password`);
             throw new Error("User not found");
         }
 
@@ -62,7 +63,7 @@ async function login() {
         setUser(data.user);
         console.log("user set", User())
         setRememberMeCookies();
-        // window.location.href = "/"; // go to front page
+        window.location.href = "/"; // go to front page
     }
     catch (err) {
         console.log(err);
