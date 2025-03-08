@@ -41,8 +41,15 @@ async function login() {
     try {
         setLoading(true);
         
-        const route = "/routes/api/userroutes/67c47e32284facdd8a51ab0d"
-        const response = await fetch(route);
+        const route = "/routes/api/userroutes/login/"
+        const response = await fetch(route, {
+            method: "POST", // Using POST for sending credentials
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username, password }) // Pass credentials in the body
+        });
+
     
         if (!response.ok) {
             throw new Error("User not found");
@@ -55,7 +62,7 @@ async function login() {
         setUser(data.user);
         console.log("user set", User())
         setRememberMeCookies();
-        window.location.href = "/"; // go to front page
+        // window.location.href = "/"; // go to front page
     }
     catch (err) {
         console.log(err);
