@@ -26,6 +26,7 @@ const leftSquareArray = [];
 const rightSquareArray = [];
 
 let currentHoveredShip = null;
+let turn = 1;
 
 // Creates 2 game boards
 function createBoards() {
@@ -141,7 +142,10 @@ function onShipDrop(event) {
     draggedShipElement.style.display = "none"; // Gør html elementet usynligt når skibet bliver placeret
 
     assignOccupiedSquares(coveredSquares, side);
-
+    if (occupiedSquareArrayLeft.length === 17){
+        battleBegun = 1;
+        removeButtonEventListener();
+    }
     console.log(occupiedSquareArrayLeft)
 }
 
@@ -302,26 +306,34 @@ function randomizeShipPlacement(boardSide) {
         }
     })
     console.log(boardSide === "left" ? occupiedSquareArrayLeft : occupiedSquareArrayRight);
+    if (boardSide === "left"){
+        battleBegun = 1;
+        removeButtonEventListener();
+    }
 }
 
 
 function fireCannon(event) {
-    
-    const firedAtSquare = event.currentTarget
-    if (leftSquareArray.includes(firedAtSquare)) {
-        alert("Cannot fire at your own board");
-        return;
-    } else if (occupiedSquareArrayRight.includes(firedAtSquare)) {
-        firedAtSquare.classList.remove("occupiedSquare");
-        firedAtSquare.classList.add("hitSquare");
+    if (battleBegun === 1){
+        const firedAtSquare = event.currentTarget
+        if (leftSquareArray.includes(firedAtSquare)) {
+            alert("Cannot fire at your own board");
+            return;
+        } else if (occupiedSquareArrayRight.includes(firedAtSquare)) {
+            firedAtSquare.classList.remove("occupiedSquare");
+            firedAtSquare.classList.add("hitSquare");
+            console.log("Hit shot");
+            ownHits += 1;
+        } else {
+            firedAtSquare.classList.add("missedSquare");
 
-        console.log("Hit shot");
-    } else {
-        firedAtSquare.classList.add("missedSquare");
-
-        console.log("Missed shot");
+            console.log("Missed shot");
+        }
+        turn = 0;
+        console.log(turn)
+        console.log(firedAtSquare.id);
+        gameLoop();
     }
-    console.log(firedAtSquare.id);
 }
 
 function createTargetList() {
@@ -340,16 +352,19 @@ function botFireCannon() {
     if (rightSquareArray.includes(firedAtSquare)) {
         alert("bot should not fire at its own board");
         return;
-    } else if (occupiedSquareArrayLeft.includes(firedAtSquare)) {
+    }
+    else if (occupiedSquareArrayLeft.includes(firedAtSquare)) {
         firedAtSquare.classList.remove("occupiedSquare");
         firedAtSquare.classList.add("hitSquare");
-
         console.log("Hit shot");
-    } else {
+        enemyHits += 1;
+    } 
+    else {
         firedAtSquare.classList.add("missedSquare");
-
         console.log("Missed shot");
     }
+    turn = 1;
+    gameLoop();
     console.log("Bot fired at:",firedAtSquare.id);
 }
 
@@ -359,19 +374,57 @@ function getNextRandomTarget() {
     targetList.splice(randomIndex, 1);
     
     return randomTarget;
-  }
-  
+}
+
+function checkWinCondition() {
+    if(enemyHits === 17){
+        return 1;
+    }
+    else if(ownHits === 17){
+        return 2;
+    }
+
+}
+
+if(turn == 0){
+    console.log("test")
+    botFireCannon();
+    turn = 1;
+}
+
+function gameLoop() {
+    if (checkWinCondition() === 1){
+        alert("The bot won!");
+    }
+    else if (checkWinCondition() === 2){
+        alert("You have won!");
+    }
+    if (turn === 0) {
+        console.log("Bot's Turn");
+        botFireCannon();
+    } else {
+        console.log("Player's Turn");
+    }
+}
+
+function initializeBotGame(){
+    createBoards();
+    randomizeShipPlacement("right");
+    gameLoop();
+}
+
+function removeButtonEventListener(){
+    document.getElementById("resetButton").removeEventListener("click", resetShipPlacement);
+    document.getElementById("randomizeButton").removeEventListener("click", () => randomizeShipPlacement("left"));
+}
 
 // Event listeners der kalder deres respektive funktioner
 document.getElementById("resetButton").addEventListener("click", resetShipPlacement);
 document.getElementById("randomizeButton").addEventListener("click", () => randomizeShipPlacement("left"));
 
-createBoards();
-let targetList = createTargetList() //creates bots target list botFirecannon will not work without this
-botFireCannon()
-botFireCannon()
-botFireCannon()
-botFireCannon()
-botFireCannon()
+let targetList = createTargetList()
+let enemyHits = 0;
+let ownHits = 0;
+let battleBegun = 0;
+initializeBotGame(); // starts bot game
 
-randomizeShipPlacement("right");
