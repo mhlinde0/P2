@@ -30,17 +30,17 @@ export const getUser = async (req, res) => {
 
 export const createUser = async (req, res) => { //async so we can call await
     const user = req.body; //user sending data
-    console.log("req body:", user);
-    if(!user.name || !user.email || !user.password) { //middleware
+
+    if(!user.name || !user.email || !user.password){//middleware
         return res.status(400).json({success:false, message: "Provide all fields"});
     }
     const newUser = new User(user);
 
-    try {
+    try{
         await newUser.save();
         res.status(201).json({success: true, data: newUser});//201 means something created
 
-    } catch(error){
+    }catch(error){
         console.log("Error in creating user :", error.message);
         res.status(500).json({success: false, message: "Server error"});
     }

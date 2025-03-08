@@ -1,7 +1,7 @@
 import { User, setLoading, setUser } from './state.js'
 
 
-console.log("User:", User)
+console.log("User:", User())
 setLoading(true)
 
 

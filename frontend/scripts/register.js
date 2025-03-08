@@ -7,13 +7,46 @@ registerForm?.addEventListener("submit", (e) => {
     registerUser();
 })
 
-async function registerUser() {
-    const user = { 
-        name: document.getElementById("username").value, 
-        email: document.getElementById("email").value, 
-        password: document.getElementById("password").value, 
+
+function isValidPassword() {
+    const upperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    const password = document.getElementById("password").value;
+    const repeatPassword = document.getElementById("repeatPassword").value;
+
+    if (!password || !repeatPassword) {
+        window.alert("Invalid password")
+        err("element returned null")
+        return false;
     }
-    console.log("user: ", user)
+    
+    if (password.length < 6) {
+        document.getElementById("password").style.border = "1px solid red"
+        window.alert("Passwords must contain at least 6 characters")
+        return false
+    }
+
+    if (password !== repeatPassword) {
+        document.getElementById("repeatPassword").style.border = "1px solid red"
+
+        window.alert("Passwords do not match")
+        return false
+    }
+
+    return true;
+}
+
+async function registerUser() {
+
+    if (!isValidPassword(password, repeatPassword)) {
+        return;
+    };
+
+    const user = {
+        name: document.getElementById("username").value,
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value,
+    }
+
     try {
         setLoading(true);
 
@@ -29,7 +62,7 @@ async function registerUser() {
         });
 
         if (!response.ok) {
-            throw new Error("User could not be registeredfound");
+            throw new Error("User could not be registered");
         }
 
         const data = await response.json();
@@ -37,7 +70,6 @@ async function registerUser() {
 
         // Update frontend userState
         setUser(data.data);
-        setIsLoggedIn(true);
         console.log("New user:", User());
         window.location.href = "/"; // go to front page
     }
