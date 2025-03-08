@@ -4,7 +4,10 @@ const registerForm = document.getElementById("registerForm");
 
 registerForm?.addEventListener("submit", (e) => {
     e.preventDefault()
-    registerUser();
+
+    if (isValidPassword()) {
+        registerUser();
+    }
 })
 
 
@@ -36,10 +39,6 @@ function isValidPassword() {
 }
 
 async function registerUser() {
-
-    if (!isValidPassword(password, repeatPassword)) {
-        return;
-    };
 
     const user = {
         name: document.getElementById("username").value,
