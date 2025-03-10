@@ -1,4 +1,6 @@
-let userId = null;
+import { setLoading } from './loading.js';
+import { User, setUser} from './state.js';
+
 const apiBase = '/';
 
 const gameBoardWrapper = document.getElementById("gameBoardWrapper");
@@ -7,13 +9,14 @@ const boardWidth = 10;
 const boardHeight = 10;
 //Creates class for ships and places in array
 class ship {
-    constructor(name, length) {
+    constructor(name, length, rotation, location) {
         this.name = name;
         this.length = length;
         this.rotation = rotation;
         this.location = location;
     }
 }
+
 const destroyer = new ship("destroyer", 2);
 const submarine = new ship("submarine", 3);
 const cruiser = new ship("cruiser", 3);
@@ -352,38 +355,20 @@ function fireCannon(event) {
     }
 }
 
-async function fetchUserId() {
-    try {
-        const response = await fetch(apiBase + "getUserID", {  // Endpoiont skal selvfølgelig ændres så det passer
-            method: "GET",
-            headers: { "Content-Type": "application/json" }
-        });
-
-        if (!response.ok) {
-            throw new Error("Error fetching userID: ${response.status}");
-        }
-
-        const data = await response.json();
-
-        userId = data.userId;
-        console.log("Fetched userId:", userId);
-    } catch (error) {
-        console.error("Error fetching userId:", error);
-    }
-}
 
 async function sendShipDataToBeckend(ships) {
-    if (!userId) {
+    if (!User()) {
         console.error("UserID not found");
         return;
     }
 
     const payload = {
-        userId: userId,
+        userId: User()._id,
         ships: ships
     };
 
     try {
+        setLoading(true)
         const response = await fetch(apiBase + "getShips", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -398,10 +383,12 @@ async function sendShipDataToBeckend(ships) {
     } catch (error) {
         console.error("Error sending ship data:", error);
     }
+    setLoading(false)
+
 }
     
 
-/*
+
 function createTargetList() {
     let targetList = [];
     for (let i = 1; i <= 100; i++) {
@@ -483,7 +470,8 @@ function removeButtonEventListener(){
     document.getElementById("resetButton").removeEventListener("click", resetShipPlacement);
     document.getElementById("randomizeButton").removeEventListener("click", () => randomizeShipPlacement("left"));
 }
-*/
+
+
 // Event listeners der kalder deres respektive funktioner
 document.getElementById("resetButton")?.addEventListener("click", resetShipPlacement);
 document.getElementById("randomizeButton")?.addEventListener("click", () => randomizeShipPlacement("left"));
