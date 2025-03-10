@@ -32,9 +32,8 @@
     padding: 15px;
     width: 300px;
     text-decoration: none;
-    transition: 0.4s all;
-
 }
+
 .headerLink:hover {
     cursor: pointer; 
     color: black;
@@ -48,3 +47,6 @@
     font-size: clamp(16px, 2.5vw, 16px);
 }
   
+.hidden {
+    display: none;
+  }
