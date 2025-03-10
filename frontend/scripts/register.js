@@ -1,6 +1,7 @@
 import { isLoading, setUser, getUser, setIsLoggedIn } from './state.js';
 
 const registerForm = document.getElementById("registerForm");
+const apiBase = '/'
 
 registerForm?.addEventListener("submit", (e) => {
     e.preventDefault()
@@ -15,24 +16,15 @@ async function registerUser() {
     }
     console.log("user: ", user)
     try {
+        let data
         isLoading(true);
-
-        // API CALL TO REGISTER USER
-        const route = "/routes/api/userroutes/register/"
-
-        const response = await fetch(route, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+        const response = await fetch(apiBase + 'auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user)
-        });
+        })
+        data = await response.json()
 
-        if (!response.ok) {
-            throw new Error("User could not be registeredfound");
-        }
-
-        const data = await response.json();
         console.log("Response: ", data.data);
 
         // Update frontend userState
