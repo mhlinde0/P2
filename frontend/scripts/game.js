@@ -354,7 +354,7 @@ function fireCannon(event) {
 
 async function fetchUserId() {
     try {
-        const response = await fetch("/api/get-user-id", {  // Endpoiont skal selvfølgelig ændres så det passer
+        const response = await fetch(apiBase + "getUserID", {  // Endpoiont skal selvfølgelig ændres så det passer
             method: "GET",
             headers: { "Content-Type": "application/json" }
         });
@@ -371,6 +371,35 @@ async function fetchUserId() {
         console.error("Error fetching userId:", error);
     }
 }
+
+async function sendShipDataToBeckend(ships) {
+    if (!userId) {
+        console.error("UserID not found");
+        return;
+    }
+
+    const payload = {
+        userId: userId,
+        ships: ships
+    };
+
+    try {
+        const response = await fetch(apiBase + "getShips", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            throw new Error("Error: ${response.status}");
+        }
+        const data = await response.json();
+        console.log("Server response:", data);
+    } catch (error) {
+        console.error("Error sending ship data:", error);
+    }
+}
+    
 
 /*
 function createTargetList() {
