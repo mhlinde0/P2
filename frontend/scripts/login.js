@@ -42,6 +42,7 @@ async function login() {
     const password = document.getElementById("password").value || ""
     try {
         setLoading(true);
+
         let data
         const response = await fetch(apiBase + 'auth/login', {
             method: 'POST',

@@ -9,8 +9,8 @@ router.get("/", getAllUsers);
 // Get a single user
 router.get("/:id", getUser);
 
-// POST a new user
-userRoutes.post("/login/", login);
+// POST a logged in user
+router.post("/login/", login);
 
 // POST a new user
 router.post("/register", createUser);

@@ -1,6 +1,7 @@
 import { setUser, User } from './state.js';
 import { setLoading } from './loading.js';
 const registerForm = document.getElementById("registerForm");
+const apiBase = '/'
 
 registerForm?.addEventListener("submit", (e) => {
     e.preventDefault()
@@ -61,7 +62,6 @@ async function registerUser() {
             throw new Error("User could not be registered");
         }
 
-        const data = await response.json();
         console.log("Response: ", data.data);
 
         // Update frontend userState
