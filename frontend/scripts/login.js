@@ -61,7 +61,7 @@ async function login() {
         // Update frontend userState
         setUser(data.user);
         console.log("user set", User())
-        setIsLoggedIn(true);
+        //setIsLoggedIn(true);
         setRememberMeCookies();
         window.location.href = "/"; // go to front page
     }
