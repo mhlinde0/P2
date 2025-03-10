@@ -1,3 +1,6 @@
+let userId = null;
+const apiBase = '/';
+
 const gameBoardWrapper = document.getElementById("gameBoardWrapper");
 // board size in squares
 const boardWidth = 10;
@@ -349,6 +352,27 @@ function fireCannon(event) {
     }
 }
 
+async function fetchUserId() {
+    try {
+        const response = await fetch("/api/get-user-id", {  // Endpoiont skal selvfølgelig ændres så det passer
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (!response.ok) {
+            throw new Error("Error fetching userID: ${response.status}");
+        }
+
+        const data = await response.json();
+
+        userId = data.userId;
+        console.log("Fetched userId:", userId);
+    } catch (error) {
+        console.error("Error fetching userId:", error);
+    }
+}
+
+/*
 function createTargetList() {
     let targetList = [];
     for (let i = 1; i <= 100; i++) {
@@ -430,7 +454,7 @@ function removeButtonEventListener(){
     document.getElementById("resetButton").removeEventListener("click", resetShipPlacement);
     document.getElementById("randomizeButton").removeEventListener("click", () => randomizeShipPlacement("left"));
 }
-
+*/
 // Event listeners der kalder deres respektive funktioner
 document.getElementById("resetButton")?.addEventListener("click", resetShipPlacement);
 document.getElementById("randomizeButton")?.addEventListener("click", () => randomizeShipPlacement("left"));
