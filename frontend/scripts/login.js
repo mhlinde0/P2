@@ -5,6 +5,7 @@ import { setUser, User } from './state.js';
 
 const loginForm = document.getElementById("loginForm");
 const rememberMeBox = document.getElementById("rememberMe");
+const apiBase = '/'
 
 document.addEventListener("DOMContentLoaded", rememberMe);
 
@@ -41,28 +42,25 @@ async function login() {
     const password = document.getElementById("password").value || ""
     try {
         setLoading(true);
-        
-        const route = "/routes/api/userroutes/login/"
-        const response = await fetch(route, {
-            method: "POST", // Using POST for sending credentials
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ username, password }) // Pass credentials in the body
-        });
+        let data
+        const response = await fetch(apiBase + 'auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: username, password: password })
+        })
+        data = await response.json()
 
-    
         if (!response.ok) {
             window.alert(`${response.status}: Invalid username or password`);
             throw new Error("User not found");
         }
 
-        const data = await response.json();
         console.log("Fetched User: ", data);
 
         // Update frontend userState
         setUser(data.user);
         console.log("user set", User())
+        setIsLoggedIn(true);
         setRememberMeCookies();
         window.location.href = "/"; // go to front page
     }
