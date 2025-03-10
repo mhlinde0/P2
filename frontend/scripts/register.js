@@ -66,7 +66,7 @@ async function registerUser() {
 
         // Update frontend userState
         setUser(data.data);
-        setIsLoggedIn(true);
+        //setIsLoggedIn(true);
         console.log("New user:", User());
         window.location.href = "/"; // go to front page
     }
