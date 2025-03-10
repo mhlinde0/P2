@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Battleships</title>
-    <link rel="stylesheet" href="../styles/homeScreen.css">
+    <link rel="stylesheet" href="../styles/startPage.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js" defer> </script>
     <!--Howler library for sounds-->
 
@@ -18,14 +18,16 @@
 
     <a id="profileButton" href="/profile"> <img src="/resources/images/user_icon.png"> </a>
 
-    <div class="headerWrapper center">
-        <a class="headerLink" id="joinGame" href="/joinGame"> Join Game </a>
-        <a class="headerLink" id="createGame" href="/createGame"> Create Game </a>
-        <a class="headerLink" id="login" href="/login"> Login </a>
-        <a class="headerLink" id="settings" href="/settings"> Settings </a>
-        <a class="headerLink" id="signOut"> Sign Out </a>
-
+    <div id="menu" class="headerWrapper center wrapper">
+            <a class="headerLink" id="joinGame" href="/joinGame"> Join Game </a>
+            <a class="headerLink" id="createGame" href="/createGame"> Create Game </a>
+            <a class="headerLink" id="login" href="/login"> Login </a>
+            <a class="headerLink" id="settings" href="/settings"> Settings </a>
+            <a class="headerLink" id="signOut"> Sign Out </a>       
     </div>
+
+
+
 
     <script type="module" src="scripts/audioManager.js"></script>
     <script type="module" src="scripts/startPage.js"></script>

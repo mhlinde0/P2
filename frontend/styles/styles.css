@@ -34,7 +34,8 @@ body {
 }
 
 .logo {
-    width: 400px;
+    height: 20vh;
+
     z-index: -1;
 }
 .center {
@@ -50,6 +51,11 @@ body {
 .justify-align-center {
     justify-content: center;
     align-items: center;
+}
+
+.wrapper {
+    height: 65vh;
+    align-content: center;
 }
 
 

@@ -33,13 +33,13 @@ function createBoards() {
     const leftGameBoardWrapper = document.createElement("div");
     leftGameBoardWrapper.classList.add("gameBoard");
     
-    gameBoardWrapper.append(leftGameBoardWrapper);
+    gameBoardWrapper?.append(leftGameBoardWrapper);
     createSquares(leftGameBoardWrapper, "left");
 
     const rightGameBoardWrapper = document.createElement("div");
     rightGameBoardWrapper.classList.add("gameBoard");
 
-    gameBoardWrapper.append(rightGameBoardWrapper);
+    gameBoardWrapper?.append(rightGameBoardWrapper);
     createSquares(rightGameBoardWrapper, "right");
 
 }
@@ -360,12 +360,12 @@ function botFireCannon() {
         enemyHits += 1;
     } 
     else {
-        firedAtSquare.classList.add("missedSquare");
+        firedAtSquare?.classList.add("missedSquare");
         console.log("Missed shot");
     }
     turn = 1;
     gameLoop();
-    console.log("Bot fired at:",firedAtSquare.id);
+    console.log("Bot fired at:",firedAtSquare?.id);
 }
 
 function getNextRandomTarget() {  
@@ -419,8 +419,8 @@ function removeButtonEventListener(){
 }
 
 // Event listeners der kalder deres respektive funktioner
-document.getElementById("resetButton").addEventListener("click", resetShipPlacement);
-document.getElementById("randomizeButton").addEventListener("click", () => randomizeShipPlacement("left"));
+document.getElementById("resetButton")?.addEventListener("click", resetShipPlacement);
+document.getElementById("randomizeButton")?.addEventListener("click", () => randomizeShipPlacement("left"));
 
 let targetList = createTargetList()
 let enemyHits = 0;

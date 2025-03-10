@@ -1,5 +1,5 @@
 import express from "express";
-import {getAllUsers, getUser, createUser, deleteUser} from "../controllers/userController.js";
+import {getAllUsers, getUser, createUser, deleteUser, login} from "../../controllers/userController.js";
 
 const router = express.Router();
 
@@ -8,6 +8,9 @@ router.get("/", getAllUsers);
 
 // Get a single user
 router.get("/:id", getUser);
+
+// POST a logged in user
+router.post("/login/", login);
 
 // POST a new user
 router.post("/register", createUser);

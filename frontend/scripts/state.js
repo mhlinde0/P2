@@ -1,104 +1,42 @@
-export const GameStates = Object.freeze({
-    NOT_IN_GAME: 'notInGame',
-    GAME_CREATED: 'gameCreated',
-    IN_GAME: 'inGame'
-});
-
-const defaultStates = {
-    isLoading: false,
-    isLoggedIn: false, // 
-    user: null, // keeps the current user object
-    volume: 1,
-    gameState: GameStates.NOT_IN_GAME,
-    currentGameId: null,
+/* GETS THE USER FROM BROWSER STORAGE TO CHECK IF LOGGED IN*/
+export const User = () => {
+    return JSON.parse(localStorage.getItem("user")) || null;
 }
 
-let states = defaultStates;
-
-function saveState() {
-    localStorage.setItem("states", JSON.stringify(states));
-}
-
-function getStates() {
-    states = JSON.parse(localStorage.getItem("states")) || defaultStates;
-}
-
-export function getUser() {
-    getStates()
-    return states.user;
-}
-
+/* SAVES THE USER IN BROWSER STORAGE, SO WE WONT GET LOGGED OUT EACH TIME WE LEAVE PAGE*/
 export function setUser(user) {
-    states.user = user;
-    saveState();
+    localStorage.setItem("user", JSON.stringify(user));
 }
 
-export function isLoggedIn() {
-    getStates()
-    return states.isLoggedIn;
+/* GETS THE GAME FROM BROWSER STORAGE */
+export const Game = () => {
+    return JSON.parse(localStorage.getItem("game")) || null;
 }
 
-export function setIsLoggedIn(bool) {
-    states.isLoggedIn = bool;
-    saveState()
+/* SAVES THE GAME FROM BROWSER STORAGE */
+export function saveGame(game) {
+    localStorage.setItem("game", JSON.stringify(game));
 }
 
+/* GETS VOLUME SETTINGS FROM BROWSER */
 export function volume() {
-    getStates()
-    return states.volume;
+    return JSON.parse(localStorage.getItem("volume")) || null;
 }
 
-export function setVolume(vol) {
-    states.volume = vol;
-    saveState()
+/* SAVES VOLUME SETTINGS IN BROWSER */
+export function setVolume(volume) {
+    localStorage.setItem("volume", JSON.stringify(volume));
 }
 
-export function getGameState() {
-    getStates()
-    return states.gameState;
+/* GETS VOLUME SETTINGS FROM BROWSER */
+export function darkMode() {
+    return JSON.parse(localStorage.getItem("darkMode")) || false;
 }
 
-export function setGameState(gameState) {
-    states.gameState = gameState;
-    saveState()
-}
-
-export function getGameId() {
-    getStates()
-    return states.currentGameId;
-}
-
-export function setGameId(id) {
-    states.currentGameId = id;
-    saveState()
+/* SAVES VOLUME SETTINGS IN BROWSER */
+export function setDarkMode(bool) {
+    localStorage.setItem("darkMode", JSON.stringify(bool));
 }
 
 
-function displayLoader(e) {
-    const loader = document.createElement("div")
-    loader.id = "loader";
-    document.body.appendChild(loader);
-
-    const screenCover = document.createElement("div")
-    screenCover.id = "screenCover";
-    document.body.appendChild(screenCover);
-}
-
-function removeLoader() {
-    document.body.removeChild(document.getElementById("loader"))
-    document.body.removeChild(document.getElementById("screenCover"))
-
-}
-
-export function isLoading(bool) {
-    console.log("setting isLoading to", bool)
-    states.isLoading = bool;
-
-    if (bool) {
-        displayLoader();
-    } else {
-        removeLoader();
-    }
- 
-}
 

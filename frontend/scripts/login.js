@@ -1,6 +1,7 @@
 
 import { setCookie, getCookie } from './cookies.js';
-import { isLoading, setUser, getUser, setIsLoggedIn } from './state.js';
+import { setLoading } from './loading.js';
+import { setUser, User } from './state.js';
 
 const loginForm = document.getElementById("loginForm");
 const rememberMeBox = document.getElementById("rememberMe");
@@ -31,7 +32,7 @@ function setRememberMeCookies() {
     }
 }
 
-loginForm.addEventListener("submit", (e) => {
+loginForm?.addEventListener("submit", (e) => {
     e.preventDefault()
     login();
 })
@@ -40,7 +41,8 @@ async function login() {
     const username = document.getElementById("username").value || ""
     const password = document.getElementById("password").value || ""
     try {
-        isLoading(true);
+        setLoading(true);
+
         let data
         const response = await fetch(apiBase + 'auth/login', {
             method: 'POST',
@@ -49,18 +51,23 @@ async function login() {
         })
         data = await response.json()
 
+        if (!response.ok) {
+            window.alert(`${response.status}: Invalid username or password`);
+            throw new Error("User not found");
+        }
+
         console.log("Fetched User: ", data);
 
         // Update frontend userState
         setUser(data.user);
-        console.log("user set", getUser())
+        console.log("user set", User())
         setIsLoggedIn(true);
         setRememberMeCookies();
-        // window.location.href = "/"; // go to front page
+        window.location.href = "/"; // go to front page
     }
     catch (err) {
         console.log(err);
     }
-    isLoading(false);
+    setLoading(false);
 }
 
