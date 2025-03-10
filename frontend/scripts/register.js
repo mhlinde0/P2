@@ -39,7 +39,6 @@ function isValidPassword() {
 }
 
 async function registerUser() {
-
     const user = {
         name: document.getElementById("username").value,
         email: document.getElementById("email").value,
@@ -47,18 +46,16 @@ async function registerUser() {
     }
 
     try {
+        let data
         setLoading(true);
 
         // API CALL TO REGISTER USER
-        const route = "/routes/api/userroutes/register/"
-
-        const response = await fetch(route, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+        const response = await fetch(apiBase + 'auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user)
-        });
+        })
+        data = await response.json()
 
         if (!response.ok) {
             throw new Error("User could not be registered");
@@ -69,6 +66,7 @@ async function registerUser() {
 
         // Update frontend userState
         setUser(data.data);
+        setIsLoggedIn(true);
         console.log("New user:", User());
         window.location.href = "/"; // go to front page
     }
