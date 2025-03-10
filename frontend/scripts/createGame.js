@@ -25,6 +25,7 @@ async function createGame() {
         const battleNumber = generateBattleNumber();
 
         // funktionskald til backend om at generere game
+        
 
         // hvis game er genereret i backend:
         setBattleNumber(battleNumber);

@@ -1,34 +1,27 @@
 import express from "express";
-
 import {getAllUsers, getUser, createUser, deleteUser, login} from "../../controllers/userController.js";
 
-//const app = express();
-
-const userRoutes = express.Router();
-
-//app.use(express.json()); //json data in body -middleware
-
+const router = express.Router();
 
 // Get all users
-userRoutes.get("/", getAllUsers);
+router.get("/", getAllUsers);
 
 // Get a single user
-userRoutes.get("/:id", getUser);
-
+router.get("/:id", getUser);
 
 // POST a new user
 userRoutes.post("/login/", login);
 
 // POST a new user
-userRoutes.post("/register/", createUser);
+router.post("/register", createUser);
 
 // Delete a user
-userRoutes.delete("/:id", deleteUser);
+router.delete("/:id", deleteUser);
 
 /*
 // Update a user
-userRoutes.put("/:id", (req, res) => {
+router.put("/:id", (req, res) => {
   res.json({ mssg: "update user" }); // Dummy
 });
 */
-export default userRoutes;
+export default router
