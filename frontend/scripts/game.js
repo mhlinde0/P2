@@ -1,3 +1,6 @@
+let userId = null;
+const apiBase = '/';
+
 const gameBoardWrapper = document.getElementById("gameBoardWrapper");
 // board size in squares
 const boardWidth = 10;
@@ -7,6 +10,8 @@ class ship {
     constructor(name, length) {
         this.name = name;
         this.length = length;
+        this.rotation = rotation;
+        this.location = location;
     }
 }
 const destroyer = new ship("destroyer", 2);
@@ -138,6 +143,11 @@ function onShipDrop(event) {
         return;
     }
 
+    draggedShip.rotation = draggedShipRotation;
+    draggedShip.location = {
+        startSquare: droppedSquareuare,
+        coveredSquares: coveredSquares
+    };
 
     draggedShipElement.style.display = "none"; // Gør html elementet usynligt når skibet bliver placeret
 
@@ -296,6 +306,12 @@ function randomizeShipPlacement(boardSide) {
 
             assignOccupiedSquares(coveredSquares, boardSide);
 
+            ship.rotation = rotation;
+            ship.location = {
+                startSquare: droppedSquare,
+                coveredSquares: coveredSquares
+            };
+
             if (boardSide === "left") {
             // Finder skibets id og gemmer elementet når placeret
             const shipElement = document.getElementById(ship.name + "Size" + ship.length);
@@ -336,6 +352,56 @@ function fireCannon(event) {
     }
 }
 
+async function fetchUserId() {
+    try {
+        const response = await fetch(apiBase + "getUserID", {  // Endpoiont skal selvfølgelig ændres så det passer
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (!response.ok) {
+            throw new Error("Error fetching userID: ${response.status}");
+        }
+
+        const data = await response.json();
+
+        userId = data.userId;
+        console.log("Fetched userId:", userId);
+    } catch (error) {
+        console.error("Error fetching userId:", error);
+    }
+}
+
+async function sendShipDataToBeckend(ships) {
+    if (!userId) {
+        console.error("UserID not found");
+        return;
+    }
+
+    const payload = {
+        userId: userId,
+        ships: ships
+    };
+
+    try {
+        const response = await fetch(apiBase + "getShips", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            throw new Error("Error: ${response.status}");
+        }
+        const data = await response.json();
+        console.log("Server response:", data);
+    } catch (error) {
+        console.error("Error sending ship data:", error);
+    }
+}
+    
+
+/*
 function createTargetList() {
     let targetList = [];
     for (let i = 1; i <= 100; i++) {
@@ -417,7 +483,7 @@ function removeButtonEventListener(){
     document.getElementById("resetButton").removeEventListener("click", resetShipPlacement);
     document.getElementById("randomizeButton").removeEventListener("click", () => randomizeShipPlacement("left"));
 }
-
+*/
 // Event listeners der kalder deres respektive funktioner
 document.getElementById("resetButton")?.addEventListener("click", resetShipPlacement);
 document.getElementById("randomizeButton")?.addEventListener("click", () => randomizeShipPlacement("left"));
