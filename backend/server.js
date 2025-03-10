@@ -1,9 +1,45 @@
 import connectDB from "./config/db.js";
-import app from "./app.js";
+import express from 'express';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import staticRoutes from './routes/staticRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import setupWebhooks from './webhooks.js';
 
-
+const app = express();
 const PORT = process.env.PORT || 4000;
+// Create __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
+
+
+//----------MIDDLEWARE----------
+app.use(express.json());
+app.use(express.static(join(__dirname, '..', 'frontend')));
+
+
+//----------ROUTES----------
+// static pages navigation routes:
+app.use(staticRoutes);
+
+
+// auth routes:
+app.use("/auth", userRoutes);
+//app.use('route navn', filnavn)
+
+
+// Initialize webhooks AFTER app is created
+setupWebhooks(app);
+
+
+// 404 handler should come last
+app.use((req, res) => {
+    res.status(404).send("Page not found");
+});
+
+
+//----------SERVER CONNECTION----------
 (async () => {
   await connectDB(); // Wait for DB connection before starting the server
 
@@ -14,18 +50,4 @@ const PORT = process.env.PORT || 4000;
 })();
 
 
-
-
-/*import { Server } from 'socket.io';
-
-const server = app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
-const io = new Server(server);
-
-io.on('connection', (socket) => {
-  console.log('New client connected:', socket.id);
-  // Add your game logic here
-});*/
 

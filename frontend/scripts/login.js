@@ -4,6 +4,7 @@ import { isLoading, setUser, getUser, setIsLoggedIn } from './state.js';
 
 const loginForm = document.getElementById("loginForm");
 const rememberMeBox = document.getElementById("rememberMe");
+const apiBase = '/'
 
 document.addEventListener("DOMContentLoaded", rememberMe);
 
@@ -40,15 +41,14 @@ async function login() {
     const password = document.getElementById("password").value || ""
     try {
         isLoading(true);
-        
-        const route = "/routes/api/userroutes/67c47e32284facdd8a51ab0d"
-        const response = await fetch(route);
-    
-        if (!response.ok) {
-            throw new Error("User not found");
-        }
+        let data
+        const response = await fetch(apiBase + 'auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: username, password: password })
+        })
+        data = await response.json()
 
-        const data = await response.json();
         console.log("Fetched User: ", data);
 
         // Update frontend userState
