@@ -7,6 +7,8 @@ class ship {
     constructor(name, length) {
         this.name = name;
         this.length = length;
+        this.rotation = rotation;
+        this.location = location;
     }
 }
 const destroyer = new ship("destroyer", 2);
@@ -138,6 +140,11 @@ function onShipDrop(event) {
         return;
     }
 
+    draggedShip.rotation = draggedShipRotation;
+    draggedShip.location = {
+        startSquare: droppedSquareuare,
+        coveredSquares: coveredSquares
+    };
 
     draggedShipElement.style.display = "none"; // Gør html elementet usynligt når skibet bliver placeret
 
@@ -295,6 +302,12 @@ function randomizeShipPlacement(boardSide) {
             }
 
             assignOccupiedSquares(coveredSquares, boardSide);
+
+            ship.rotation = rotation;
+            ship.location = {
+                startSquare: droppedSquare,
+                coveredSquares: coveredSquares
+            };
 
             if (boardSide === "left") {
             // Finder skibets id og gemmer elementet når placeret
