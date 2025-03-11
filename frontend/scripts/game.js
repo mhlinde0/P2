@@ -356,7 +356,7 @@ function fireCannon(event) {
 }
 
 
-async function sendShipDataToBeckend(ships) {
+async function sendShipDataToBackend(ships) {
     if (!User()) {
         console.error("UserID not found");
         return;
