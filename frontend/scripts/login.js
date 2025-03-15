@@ -1,4 +1,4 @@
-
+/** @module login */
 import { setCookie, getCookie } from './cookies.js';
 import { setLoading } from './loading.js';
 import { setUser, User } from './state.js';

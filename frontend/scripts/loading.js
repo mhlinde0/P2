@@ -1,5 +1,6 @@
-import { getElementById } from "./helperFunctions";
+/** @module loading */
 
+import { getElementById, getInputElement } from "./helperFunctions.js";
 
 let isLoading = false;
 

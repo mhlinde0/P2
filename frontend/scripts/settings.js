@@ -1,3 +1,5 @@
+/** @module settings */
+
 import { volume, setVolume } from './state.js'
 import { getInputElement } from './helperFunctions.js';
 

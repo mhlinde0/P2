@@ -1,5 +1,7 @@
+/** @module joinGame */
+
 import { User } from "./state";
-import { getElementById, getInputElement } from "./helperFunctions";
+import { getElementById, getInputElement } from "./helperFunctions.js";
 
 if (!User()) {
     window.location.href = "/login"; // 

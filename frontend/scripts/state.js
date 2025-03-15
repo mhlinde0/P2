@@ -1,3 +1,5 @@
+/** @module state */
+
 /**
  * Gets the user from the browser local storage
  * @function

@@ -1,3 +1,5 @@
+/** @module register */
+
 import { User, setUser } from './state.js'
 import { getElementById } from './helperFunctions.js'
 

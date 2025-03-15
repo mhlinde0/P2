@@ -1,3 +1,6 @@
+/** @module profile */
+
+
 import { User } from "./state.js";
 import { getElementById } from "./helperFunctions.js";
 

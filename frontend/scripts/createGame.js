@@ -1,23 +1,13 @@
+/** @module createGame */
 
-import { User, getGameState, setGameState, setBattleNumber, getBattleNumber, GameStates } from "./state.js";
+import { User  } from "./state.js";
 
 if (!User()) {
     window.location.href = "/login"; // go to front page
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    /* Create game, if not in game*/
-    if (getGameState() == GameStates.NOT_IN_GAME) {
-        createGame();
-    }
 
-    /* Set Battle Number on the UI if game is created*/
-    if (getGameState() == GameStates.GAME_CREATED) {
-        const battleNumber = document.getElementById("battleNumber");
-        if (battleNumber) {
-            battleNumber.innerHTML = "Battle Number: " + getBattleNumber();
-        }
-    }
 })
 
 async function createGame() {
@@ -28,8 +18,7 @@ async function createGame() {
         
 
         // hvis game er genereret i backend:
-        setBattleNumber(battleNumber);
-        setGameState(GameStates.GAME_CREATED)
+
     } catch (err) {
         console.log(err)
 

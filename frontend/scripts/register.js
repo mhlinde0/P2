@@ -1,6 +1,9 @@
+/** @module register */
+
 import { setUser, User } from './state.js';
 import { setLoading } from './loading.js';
 import { getElementById, getInputElement } from './helperFunctions.js';
+
 const registerForm = document.getElementById("registerForm");
 const apiBase = '/'
 
