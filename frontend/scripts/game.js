@@ -1,14 +1,22 @@
 import { setLoading } from './loading.js';
 import { User, setUser} from './state.js';
+import { getElementById, getInputElement } from './helperFunctions.js';
 
 const apiBase = '/';
 
-const gameBoardWrapper = document.getElementById("gameBoardWrapper");
+const gameBoardWrapper = getElementById("gameBoardWrapper");
 // board size in squares
 const boardWidth = 10;
 const boardHeight = 10;
 //Creates class for ships and places in array
 class ship {
+    /**
+     * Creates a ship.
+     * @param {string} name - The person's name.
+     * @param {number} length - The person's age.
+     * @param {string} rotation - The person's age.
+     * @param {string} location - The person's age.
+     */
     constructor(name, length, rotation, location) {
         this.name = name;
         this.length = length;
@@ -17,11 +25,11 @@ class ship {
     }
 }
 
-const destroyer = new ship("destroyer", 2);
-const submarine = new ship("submarine", 3);
-const cruiser = new ship("cruiser", 3);
-const battleship = new ship("battleship", 4);
-const carrier = new ship("carrier", 5);
+const destroyer = new ship("destroyer", 2, "vertical", "unplaced");
+const submarine = new ship("submarine", 3, "vertical", "unplaced");
+const cruiser = new ship("cruiser", 3, "vertical", "unplaced");
+const battleship = new ship("battleship", 4, "vertical",  "unplaced");
+const carrier = new ship("carrier", 5, "vertical", "unplaced");
 const shipsClass = [destroyer, submarine, cruiser, battleship, carrier];
 
 // Array of ship divs
@@ -71,9 +79,9 @@ function createSquares(gameboard, side) {
         square.dataset.side = side;
         square.dataset.index = i + 1;
 
-        // Tilføjer nødvendige event listeners til alle squares når de bliver lavet
-        square.addEventListener("dragover", (event) => { 
-            event.preventDefault();
+        // Tilføjer nødvendige e listeners til alle squares når de bliver lavet
+        square.addEventListener("dragover", (e) => { 
+            e.preventDefault();
         })
 
         square.addEventListener("drop", onShipDrop);
@@ -85,13 +93,13 @@ function createSquares(gameboard, side) {
     }
 }
 
-function onShipDrop(event) {
-    event.preventDefault();
+function onShipDrop(e) {
+    e.preventDefault();
 
-    const square = event.currentTarget;
+    const square = e.currentTarget;
     const side = square.dataset.side;
-    const shipId = event.dataTransfer.getData("text/plain"); // text/plain fortæller at dataen vi leder efter er ren tekst
-    const draggedShipElement = document.getElementById(shipId);
+    const shipId = e.dataTransfer.getData("text/plain"); // text/plain fortæller at dataen vi leder efter er ren tekst
+    const draggedShipElement = getElementById(shipId);
     let draggedShip = null;
 
     
@@ -184,7 +192,7 @@ function checkForOverlap(coveredSquares, side) {
     const occupiedArray = side === "left" ? occupiedSquareArrayLeft : occupiedSquareArrayRight;
     
     for (let i = 0; i < coveredSquares.length; i++) {
-        const squareElement = document.getElementById(side + "square" + (coveredSquares[i]));
+        const squareElement = getElementById(side + "square" + (coveredSquares[i]));
         if (occupiedArray.includes(squareElement)) {
             return true;
         }
@@ -195,7 +203,7 @@ function checkForOverlap(coveredSquares, side) {
 // Tilføjer elementet occupiedSquare til de squares med skibe på
 function assignOccupiedSquares(coveredSquares, side) {
     coveredSquares.forEach(index => {
-        const squareElement = document.getElementById(side + "square" + (index));
+        const squareElement = getElementById(side + "square" + (index));
         if (squareElement) {
             squareElement.classList.add("occupiedSquare");
             if (side === "left") {
@@ -210,7 +218,7 @@ function assignOccupiedSquares(coveredSquares, side) {
 
 
 shipsDiv.forEach(ship => {
-    ship.addEventListener("dragstart", (event) => {
+    ship.addEventListener("dragstart", (e) => {
         let cloneImageShip = ship.cloneNode(true);
 
         // Sætter skibet rotation (transform) til klonens
@@ -225,10 +233,10 @@ shipsDiv.forEach(ship => {
         document.body.appendChild(cloneImageShip);
 
         // Sætter klonen til at være drag image
-        event.dataTransfer.setDragImage(cloneImageShip, 0, 0);
-        event.dataTransfer.setData("text/plain", ship.id);
+        e.dataTransfer.setDragImage(cloneImageShip, 0, 0);
+        e.dataTransfer.setData("text/plain", ship.id);
 
-        // Fjerne klonen efter event queuen (timeren er sat til 0 millisekunder)
+        // Fjerne klonen efter e queuen (timeren er sat til 0 millisekunder)
         setTimeout(() => {
             document.body.removeChild(cloneImageShip);
         }, 0);
@@ -238,18 +246,18 @@ shipsDiv.forEach(ship => {
 
 // Select a ship when hovered
 shipsDiv.forEach((ship) => {
-    ship.addEventListener("mouseover", (event) => {
+    ship.addEventListener("mouseover", (e) => {
         currentHoveredShip = ship;
     });
 
-    ship.addEventListener("mouseout", (event) => {
+    ship.addEventListener("mouseout", (e) => {
         currentHoveredShip = null;
     })
 });
 
 // Rotate ship when pressing r
-document.addEventListener("keydown", (event) => {
-    if (event.key.toLowerCase() === "r" && currentHoveredShip) {
+document.addEventListener("keydown", (e) => {
+    if (e.key.toLowerCase() === "r" && currentHoveredShip) {
         console.log(currentHoveredShip.getAttribute('id'))
         let currentRotation = parseInt(currentHoveredShip.getAttribute("data-rotation") || "0", 10);
         let newRotation = (currentRotation + 90) % 360;
@@ -317,7 +325,7 @@ function randomizeShipPlacement(boardSide) {
 
             if (boardSide === "left") {
             // Finder skibets id og gemmer elementet når placeret
-            const shipElement = document.getElementById(ship.name + "Size" + ship.length);
+            const shipElement = getElementById(ship.name + "Size" + ship.length);
             shipElement.style.display = "none";
             }
             
@@ -332,9 +340,9 @@ function randomizeShipPlacement(boardSide) {
 }
 
 
-function fireCannon(event) {
+function fireCannon(e) {
     if (battleBegun === 1){
-        const firedAtSquare = event.currentTarget
+        const firedAtSquare = e.currentTarget
         if (leftSquareArray.includes(firedAtSquare)) {
             alert("Cannot fire at your own board");
             return;
@@ -400,7 +408,7 @@ function createTargetList() {
 
 function botFireCannon() {
     
-    const firedAtSquare = document.getElementById(`leftsquare${getNextRandomTarget()}`);
+    const firedAtSquare = getElementById(`leftsquare${getNextRandomTarget()}`);
     
     if (rightSquareArray.includes(firedAtSquare)) {
         alert("bot should not fire at its own board");
@@ -467,14 +475,14 @@ function initializeBotGame(){
 }
 
 function removeButtonEventListener(){
-    document.getElementById("resetButton").removeEventListener("click", resetShipPlacement);
-    document.getElementById("randomizeButton").removeEventListener("click", () => randomizeShipPlacement("left"));
+    getElementById("resetButton").removeEventListener("click", resetShipPlacement);
+    getElementById("randomizeButton").removeEventListener("click", () => randomizeShipPlacement("left"));
 }
 
 
 // Event listeners der kalder deres respektive funktioner
-document.getElementById("resetButton")?.addEventListener("click", resetShipPlacement);
-document.getElementById("randomizeButton")?.addEventListener("click", () => randomizeShipPlacement("left"));
+getElementById("resetButton")?.addEventListener("click", resetShipPlacement);
+getElementById("randomizeButton")?.addEventListener("click", () => randomizeShipPlacement("left"));
 
 let targetList = createTargetList()
 let enemyHits = 0;

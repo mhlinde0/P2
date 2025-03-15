@@ -8,9 +8,12 @@ const loginForm = getElementById("loginForm");
 const rememberMeBox = getInputElement("rememberMe");
 const apiBase = '/'
 
-document.addEventListener("DOMContentLoaded", rememberMe);
+document.addEventListener("DOMContentLoaded", getUserCookies);
 
-function rememberMe(e) {
+/** gets the username and passwords values that are saved in the cookies
+ * @function
+ */
+function getUserCookies(e) {
     e.preventDefault();
     if (getCookie("rememberMe") === "true") {
         getInputElement("username").value = getCookie("username");
@@ -19,9 +22,10 @@ function rememberMe(e) {
     }
 }
 
-function setRememberMeCookies() {
-    const username = getInputElement("username").value;
-    const password = getInputElement("password").value;
+/** sets the username and password cookies for the user
+ * @function
+ */
+function setUserCookies(username, password) {
     if (rememberMeBox.checked) {
         setCookie("username", username, 5);
         setCookie("password", password, 5);
@@ -33,24 +37,29 @@ function setRememberMeCookies() {
     }
 }
 
-loginForm?.addEventListener("submit", (e) => {
-    e.preventDefault()
-    login();
-})
 
-async function login() {
-    const username = getInputElement("username").value
-    const password = getInputElement("password").value
+loginForm.addEventListener("submit", login)
+
+
+/** calls the database for user validation and then sets the user in the frontend to a user object returned by the database
+ * @function
+ * @param {Event} e
+ */
+async function login(e) {
+    e.preventDefault();
+
+    const username = getInputElement("username").value;
+    const password = getInputElement("password").value;
     try {
         setLoading(true);
 
-        let data
+
         const response = await fetch(apiBase + 'auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: username, password: password })
         })
-        data = await response.json()
+        let data = await response.json()
 
         if (!response.ok) {
             window.alert(`${response.status}: Invalid username or password`);
@@ -61,9 +70,8 @@ async function login() {
 
         // Update frontend userState
         setUser(data.user);
-        console.log("user set", User())
         //setIsLoggedIn(true);
-        setRememberMeCookies();
+        setUserCookies(username, password);
         window.location.href = "/"; // go to front page
     }
     catch (err) {
