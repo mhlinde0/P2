@@ -16,7 +16,10 @@ const boardWidth = 10;
 /** Board length in squares
  * @type {number} */
 const boardHeight = 10;
-/** Represents a ship.* @class */
+
+
+/** Represents a ship.* 
+ * @class */
 class Ship {
     /** constuctor method creates a ship with following properties
      * @param {string} name - "destoryer", "submarine", "cruiser", "battliship", "carrier"
