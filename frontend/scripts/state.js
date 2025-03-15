@@ -1,41 +1,42 @@
-/* GETS THE USER FROM BROWSER STORAGE TO CHECK IF LOGGED IN*/
+/**
+ * Gets the user from the browser local storage
+ * @function
+ * @returns {object|null} 'user' object with email, name and id
+ */
 export const User = () => {
-    return JSON.parse(localStorage.getItem("user")) || null;
+    const user = localStorage.getItem("user")
+    return user ? JSON.parse(user) : null;
 }
 
-/* SAVES THE USER IN BROWSER STORAGE, SO WE WONT GET LOGGED OUT EACH TIME WE LEAVE PAGE*/
+/**
+ *  SAVES THE USER IN BROWSER STORAGE, SO WE WONT GET LOGGED OUT EACH TIME WE LEAVE PAGE
+ * @function
+ * @param {object|null} user - object with user data
+ */
 export function setUser(user) {
     localStorage.setItem("user", JSON.stringify(user));
 }
 
-/* GETS THE GAME FROM BROWSER STORAGE */
-export const Game = () => {
-    return JSON.parse(localStorage.getItem("game")) || null;
-}
 
-/* SAVES THE GAME FROM BROWSER STORAGE */
-export function saveGame(game) {
-    localStorage.setItem("game", JSON.stringify(game));
-}
-
-/* GETS VOLUME SETTINGS FROM BROWSER */
+/**
+ * gets the volume settings from browser storage
+ * @function
+ * @returns {String|null} - volume settings
+ */
 export function volume() {
-    return JSON.parse(localStorage.getItem("volume")) || null;
+    const vol = localStorage.getItem("volume")
+    return vol ? JSON.parse(vol) : null;
 }
 
-/* SAVES VOLUME SETTINGS IN BROWSER */
+/**
+ * saves the volume settings in browser storage
+ * @function
+ * @param {String} volume
+ */
 export function setVolume(volume) {
-    localStorage.setItem("volume", JSON.stringify(volume));
-}
-
-/* GETS VOLUME SETTINGS FROM BROWSER */
-export function darkMode() {
-    return JSON.parse(localStorage.getItem("darkMode")) || false;
-}
-
-/* SAVES VOLUME SETTINGS IN BROWSER */
-export function setDarkMode(bool) {
-    localStorage.setItem("darkMode", JSON.stringify(bool));
+    if (volume) {
+        localStorage.setItem("volume", JSON.stringify(volume));
+    }
 }
 
 

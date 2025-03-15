@@ -1,4 +1,6 @@
-// loading state
+import { getElementById } from "./helperFunctions";
+
+
 let isLoading = false;
 
 function displayLoader(e) {
@@ -12,8 +14,8 @@ function displayLoader(e) {
 }
 
 function removeLoader() {
-    document.body.removeChild(document.getElementById("loader"))
-    document.body.removeChild(document.getElementById("screenCover"))
+    document.body.removeChild(getElementById("loader"))
+    document.body.removeChild(getElementById("screenCover"))
 
 }
 

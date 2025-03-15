@@ -2,9 +2,10 @@
 import { setCookie, getCookie } from './cookies.js';
 import { setLoading } from './loading.js';
 import { setUser, User } from './state.js';
+import { getElementById, getInputElement } from './helperFunctions.js';
 
-const loginForm = document.getElementById("loginForm");
-const rememberMeBox = document.getElementById("rememberMe");
+const loginForm = getElementById("loginForm");
+const rememberMeBox = getInputElement("rememberMe");
 const apiBase = '/'
 
 document.addEventListener("DOMContentLoaded", rememberMe);
@@ -12,15 +13,15 @@ document.addEventListener("DOMContentLoaded", rememberMe);
 function rememberMe(e) {
     e.preventDefault();
     if (getCookie("rememberMe") === "true") {
-        document.getElementById("username").value = getCookie("username");
-        document.getElementById("password").value = getCookie("password");
+        getInputElement("username").value = getCookie("username");
+        getInputElement("password").value = getCookie("password");
         rememberMeBox.checked = true;
     }
 }
 
 function setRememberMeCookies() {
-    const username = document.getElementById("username").value || "";
-    const password = document.getElementById("password").value || "";
+    const username = getInputElement("username").value;
+    const password = getInputElement("password").value;
     if (rememberMeBox.checked) {
         setCookie("username", username, 5);
         setCookie("password", password, 5);
@@ -38,8 +39,8 @@ loginForm?.addEventListener("submit", (e) => {
 })
 
 async function login() {
-    const username = document.getElementById("username").value || ""
-    const password = document.getElementById("password").value || ""
+    const username = getInputElement("username").value
+    const password = getInputElement("password").value
     try {
         setLoading(true);
 

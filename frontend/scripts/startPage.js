@@ -1,12 +1,13 @@
 import { User, setUser } from './state.js'
+import { getElementById } from './helperFunctions.js'
 
 // Helper function to show/hide an element by removing or adding the 'hidden' class
 function showElement(id) {
-    document.getElementById(id).classList.remove('hidden');
+    getElementById(id).classList.remove('hidden');
 }
 
 function hideElement(id) {
-    document.getElementById(id).classList.add('hidden');
+    getElementById(id).classList.add('hidden');
 }
 
 // Adjust display based on login state
@@ -26,10 +27,11 @@ if (User()) {
     hideElement("profileButton");
 }
 
-const signOutButton = document.getElementById("signOut");
+const signOutButton = getElementById("signOut");
 signOutButton.addEventListener("click", signOut);
 
 function signOut() {
     setUser(null); // Removes user from browser storage
     window.location.reload();
 }
+
