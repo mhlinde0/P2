@@ -14,7 +14,8 @@ const gameBoardWrapper = getElementById("gameBoardWrapper");
 const boardWidth = 10;
 
 /** Board length in squares
- * @type {number} */const boardHeight = 10;
+ * @type {number} */
+const boardHeight = 10;
 /** Represents a ship.* @class */
 class Ship {
     /** constuctor method creates a ship with following properties
