@@ -1,3 +1,13 @@
+/** @module cookies */
+
+
+
+/**
+ * @function
+ * @param {string} name 
+ * @param {any} value 
+ * @param {number} days 
+ */
 export const setCookie = (name, value, days) => {
     const date = new Date();
 
@@ -6,6 +16,11 @@ export const setCookie = (name, value, days) => {
     document.cookie = `${name}=${value}; ${expires}; path=/`;
 };
 
+/**
+ * @function
+ * @param {string} name 
+ * @returns {any} - the cookie value
+*/
 export const getCookie = (name) => {
     return document.cookie
         .split(';')

@@ -1,14 +1,32 @@
+/** @module game */
+
 import { setLoading } from './loading.js';
-import { User, setUser} from './state.js';
+import { User, setUser } from './state.js';
+import { getElementById, querySelectorAll } from './helperFunctions.js';
 
 const apiBase = '/';
 
-const gameBoardWrapper = document.getElementById("gameBoardWrapper");
-// board size in squares
+const gameBoardWrapper = getElementById("gameBoardWrapper");
+
+
+/** Board width in squares
+ * @type {number} */
 const boardWidth = 10;
+
+/** Board length in squares
+ * @type {number} */
 const boardHeight = 10;
-//Creates class for ships and places in array
-class ship {
+
+
+/** Represents a ship.* 
+ * @class */
+class Ship {
+    /** constuctor method creates a ship with following properties
+     * @param {string} name - "destoryer", "submarine", "cruiser", "battliship", "carrier"
+     * @param {number} length - how many squares the ship take up
+     * @param {string} rotation - either "vertical" or "horizontal"
+     * @param {object|null} location - ships placement. Null means 'unplaced';
+     */
     constructor(name, length, rotation, location) {
         this.name = name;
         this.length = length;
@@ -17,43 +35,67 @@ class ship {
     }
 }
 
-const destroyer = new ship("destroyer", 2);
-const submarine = new ship("submarine", 3);
-const cruiser = new ship("cruiser", 3);
-const battleship = new ship("battleship", 4);
-const carrier = new ship("carrier", 5);
+const destroyer = new Ship("destroyer", 2, "vertical", null);
+const submarine = new Ship("submarine", 3, "vertical", null);
+const cruiser = new Ship("cruiser", 3, "vertical", null);
+const battleship = new Ship("battleship", 4, "vertical", null);
+const carrier = new Ship("carrier", 5, "vertical", null);
+
+
+
+/** Array of ship div elements
+ * @type {Array<Ship>} */
 const shipsClass = [destroyer, submarine, cruiser, battleship, carrier];
 
-// Array of ship divs
-const shipsDiv = document.querySelectorAll(".ship");
-// Array of squares that are filled by ships
+/** Array of ship div elements 
+ * @type {Array<HTMLElement>} */
+const shipsDiv = querySelectorAll(".ship");
+
+/** Array of squares that are filled by ships 
+ *  @type {Array<HTMLElement>}  */
 const occupiedSquareArrayLeft = [];
+
+/** Array of squares that are filled by ships 
+ *  @type {Array<HTMLElement>}*/
 const occupiedSquareArrayRight = [];
 
+/** Array of squares that are filled by ships 
+ *  @type {Array<HTMLElement>}  */
 const leftSquareArray = [];
+
+/** Array of squares that are filled by ships 
+ *  @type {Array<HTMLElement>}  */
 const rightSquareArray = [];
 
 let currentHoveredShip = null;
 let turn = 1;
 
-// Creates 2 game boards
+
+
+/** Creates 2 game boards
+ * @function
+ */
 function createBoards() {
     const leftGameBoardWrapper = document.createElement("div");
     leftGameBoardWrapper.classList.add("gameBoard");
-    
-    gameBoardWrapper?.append(leftGameBoardWrapper);
+
+    gameBoardWrapper.append(leftGameBoardWrapper);
     createSquares(leftGameBoardWrapper, "left");
 
     const rightGameBoardWrapper = document.createElement("div");
     rightGameBoardWrapper.classList.add("gameBoard");
 
-    gameBoardWrapper?.append(rightGameBoardWrapper);
+    gameBoardWrapper.append(rightGameBoardWrapper);
     createSquares(rightGameBoardWrapper, "right");
 
 }
 
 
-// Creates 100 squares to fill the game boards and adds drag and drop functionalty to them
+/** Creates 100 squares to fill the game boards and adds drag and drop functionalty to them
+ * @function
+ * @param {HTMLElement} gameboard
+ * @param {"left"|"right"} side
+ */
 function createSquares(gameboard, side) {
     for (let i = 0; i < boardWidth * boardHeight; i++) {
         const square = document.createElement("div");
@@ -69,32 +111,35 @@ function createSquares(gameboard, side) {
         }
 
         square.dataset.side = side;
-        square.dataset.index = i + 1;
+        square.dataset.index = String(i + 1);
 
-        // Tilføjer nødvendige event listeners til alle squares når de bliver lavet
-        square.addEventListener("dragover", (event) => { 
-            event.preventDefault();
+        // Tilføjer nødvendige e listeners til alle squares når de bliver lavet
+        square.addEventListener("dragover", (e) => {
+            e.preventDefault();
         })
 
         square.addEventListener("drop", onShipDrop);
 
-        square.addEventListener("click", fireCannon); 
+        square.addEventListener("click", fireCannon);
 
         // Tilføjer square div til gameboard div
         gameboard.append(square);
     }
 }
 
-function onShipDrop(event) {
-    event.preventDefault();
+/** handles ship drop event
+ * @function
+ */
+function onShipDrop(e) {
+    e.preventDefault();
 
-    const square = event.currentTarget;
+    const square = e.currentTarget;
     const side = square.dataset.side;
-    const shipId = event.dataTransfer.getData("text/plain"); // text/plain fortæller at dataen vi leder efter er ren tekst
-    const draggedShipElement = document.getElementById(shipId);
+    const shipId = e.dataTransfer.getData("text/plain"); // text/plain fortæller at dataen vi leder efter er ren tekst
+    const draggedShipElement = getElementById(shipId);
     let draggedShip = null;
 
-    
+
 
     // finder hvilken class ship vi skal bruge ud fra html elementet
     if (draggedShipElement.id === "destroyerSize2") {
@@ -107,6 +152,10 @@ function onShipDrop(event) {
         draggedShip = battleship;
     } else if (draggedShipElement.id === "carrierSize5") {
         draggedShip = carrier;
+    }
+
+    if (!draggedShip) {
+        throw new Error("Couldn't handle ship draggin properly");
     }
 
     const droppedSquare = parseInt(square.dataset.index, 10);
@@ -146,23 +195,26 @@ function onShipDrop(event) {
         return;
     }
 
-    draggedShip.rotation = draggedShipRotation;
+    draggedShip.rotation = String(draggedShipRotation);
     draggedShip.location = {
-        startSquare: droppedSquareuare,
+        startSquare: droppedSquare,
         coveredSquares: coveredSquares
     };
 
     draggedShipElement.style.display = "none"; // Gør html elementet usynligt når skibet bliver placeret
 
     assignOccupiedSquares(coveredSquares, side);
-    if (occupiedSquareArrayLeft.length === 17){
+    if (occupiedSquareArrayLeft.length === 17) {
         battleBegun = 1;
         removeButtonEventListener();
     }
     console.log(occupiedSquareArrayLeft)
 }
 
-// Tjekker om skibet er ude for spillebrættet
+
+/** Checks if the ship is out of the board bounds
+ * @function
+ */
 function checkForOutOfBounds(startRow, startColumn, shipLength, rotation) {
     if (rotation % 180 === 0) { // Hvis lodret
         return (startRow + shipLength > boardHeight);
@@ -171,7 +223,10 @@ function checkForOutOfBounds(startRow, startColumn, shipLength, rotation) {
     }
 }
 
-// Tjekker hvilken side spilleren forsøger at placere skibet
+
+/** Checks what board the player is trying to place ships on
+ * @function
+ */
 function checkForBoardSide(side) {
     if (side === "right") {
         return true;
@@ -179,12 +234,16 @@ function checkForBoardSide(side) {
     return false;
 }
 
-// Tjekker om der allerede befinder sig et skib på de ønskede felter
+/** checks if there already are any ships on the squares
+ * @function
+ * @param {any} coveredSquares
+ * @param {"left"|"right"} side - side is either "left" or right
+ */
 function checkForOverlap(coveredSquares, side) {
     const occupiedArray = side === "left" ? occupiedSquareArrayLeft : occupiedSquareArrayRight;
-    
+
     for (let i = 0; i < coveredSquares.length; i++) {
-        const squareElement = document.getElementById(side + "square" + (coveredSquares[i]));
+        const squareElement = getElementById(side + "square" + (coveredSquares[i]));
         if (occupiedArray.includes(squareElement)) {
             return true;
         }
@@ -192,10 +251,12 @@ function checkForOverlap(coveredSquares, side) {
     return false;
 }
 
-// Tilføjer elementet occupiedSquare til de squares med skibe på
+/** Tilføjer elementet occupiedSquare til de squares med skibe på
+ * @function
+ */
 function assignOccupiedSquares(coveredSquares, side) {
     coveredSquares.forEach(index => {
-        const squareElement = document.getElementById(side + "square" + (index));
+        const squareElement = getElementById(side + "square" + (index));
         if (squareElement) {
             squareElement.classList.add("occupiedSquare");
             if (side === "left") {
@@ -207,49 +268,52 @@ function assignOccupiedSquares(coveredSquares, side) {
     });
 }
 
-
-
 shipsDiv.forEach(ship => {
-    ship.addEventListener("dragstart", (event) => {
+    ship.addEventListener("dragstart", (e) => {
         let cloneImageShip = ship.cloneNode(true);
+        if (cloneImageShip instanceof HTMLElement) {
 
-        // Sætter skibet rotation (transform) til klonens
-        const style = getComputedStyle(ship);
-        cloneImageShip.style.transform = style.transform
+            // Sætter skibet rotation (transform) til klonens
+            const style = getComputedStyle(ship);
+            cloneImageShip.style.transform = style.transform
 
-        // Placerer klonen så den ikke er synlig
-        cloneImageShip.style.position = "absolute";
-        cloneImageShip.style.top = "-2000px";
-        cloneImageShip.style.left = "-2000px";
+            // Placerer klonen så den ikke er synlig
 
-        document.body.appendChild(cloneImageShip);
+            cloneImageShip.style.position = "absolute";
+            cloneImageShip.style.top = "-2000px";
+            cloneImageShip.style.left = "-2000px";
 
-        // Sætter klonen til at være drag image
-        event.dataTransfer.setDragImage(cloneImageShip, 0, 0);
-        event.dataTransfer.setData("text/plain", ship.id);
+            document.body.appendChild(cloneImageShip);
 
-        // Fjerne klonen efter event queuen (timeren er sat til 0 millisekunder)
-        setTimeout(() => {
-            document.body.removeChild(cloneImageShip);
-        }, 0);
+            // Sætter klonen til at være drag image
+            if (e.dataTransfer !== null) {
+                e.dataTransfer.setDragImage(cloneImageShip, 0, 0);
+                e.dataTransfer.setData("text/plain", ship.id);
+            }
+            // Fjerne klonen efter e queuen (timeren er sat til 0 millisekunder)
+            setTimeout(() => {
+                document.body.removeChild(cloneImageShip);
+            }, 0);
+        }
+
     })
 })
 
 
 // Select a ship when hovered
 shipsDiv.forEach((ship) => {
-    ship.addEventListener("mouseover", (event) => {
+    ship.addEventListener("mouseover", (e) => {
         currentHoveredShip = ship;
     });
 
-    ship.addEventListener("mouseout", (event) => {
+    ship.addEventListener("mouseout", (e) => {
         currentHoveredShip = null;
     })
 });
 
 // Rotate ship when pressing r
-document.addEventListener("keydown", (event) => {
-    if (event.key.toLowerCase() === "r" && currentHoveredShip) {
+document.addEventListener("keydown", (e) => {
+    if (e.key.toLowerCase() === "r" && currentHoveredShip) {
         console.log(currentHoveredShip.getAttribute('id'))
         let currentRotation = parseInt(currentHoveredShip.getAttribute("data-rotation") || "0", 10);
         let newRotation = (currentRotation + 90) % 360;
@@ -258,15 +322,18 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
+/** 
+ * @function
+ */
 function resetShipPlacement() {
     // Finder alle left elementer og fjerner occupiedSquare classen hvis de har den
-    const squares = document.querySelectorAll(".left");
-    squares.forEach(square => square.classList.remove("occupiedSquare"));
+    const squares = querySelectorAll(".left")
+    squares.forEach((square) => square.classList.remove("occupiedSquare"));
 
     occupiedSquareArrayLeft.length = 0;
 
     // Finder elementer med class "ship" og gør dem synlige igen og fjerne rotation)
-    const ships = document.getElementsByClassName("ship");
+    const ships = querySelectorAll(".ship");
     for (let i = 0; i < ships.length; i++) {
         ships[i].style.display = "block";
         ships[i].style.transform = "rotate(0deg)";
@@ -274,11 +341,14 @@ function resetShipPlacement() {
     }
 }
 
+/** skriv
+ * @function
+ */
 function randomizeShipPlacement(boardSide) {
     resetShipPlacement();
 
     // Går over arrayet af ship classes for at placere alle skibene
-    shipsClass.forEach (ship => {
+    shipsClass.forEach(ship => {
         let placed = false;
 
         while (!placed) {
@@ -309,32 +379,32 @@ function randomizeShipPlacement(boardSide) {
 
             assignOccupiedSquares(coveredSquares, boardSide);
 
-            ship.rotation = rotation;
+            ship.rotation = String(rotation);
             ship.location = {
                 startSquare: droppedSquare,
                 coveredSquares: coveredSquares
             };
 
             if (boardSide === "left") {
-            // Finder skibets id og gemmer elementet når placeret
-            const shipElement = document.getElementById(ship.name + "Size" + ship.length);
-            shipElement.style.display = "none";
+                // Finder skibets id og gemmer elementet når placeret
+                const shipElement = getElementById(ship.name + "Size" + ship.length);
+                shipElement.style.display = "none";
             }
-            
+
             placed = true;
         }
     })
     console.log(boardSide === "left" ? occupiedSquareArrayLeft : occupiedSquareArrayRight);
-    if (boardSide === "left"){
+    if (boardSide === "left") {
         battleBegun = 1;
         removeButtonEventListener();
     }
 }
 
 
-function fireCannon(event) {
-    if (battleBegun === 1){
-        const firedAtSquare = event.currentTarget
+function fireCannon(e) {
+    if (battleBegun === 1) {
+        const firedAtSquare = e.currentTarget
         if (leftSquareArray.includes(firedAtSquare)) {
             alert("Cannot fire at your own board");
             return;
@@ -386,7 +456,7 @@ async function sendShipDataToBackend(ships) {
     setLoading(false)
 
 }
-    
+
 
 
 function createTargetList() {
@@ -399,9 +469,9 @@ function createTargetList() {
 }
 
 function botFireCannon() {
-    
-    const firedAtSquare = document.getElementById(`leftsquare${getNextRandomTarget()}`);
-    
+
+    const firedAtSquare = getElementById(`leftsquare${getNextRandomTarget()}`);
+
     if (rightSquareArray.includes(firedAtSquare)) {
         alert("bot should not fire at its own board");
         return;
@@ -411,45 +481,45 @@ function botFireCannon() {
         firedAtSquare.classList.add("hitSquare");
         console.log("Hit shot");
         enemyHits += 1;
-    } 
+    }
     else {
         firedAtSquare?.classList.add("missedSquare");
         console.log("Missed shot");
     }
     turn = 1;
     gameLoop();
-    console.log("Bot fired at:",firedAtSquare?.id);
+    console.log("Bot fired at:", firedAtSquare?.id);
 }
 
-function getNextRandomTarget() {  
+function getNextRandomTarget() {
     const randomIndex = Math.floor(Math.random() * targetList.length);
     const randomTarget = targetList[randomIndex];
     targetList.splice(randomIndex, 1);
-    
+
     return randomTarget;
 }
 
 function checkWinCondition() {
-    if(enemyHits === 17){
+    if (enemyHits === 17) {
         return 1;
     }
-    else if(ownHits === 17){
+    else if (ownHits === 17) {
         return 2;
     }
 
 }
 
-if(turn == 0){
+if (turn == 0) {
     console.log("test")
     botFireCannon();
     turn = 1;
 }
 
 function gameLoop() {
-    if (checkWinCondition() === 1){
+    if (checkWinCondition() === 1) {
         alert("The bot won!");
     }
-    else if (checkWinCondition() === 2){
+    else if (checkWinCondition() === 2) {
         alert("You have won!");
     }
     if (turn === 0) {
@@ -460,21 +530,21 @@ function gameLoop() {
     }
 }
 
-function initializeBotGame(){
+function initializeBotGame() {
     createBoards();
     randomizeShipPlacement("right");
     gameLoop();
 }
 
-function removeButtonEventListener(){
-    document.getElementById("resetButton").removeEventListener("click", resetShipPlacement);
-    document.getElementById("randomizeButton").removeEventListener("click", () => randomizeShipPlacement("left"));
+function removeButtonEventListener() {
+    getElementById("resetButton").removeEventListener("click", resetShipPlacement);
+    getElementById("randomizeButton").removeEventListener("click", () => randomizeShipPlacement("left"));
 }
 
 
 // Event listeners der kalder deres respektive funktioner
-document.getElementById("resetButton")?.addEventListener("click", resetShipPlacement);
-document.getElementById("randomizeButton")?.addEventListener("click", () => randomizeShipPlacement("left"));
+getElementById("resetButton")?.addEventListener("click", resetShipPlacement);
+getElementById("randomizeButton")?.addEventListener("click", () => randomizeShipPlacement("left"));
 
 let targetList = createTargetList()
 let enemyHits = 0;
