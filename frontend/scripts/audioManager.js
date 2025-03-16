@@ -1,3 +1,6 @@
+/** @module audioManager */
+
+
 var click = new Howl({
     src: ["../resources/sounds/mouse_click.wav"],
     volume: 0.1,

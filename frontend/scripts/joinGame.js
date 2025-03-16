@@ -1,11 +1,13 @@
+/** @module joinGame */
+
 import { User } from "./state";
+import { getElementById, getInputElement } from "./helperFunctions.js";
 
 if (!User()) {
     window.location.href = "/login"; // 
 }
 
-const form = document.querySelector('form');
-
+const form = getElementById('joinGameForm');
 
 form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -13,7 +15,7 @@ form.addEventListener("submit", (e) => {
 })
 
 function findGame() {
-    const battleNumber = document.querySelector('input').value;
+    const battleNumber = getInputElement("battleNumber").value;
 
     if (battleNumber.length === 6) {
         window.location.replace(`/Game:${battleNumber}`);
