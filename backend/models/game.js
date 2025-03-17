@@ -1,13 +1,20 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
+const ShipSchema = new Schema({
+  name: { type: String, required: true },       // e.g., "destroyer", "carrier"
+  length: { type: Number, required: true },
+  rotation: { type: String, required: true },     // e.g., "vertical", "90", "horizontal"
+  location: {
+    startSquare: { type: Number },                // The starting square number
+    coveredSquares: { type: [Number] }              // An array of square numbers occupied by the ship
+  }
+}, { _id: false });
+
 // Schema for a player's board (ship placements and shots fired)
 const BoardSchema = new Schema({
-  ships: [{
-    type: { type: String, required: true },         // e.g., "destroyer", "carrier"
-    positions: { type: [[Number]], required: true }   // e.g., [[0,0], [0,1]]
-  }],
-  shots: { type: [[Number]], default: [] }             // e.g., [[1,1], [2,2]]
+  ships: [ShipSchema],
+  shots: { type: [Number], default: [] }  // Each shot represented as a number (e.g., 45)
 }, { _id: false });
 
 // Schema for a player in the game
