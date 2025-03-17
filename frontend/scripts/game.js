@@ -67,6 +67,7 @@ const leftSquareArray = [];
  *  @type {Array<HTMLElement>}  */
 const rightSquareArray = [];
 
+
 let currentHoveredShip = null;
 let turn = 1;
 
@@ -401,6 +402,62 @@ function randomizeShipPlacement(boardSide) {
     }
 }
 
+/**
+ * Update the game state on the backend with the player's board and ready status.
+ *
+ * @param {string} gameId - The game's ID.
+ * @param {string} userId - The current user's ID.
+ * @param {object} board - The board object following the new schema (e.g., { ships: [...], shots: [...] }).
+ * @param {boolean} ready - The readiness flag.
+ * @returns {Promise<object>} - The updated game data from the backend.
+ */
+export async function updateGameState(gameId, userId, board, ready) {
+    try {
+      const response = await fetch(`/game/${gameId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, board, ready })
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const updatedGame = await response.json();
+      console.log("Game updated successfully:", updatedGame);
+      return updatedGame;
+    } catch (error) {
+      console.error("Error updating game:", error);
+      throw error;
+    }
+  }
+
+  const readyButton = document.getElementById("readyButton");
+readyButton?.addEventListener("click", () => {
+
+    const gameId = sessionStorage.getItem("gameId");
+  if (!gameId) {
+    console.error("Game ID not found in session storage");
+    return;
+
+  const board = {
+    ships: shipsClass.map(ship => ({
+      name: ship.name,
+      length: ship.length,
+      rotation: ship.rotation,
+      location: ship.location
+    })),
+    shots: []  // Or include any shots data if applicable
+  };
+
+  updateGameState(gameId, User()._id, board, true)
+    .then(updatedGame => {
+      // Optionally update the UI with the updated game state
+      console.log("Game updated:", updatedGame);
+    })
+    .catch(err => console.error(err));
+});
+
 
 function fireCannon(e) {
     if (battleBegun === 1) {
@@ -424,39 +481,6 @@ function fireCannon(e) {
         gameLoop();
     }
 }
-
-
-async function sendShipDataToBackend(ships) {
-    if (!User()) {
-        console.error("UserID not found");
-        return;
-    }
-
-    const payload = {
-        userId: User()._id,
-        ships: ships
-    };
-
-    try {
-        setLoading(true)
-        const response = await fetch(apiBase + "getShips", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-            throw new Error("Error: ${response.status}");
-        }
-        const data = await response.json();
-        console.log("Server response:", data);
-    } catch (error) {
-        console.error("Error sending ship data:", error);
-    }
-    setLoading(false)
-
-}
-
 
 
 function createTargetList() {
