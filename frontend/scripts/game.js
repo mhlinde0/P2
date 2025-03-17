@@ -449,7 +449,7 @@ readyButton?.addEventListener("click", () => {
       rotation: ship.rotation,
       location: ship.location
     })),
-    shots: []  // Or include any shots data if applicable
+    shots: firedShots []  // Or include any shots data if applicable
   };
 
   updateGameState(gameId, User()._id, board, true)
