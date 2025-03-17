@@ -3,20 +3,20 @@ import Game from "../models/game.js";
 // Create a new game (lobby creation)
 exports.createGame = async (req, res) => {
   try {
-    const { lobbyCode, userId } = req.body;
-    if (!lobbyCode || !userId) {
-      return res.status(400).json({ error: 'lobbyCode and userId are required' });
+    const { gameCode, userId } = req.body;
+    if (!gameCode || !userId) {
+      return res.status(400).json({ error: 'gameCode and userId are required' });
     }
 
     // Ensure the lobby code is unique
-    const existingGame = await Game.findOne({ lobbyCode });
+    const existingGame = await Game.findOne({ gameCode });
     if (existingGame) {
-      return res.status(400).json({ error: 'Lobby code already in use' });
+      return res.status(400).json({ error: 'game code already in use' });
     }
 
     // Create a game document with the creator as the only player initially
     const newGame = new Game({
-      lobbyCode,
+      gameCode,
       players: [{
         userId,
         board: { ships: [], shots: [] },
@@ -39,12 +39,12 @@ exports.createGame = async (req, res) => {
 // Join a game using a lobby code
 exports.joinGame = async (req, res) => {
   try {
-    const { lobbyCode, userId } = req.body;
-    if (!lobbyCode || !userId) {
-      return res.status(400).json({ error: 'lobbyCode and userId are required' });
+    const { gameCode, userId } = req.body;
+    if (!gameCode || !userId) {
+      return res.status(400).json({ error: 'gameCode and userId are required' });
     }
 
-    const game = await Game.findOne({ lobbyCode });
+    const game = await Game.findOne({ gameCode });
     if (!game) {
       return res.status(404).json({ error: 'Game not found' });
     }
