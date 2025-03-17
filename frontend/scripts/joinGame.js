@@ -1,13 +1,15 @@
 /** @module joinGame */
-import { User } from "./state";
+import { User } from "./state.js";
 import { getElementById, getInputElement } from "./helperFunctions.js";
 
+/*
 if (!User()) {
     window.location.href = "/login";
 }
+    */
 
 const form = getElementById('joinGameForm');
-const apiBase = "/api/";
+const apiBase = "/";
 
 
 
@@ -16,50 +18,48 @@ const apiBase = "/api/";
  * @param {string} userId - The user's ID.
  * @param {string} gameCode - The game code entered by the user.
  */
-async function joinGameRequest(userId, gameCode) {
-    
+async function joinGame(userId, gameCode) {
     try {
-        const response = await fetch(apiBase + "game/join", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ userId, gameCode })
-        });
-
-        if (!response.ok) {
-            throw new Error(`Server error: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log("Joined game successfully:", data);
-
-        // kan vi lave en Game() property i "state.js", som holder på gameState?
-        // Save the gameId in session storage
-        sessionStorage.setItem('gameId', data.gameId);
-        window.location.href = '/game';
-
-        return data;
-
+      const response = await fetch(apiBase + "game/join", {  
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId, gameCode })
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log("Joined game successfully:", data);
+  
+      // Save the gameId in session storage so the /game page can access it
+      sessionStorage.setItem('gameId', data.gameId);
+      window.location.href = '/game';
+  
+      return data.gameId;
     } catch (error) {
-        console.error("Error joining game:", error);
+      console.error("Error joining game:", error);
     }
-}
-
-
-// hvorfor er den her async, når der ikke er nogen try catch?
-async function joinGame(event) {
-    event.preventDefault();
-
-    const userId = User()._id; // Retrieve current user's ID
-    const lobbyCodeInput = getElementById("gameCode");
-    // const lobbyCode = lobbyCodeInput.value.trim();
-
-    /* Hvor kommer gameCode fra?
-    if (!gameCode) {
-        alert("Please enter a lobby code.");
-        return;
+  }
+  
+  document.addEventListener("DOMContentLoaded", () => {
+    const joinGameButton = getElementById("joinGameButton");
+    const gameCodeInput = getInputElement("gameCode");
+  
+    if (joinGameButton) {
+      joinGameButton.addEventListener("click", () => {
+        console.log("Join game button clicked");
+        const userId = User()._id;
+        const gameCode = gameCodeInput.value.trim();
+        console.log(gameCode);
+        if (!gameCode) {
+          alert("Please enter a lobby code.");
+          return;
+        }
+        joinGame(userId, gameCode);
+      });
     }
-    */
-};
-//await joinGame(userId, gameCode);
+  });

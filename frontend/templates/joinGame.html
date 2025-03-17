@@ -14,12 +14,11 @@
 
 
 
-        <form id="joinGameForm" onsubmit="joinGame()">
-            <input id="gameCode" oninput="this.value = this.value.toUpperCase()" type="text" minlength="3" maxlength="10" 
-               placeholder="Game code" autofocus required> <br>
+        <div id="joinGameForm">
+            <input id="gameCode"  type="text" placeholder="Game code" autofocus required> <br>
 
-            <input type="submit" value="Join Game"> 
-        </form>
+            <input type="submit" id="joinGameButton" value="Join Game" required> 
+        </div>
 
 
         <script type="module" src="../scripts/audioManager.js"></script>

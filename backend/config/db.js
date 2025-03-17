@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 
 //--------environment variable------//
 dotenv.config();
+console.log("ATLAS_URI:", process.env.ATLAS_URI); // This should output your connection string
 //---------------------------------//
 
 

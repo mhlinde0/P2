@@ -1,58 +1,66 @@
 /** @module createGame */
+
 import { getElementById, getInputElement } from "./helperFunctions.js";
 import { User, setUser } from './state.js';
 
 const apiBase = '/';
 
+/*
+import { User  } from "./state.js";
 
 if (!User()) {
     window.location.href = "/login"; // go to front page
 }
+*/
 
-/**
- * 
- * @param {string} userId 
- * @param {string} gameCode 
- */
+
 async function createGame(userId, gameCode) {
     try {
-        const response = await fetch(apiBase + "game/create", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ userId, lobbyCode: gameCode })
-        });
+      const response = await fetch(apiBase + "game/create", {  
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId, gameCode })
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log("Game ID:", data.gameId);
+      getElementById("gameId").textContent = data.gameId;
+      
 
-        if (!response.ok) {
-            throw new Error(`Server error: ${response.status}`);
-        }
+      // Save the gameId in session storage so the /game page can access it
+      sessionStorage.setItem('gameId', data.gameId);
 
-        const data = await response.json();
-        console.log("Game ID:", data.gameId);
-        getElementById("gameId").textContent = data.gameId;
-        return data.gameId;
+      window.location.href = '/game';
+
+      return data.gameId;
     } catch (error) {
-        console.error("Error creating game:", error);
+      console.error("Error creating game:", error);
     }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
+  }
+  
+  document.addEventListener("DOMContentLoaded", () => {
     const createGameButton = getElementById("createGameButton");
-    const gameCodeInput = getInputElement("gameCodeInput");
+    const gameCodeInput = getInputElement("gameCodeInput") ;
 
     if (createGameButton) {
-        createGameButton.addEventListener("click", () => {
-            const userId = User()._id;
-            const gameCode = gameCodeInput.value.trim();
-            if (!gameCode) {
-                alert("Please enter a game code.");
-                return;
-            }
-            createGame(userId, gameCode);
-        });
+      createGameButton.addEventListener("click", () => {
+        console.log("Create game button clicked");
+        const userId = User()._id;
+        const gameCode = gameCodeInput.value.trim();
+        console.log(gameCode);
+        if (!gameCode) {
+          alert("Please enter a game code.");
+          return;
+        }
+        createGame(userId, gameCode);
+      });
     }
-});
-
-
-export { createGame };
+  });
+  
+  export { createGame };
