@@ -1,11 +1,11 @@
 /** @module createGame */
-
+/*
 import { User  } from "./state.js";
 
 if (!User()) {
     window.location.href = "/login"; // go to front page
 }
-
+*/
 document.addEventListener("DOMContentLoaded", () => {
 
 })
