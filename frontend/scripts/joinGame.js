@@ -46,16 +46,16 @@ async function joinGameRequest(userId, gameCode) {
   }
 
   window.joinGame = async function joinGame(event) {
-    event.preventDefault(); // Prevent the form from reloading the page
+    event.preventDefault(); 
   
     const userId = User()._id; // Retrieve current user's ID
     const lobbyCodeInput = getElementById("gameCode");
     const lobbyCode = lobbyCodeInput.value.trim();
   
-    if (!lobbyCode) {
+    if (!gameCode) {
       alert("Please enter a lobby code.");
       return;
     }
   
-    await joinGame(userId, lobbyCode);
+    await joinGame(userId, gameCode);
   };
