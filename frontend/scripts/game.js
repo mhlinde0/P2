@@ -68,6 +68,8 @@ const leftSquareArray = [];
 const rightSquareArray = [];
 
 
+let firedShots = [];
+
 let currentHoveredShip = null;
 let turn = 1;
 
@@ -461,26 +463,32 @@ readyButton?.addEventListener("click", () => {
 
 function fireCannon(e) {
     if (battleBegun === 1) {
-        const firedAtSquare = e.currentTarget
-        if (leftSquareArray.includes(firedAtSquare)) {
-            alert("Cannot fire at your own board");
-            return;
-        } else if (occupiedSquareArrayRight.includes(firedAtSquare)) {
-            firedAtSquare.classList.remove("occupiedSquare");
-            firedAtSquare.classList.add("hitSquare");
-            console.log("Hit shot");
-            ownHits += 1;
-        } else {
-            firedAtSquare.classList.add("missedSquare");
-
-            console.log("Missed shot");
-        }
-        turn = 0;
-        console.log(turn)
-        console.log(firedAtSquare.id);
-        gameLoop();
+      const firedAtSquare = e.currentTarget;
+      const squareNumber = parseInt(firedAtSquare.dataset.index, 10); // Get the square number
+      
+      if (!firedShots.includes(squareNumber)) {
+        firedShots.push(squareNumber);
+      }
+      
+      if (leftSquareArray.includes(firedAtSquare)) {
+        alert("Cannot fire at your own board");
+        return;
+      } else if (occupiedSquareArrayRight.includes(firedAtSquare)) {
+        firedAtSquare.classList.remove("occupiedSquare");
+        firedAtSquare.classList.add("hitSquare");
+        console.log("Hit shot");
+        ownHits += 1;
+      } else {
+        firedAtSquare.classList.add("missedSquare");
+        console.log("Missed shot");
+      }
+      
+      turn = 0;
+      console.log(turn);
+      console.log(firedAtSquare.id);
+      gameLoop();
     }
-}
+  }
 
 
 function createTargetList() {
