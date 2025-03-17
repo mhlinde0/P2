@@ -1,15 +1,15 @@
 import express from "express";
-import gameController from "../controllers/gameController";
+import { createGame, joinGame, updateGame} from "../controllers/gameController.js";
 
 const router = express.Router();
 
 // Route to create a new game (lobby creation)
-router.post('/create', gameController.createGame);
+router.post('/create', createGame);
 
 // Route for a player to join a game using the lobby code
-router.put('/join', gameController.joinGame);
+router.put('/join', joinGame);
 
 // Route to update game details (e.g., ship placements and readiness)
-router.put('/:id', gameController.updateGame);
+router.put('/:id', updateGame);
 
 export default router;

@@ -1,7 +1,13 @@
 import Game from "../models/game.js";
 
-// Create a new game (lobby creation)
-exports.createGame = async (req, res) => {
+
+/**
+ * // Create a new game (lobby creation)
+ * @param {any} req 
+ * @param {any} res 
+ * @returns 
+ */
+export const createGame = async (req, res) => {
   try {
     const { gameCode, userId } = req.body;
     if (!gameCode || !userId) {
@@ -33,11 +39,13 @@ exports.createGame = async (req, res) => {
   }
 };
 
-
-
-
-// Join a game using a lobby code
-exports.joinGame = async (req, res) => {
+/**
+ * Join a game using a lobby code
+ * @param {any} req 
+ * @param {any} res 
+ * @returns 
+ */
+export const joinGame = async (req, res) => {
   try {
     const { gameCode, userId } = req.body;
     if (!gameCode || !userId) {
@@ -76,9 +84,13 @@ exports.joinGame = async (req, res) => {
 
 
 
-
-// Update game details (e.g., updating ship placements and setting "ready")
-exports.updateGame = async (req, res) => {
+/**
+ * Update game details (e.g., updating ship placements and setting "ready")
+ * @param {any} req 
+ * @param {any} res 
+ * @returns 
+ */
+export const updateGame = async (req, res) => {
   try {
     const gameId = req.params.id;
     const { userId, board, ready } = req.body;

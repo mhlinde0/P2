@@ -1,10 +1,9 @@
 /** @module joinGame */
-
 import { User } from "./state";
 import { getElementById, getInputElement } from "./helperFunctions.js";
 
 if (!User()) {
-    window.location.href = "/login"; // 
+    window.location.href = "/login";
 }
 
 const form = getElementById('joinGameForm');
@@ -17,45 +16,50 @@ const apiBase = "/api/";
  * @param {string} userId - The user's ID.
  * @param {string} gameCode - The game code entered by the user.
  */
-
 async function joinGameRequest(userId, gameCode) {
+    
     try {
-      const response = await fetch(apiBase + "game/join", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ userId, gameCode })
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Server error: ${response.status}`);
-      }
-  
-      const data = await response.json();
-      console.log("Joined game successfully:", data);
+        const response = await fetch(apiBase + "game/join", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ userId, gameCode })
+        });
 
-      // Save the gameId in session storage
-      sessionStorage.setItem('gameId', data.gameId);
-      window.location.href = '/game';
-  
-      return data;
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log("Joined game successfully:", data);
+
+        // kan vi lave en Game() property i "state.js", som holder på gameState?
+        // Save the gameId in session storage
+        sessionStorage.setItem('gameId', data.gameId);
+        window.location.href = '/game';
+
+        return data;
+
     } catch (error) {
-      console.error("Error joining game:", error);
+        console.error("Error joining game:", error);
     }
-  }
+}
 
-  window.joinGame = async function joinGame(event) {
-    event.preventDefault(); 
-  
+
+// hvorfor er den her async, når der ikke er nogen try catch?
+async function joinGame(event) {
+    event.preventDefault();
+
     const userId = User()._id; // Retrieve current user's ID
     const lobbyCodeInput = getElementById("gameCode");
-    const lobbyCode = lobbyCodeInput.value.trim();
-  
+    // const lobbyCode = lobbyCodeInput.value.trim();
+
+    /* Hvor kommer gameCode fra?
     if (!gameCode) {
-      alert("Please enter a lobby code.");
-      return;
+        alert("Please enter a lobby code.");
+        return;
     }
-  
-    await joinGame(userId, gameCode);
-  };
+    */
+};
+//await joinGame(userId, gameCode);
