@@ -7,7 +7,7 @@
     <title>Battleships</title>
     <link rel="stylesheet" href="../styles/game.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js" defer></script> <!--Howler library for sounds-->
-
+    <link rel="stylesheet" href="../styles/banner.css">
 </head>
 
 <body>
@@ -23,17 +23,25 @@
             <div id="destroyerSize2" class="ship" draggable="true"></div>
         </div>
         <div class="buttonWrapper">
-            <div id="randomizeWrapper">
+            <div id="gameButtonWrapper">
                 <input id="randomizeButton" type="button" value="Randomize">
             </div>
-            <div id="randomizeWrapper">
+            <div id="gameButtonWrapper">
                 <input id="resetButton" type="button" value="Reset">
             </div>
         </div>
     </div> 
 
+    <div id="banner" class="banner">
+        <div class="bannerWrapper">
+            <h2>Awaiting Opponent</h2>
+            <input id="cancelButton" type="button" value="Cancel">
+        </div>
+    </div>
+
     <script type="module" src="../scripts/audioManager.js"></script>
     <script type="module" src="../scripts/game.js"></script>
+    <script type="module" src="../scripts/banner.js"></script>
     </div>
 </body>
 

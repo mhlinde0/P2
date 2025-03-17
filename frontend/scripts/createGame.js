@@ -5,14 +5,16 @@ import { User, setUser } from './state.js';
 
 const apiBase = '/';
 
-/*
+
 import { User  } from "./state.js";
 
 if (!User()) {
     window.location.href = "/login"; // go to front page
 }
-*/
 
+
+
+document.addEventListener("DOMContentLoaded", () => {
 
 async function createGame(userId, gameCode) {
     try {
