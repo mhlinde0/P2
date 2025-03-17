@@ -1,46 +1,59 @@
 /** @module createGame */
-/*
+
+import { getElementById } from "./helperFunctions.js";
+import { User, setUser } from './state.js';
+
+const apiBase = '/';
+
+
 import { User  } from "./state.js";
 
 if (!User()) {
     window.location.href = "/login"; // go to front page
 }
-*/
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
 
-})
-
-async function createGame() {
+async function createGame(userId, gameCode) {
     try {
-        const battleNumber = generateBattleNumber();
-
-        // funktionskald til backend om at generere game
-        
-
-        // hvis game er genereret i backend:
-
-    } catch (err) {
-        console.log(err)
-
+      const response = await fetch(apiBase + "game/create", {  
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId, lobbyCode: gameCode })
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log("Game ID:", data.gameId);
+      document.getElementById("gameId").textContent = data.gameId;
+      return data.gameId;
+    } catch (error) {
+      console.error("Error creating game:", error);
     }
-}
-
-// Generates random 6 character ID
-function generateBattleNumber() {
-    let battleNumber = ""
-
-    for (let i = 0; i < 6; i++) {
-        if (Math.random() < 0.5) {
-            const randomLetterCode = Math.floor(Math.random() * 25) + 65;
-            battleNumber += String.fromCharCode(randomLetterCode)
-        } else {
-            battleNumber += String(Math.floor(Math.random() * 9))
+  }
+  
+  document.addEventListener("DOMContentLoaded", () => {
+    const createGameButton = getElementById("createGameButton");
+    const gameCodeInput = getElementById("gameCodeInput");
+  
+    if (createGameButton) {
+      createGameButton.addEventListener("click", () => {
+        const userId = User()._id;
+        const gameCode = gameCodeInput.value.trim();
+        if (!gameCode) {
+          alert("Please enter a game code.");
+          return;
         }
+        createGame(userId, gameCode);
+      });
     }
-    return battleNumber;
-}
-
-
-export { generateBattleNumber }
-
-
+  });
+  
+  export { createGame };
