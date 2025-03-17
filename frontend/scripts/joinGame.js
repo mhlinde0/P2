@@ -25,7 +25,7 @@ async function joinGameRequest(userId, gameCode) {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ userId, gameCode })
+        bbody: JSON.stringify({ userId, lobbyCode: gameCode })
       });
   
       if (!response.ok) {
@@ -34,6 +34,10 @@ async function joinGameRequest(userId, gameCode) {
   
       const data = await response.json();
       console.log("Joined game successfully:", data);
+
+      // Save the gameId in session storage
+      sessionStorage.setItem('gameId', data.gameId);
+      window.location.href = '/game';
   
       return data;
     } catch (error) {

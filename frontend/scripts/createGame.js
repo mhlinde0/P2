@@ -21,7 +21,7 @@ async function createGame(userId, gameCode) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ userId }) 
+        body: JSON.stringify({ userId, lobbyCode: gameCode })
       });
   
       if (!response.ok) {
@@ -30,25 +30,28 @@ async function createGame(userId, gameCode) {
   
       const data = await response.json();
       console.log("Game ID:", data.gameId);
-  
       document.getElementById("gameId").textContent = data.gameId;
-  
       return data.gameId;
     } catch (error) {
       console.error("Error creating game:", error);
     }
   }
-
+  
   document.addEventListener("DOMContentLoaded", () => {
-    const createGameButton = document.getElementById("createGameButton");
+    const createGameButton = getElementById("createGameButton");
+    const gameCodeInput = getElementById("gameCodeInput");
+  
     if (createGameButton) {
       createGameButton.addEventListener("click", () => {
         const userId = User()._id;
-        const gameCode = test123;
+        const gameCode = gameCodeInput.value.trim();
+        if (!gameCode) {
+          alert("Please enter a game code.");
+          return;
+        }
         createGame(userId, gameCode);
       });
     }
   });
-
-
-export { generateBattleNumber }
+  
+  export { createGame };
