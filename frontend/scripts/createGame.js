@@ -1,6 +1,7 @@
 /** @module createGame */
 
 import { getElementById } from "./helperFunctions.js";
+import { User, setUser } from './state.js';
 
 /*
 import { User  } from "./state.js";
@@ -15,7 +16,7 @@ const apiBase = '/';
 
 async function createGame(userId, gameCode) {
     try {
-      const response = await fetch(apiBase + "game/createGame", {  
+      const response = await fetch(apiBase + "game/create", {  
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
