@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 const ShipSchema = new Schema({
   name: { type: String, required: true },       // e.g., "destroyer", "carrier"
@@ -26,7 +26,7 @@ const PlayerSchema = new Schema({
 
 // Main game schema
 const GameSchema = new Schema({
-  lobbyCode: { type: String, required: true, unique: true },
+  gameCode: { type: String, required: true, unique: true },
   players: {
     type: [PlayerSchema],
     required: true,
@@ -42,6 +42,6 @@ const GameSchema = new Schema({
   currentTurn: { type: Schema.Types.ObjectId, ref: 'User' } // Set once both players are ready
 }, { timestamps: true });
 
-module.exports = mongoose.model('Game', GameSchema);
+const Game = mongoose.model('Game', GameSchema);
 
 export default Game;

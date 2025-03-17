@@ -441,7 +441,7 @@ readyButton?.addEventListener("click", () => {
   if (!gameId) {
     console.error("Game ID not found in session storage");
     return;
-
+  }
   const board = {
     ships: shipsClass.map(ship => ({
       name: ship.name,
@@ -449,7 +449,7 @@ readyButton?.addEventListener("click", () => {
       rotation: ship.rotation,
       location: ship.location
     })),
-    shots: firedShots []  // Or include any shots data if applicable
+    shots: firedShots  // Or include any shots data if applicable
   };
 
   updateGameState(gameId, User()._id, board, true)
