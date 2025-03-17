@@ -552,3 +552,4 @@ let ownHits = 0;
 let battleBegun = 0;
 initializeBotGame(); // starts bot game
 
+
