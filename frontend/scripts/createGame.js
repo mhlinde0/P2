@@ -3,6 +3,8 @@
 import { getElementById } from "./helperFunctions.js";
 import { User, setUser } from './state.js';
 
+const apiBase = '/';
+
 /*
 import { User  } from "./state.js";
 
@@ -10,8 +12,6 @@ if (!User()) {
     window.location.href = "/login"; // go to front page
 }
 */
-
-const apiBase = '/';
 
 
 async function createGame(userId, gameCode) {
@@ -49,20 +49,6 @@ async function createGame(userId, gameCode) {
       });
     }
   });
-
-// Generates random 6 character ID
-function generateBattleNumber() {
-
-    for (let i = 0; i < 6; i++) {
-        if (Math.random() < 0.5) {
-            const randomLetterCode = Math.floor(Math.random() * 25) + 65;
-            battleNumber += String.fromCharCode(randomLetterCode)
-        } else {
-            battleNumber += String(Math.floor(Math.random() * 9))
-        }
-    }
-    return battleNumber;
-}
 
 
 export { generateBattleNumber }
