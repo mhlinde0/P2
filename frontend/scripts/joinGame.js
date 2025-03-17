@@ -25,7 +25,7 @@ async function joinGameRequest(userId, gameCode) {
         headers: {
           "Content-Type": "application/json"
         },
-        bbody: JSON.stringify({ userId, lobbyCode: gameCode })
+        body: JSON.stringify({ userId, gameCode })
       });
   
       if (!response.ok) {
