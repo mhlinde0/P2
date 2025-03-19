@@ -20,10 +20,6 @@ jobs:
       run: |
         npm install
 
-    - name: can run
+    - name: can run 
       run: |
-        timeout 5s node backend/server.js
-
-    - name: can start 
-      run: |
-        timeout 5s npm start
+        timeout 5s npm start || exit 1
