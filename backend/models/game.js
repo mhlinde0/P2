@@ -11,16 +11,11 @@ const ShipSchema = new Schema({
   }
 }, { _id: false });
 
-// Schema for a player's board (ship placements and shots fired)
-const BoardSchema = new Schema({
-  ships: [ShipSchema],
-  shots: { type: [Number], default: [] }  // Each shot represented as a number (e.g., 45)
-}, { _id: false });
-
 // Schema for a player in the game
 const PlayerSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  board: { type: BoardSchema, default: { ships: [], shots: [] } },
+  ships: [ShipSchema],
+  shots: { type: [Number], default: [] },  // Each shot represented as a number (e.g., 45)
   ready: { type: Boolean, default: false }
 }, { _id: false });
 

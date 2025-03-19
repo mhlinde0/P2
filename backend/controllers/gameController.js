@@ -21,12 +21,14 @@ export const createGame = async (req, res) => {
 
     // Create a game document with the creator as the only player initially
     const newGame = new Game({
+
       gameCode,
       players: [{
         userId,
-        board: { ships: [], shots: [] },
+        ships: [],
+        shots: [],
         ready: false
-      }],
+      }],//board: { ships: [], shots: [] }, //<----
       status: 'waiting'
     });
 
@@ -68,7 +70,8 @@ export const joinGame = async (req, res) => {
     // pusher en player objekt til game (tilføjer p2)
     game.players.push({
       userId,
-      board: { ships: [], shots: [] },
+      ships:[],
+      shots: [],
       ready: false
     });
 
@@ -90,7 +93,8 @@ export const joinGame = async (req, res) => {
 export const updateGame = async (req, res) => {
   try {
     const gameId = req.params.id;
-    const { userId, board, ready } = req.body;
+    //const { userId, board, ready } = req.body; //<---
+    const { userId,ships,shots, ready } = req.body; //<---
     if (!userId) {
       return res.status(400).json({ error: 'userId is required' });
     }
@@ -107,8 +111,11 @@ export const updateGame = async (req, res) => {
     }
 
     // Update board (ship placements) and readiness flag if provided
-    if (board) {
-      player.board = board;
+    if(ships){
+      player.ships=ships;
+    }
+    if(shots){
+      player.shots=shots;
     }
     if (typeof ready === 'boolean') {
       player.ready = ready;
