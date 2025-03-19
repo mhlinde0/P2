@@ -1,5 +1,5 @@
 /** @module login */
-import { setLoading } from './utility/loading.js';
+import { setLoading } from './utility/ui.js';
 import { setUser, User } from './utility/state.js';
 import { getElementById, getInputElement, getCookie, setCookie } from './utility/helperFunctions.js';
 

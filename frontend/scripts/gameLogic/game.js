@@ -1,6 +1,7 @@
 /** @module game */
 
 import { User, setUser } from '../utility/state.js';
+import { setBanner } from '../utility/ui.js';
 import { getElementById, querySelectorAll } from '../utility/helperFunctions.js';
 
 
@@ -566,16 +567,12 @@ getElementById("randomizeButton")?.addEventListener("click", () => randomizeShip
 
 // Waiting for player banner
 const cancelButton = getElementById('cancelButton');
-const banner = getElementById('banner');
+setBanner(true);
 
-function showBanner() {
-    banner.style.visibility = 'visible';
-}
 
-function hideBanner() {
-    banner.style.visibility = 'hidden';
-}
+cancelButton.addEventListener('click', () => {
+    setBanner(false);
+    window.location.href = "/createGame";
+});
 
-cancelButton.addEventListener('click', hideBanner);
 
-showBanner();

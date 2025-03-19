@@ -26,6 +26,18 @@ export const setLoading = (bool) => {
         displayLoader();
     } else {
         removeLoader();
+    } 
+}
+
+/**
+ * 
+ * @param {boolean} bool 
+ */
+export const setBanner = (bool) => {
+    const banner = getElementById("banner");
+    if (bool) {
+        banner.style.visibility = "visible"
+    } else {
+        banner.style.visibility = "hidden"
     }
- 
 }
