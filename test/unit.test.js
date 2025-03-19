@@ -1,3 +1,4 @@
+import "../backend/server.js"
 import { assert, expect, test, it } from "vitest";
 
 
