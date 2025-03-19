@@ -93,7 +93,7 @@ export function initializeFields() {
     for (let j = 0; j <= 1; j++) {
         if (j == 1) {
             gameboard = getElementById("rightGameBoard");
-            side = "right"
+            side = "right";
         }
 
         for (let i = 0; i < boardWidth * boardHeight; i++) {
@@ -112,22 +112,32 @@ export function initializeFields() {
             field.dataset.side = side;
             field.dataset.index = String(i + 1);
 
-            // Tilføjer nødvendige e listeners til alle fields når de bliver lavet
-            field.addEventListener("dragenter", (e) => {
-                e.preventDefault();
-                field.style.border = "2px solid black"
-            })
-            field.addEventListener("dragleave", (e) => {
-                e.preventDefault();
-                field.style.border = "1px solid black"
-            })
+            // Adds hover effect when dragging ship to left squares
+            if (side == "left ") {
+                field.addEventListener("dragenter", (e) => {
+                    e.preventDefault();
+                    field.style.border = "2px solid black"
+                })
+                field.addEventListener("dragleave", (e) => {
+                    e.preventDefault();
+                    field.style.border = "1px solid black"
+                })
+            }
+            // Adds hover effect when dragging ship
+            if (side == "right") {
+                field.addEventListener("drop", (e) => {
+                    console.log("onShipDrop triggered");
+                    onShipDrop(e);
+                });
+                field.addEventListener("click", (e) => {
+                    console.log("fireCannon triggered");
+                    fireCannon(e);
+                });
 
-            field.addEventListener("drop", onShipDrop);
-
-            field.addEventListener("click", fireCannon);
-            console.log("field", field)
+            }
             // Tilføjer field div til gameboard div
             gameboard.append(field);
+
         }
     }
 }
