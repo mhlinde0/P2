@@ -407,18 +407,25 @@ function randomizeShipPlacement(boardSide) {
 /**
  * Update the game state on the backend with the player's board and ready status.
  *
- * @param {string} gameId - The game's ID.
  * @param {string} userId - The current user's ID.
  * @param {object} board - The board object following the new schema (e.g., { ships: [...], shots: [...] }).
  * @param {boolean} ready - The readiness flag.
  * @returns {Promise<object>} - The updated game data from the backend.
  */
-export async function updateGameState(gameId, userId, board, ready) {
+export async function updateGameState(userId, board, ready) {
+    // Retrieve the gameId from sessionStorage
+    const gameId = sessionStorage.getItem("gameId");
+    console.log("Game ID from sessionStorage:", gameId);
+    if (!gameId) {
+      console.error("Game ID not found in session storage");
+      return;
+    }
+  
     try {
-      const response = await fetch(`/game/${gameId}`, {
+      const response = await fetch(`/game`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, board, ready })
+        body: JSON.stringify({ gameId, userId, board, ready })
       });
   
       if (!response.ok) {
@@ -435,30 +442,20 @@ export async function updateGameState(gameId, userId, board, ready) {
   }
 
   const readyButton = document.getElementById("readyButton");
-readyButton?.addEventListener("click", () => {
-
-    const gameId = sessionStorage.getItem("gameId");
-  if (!gameId) {
-    console.error("Game ID not found in session storage");
-    return;
-  }
-  const board = {
-    ships: shipsClass.map(ship => ({
-      name: ship.name,
-      length: ship.length,
-      rotation: ship.rotation,
-      location: ship.location
-    })),
-    shots: firedShots  // Or include any shots data if applicable
-  };
-
-  updateGameState(gameId, User()._id, board, true)
-    .then(updatedGame => {
-      // Optionally update the UI with the updated game state
-      console.log("Game updated:", updatedGame);
-    })
-    .catch(err => console.error(err));
-});
+  readyButton?.addEventListener("click", () => {
+    const userId = User()._id;
+    const board = {
+      ships: shipsClass.map(ship => ({
+        name: ship.name,
+        length: ship.length,
+        rotation: ship.rotation,
+        location: ship.location
+      })),
+      shots: firedShots
+    };
+  
+    updateGameState(userId, board, true);
+  });
 
 
 function fireCannon(e) {

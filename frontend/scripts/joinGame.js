@@ -36,7 +36,7 @@ async function joinGame(userId, gameCode) {
       console.log("Joined game successfully:", data);
   
       // Save the gameId in session storage so the /game page can access it
-      sessionStorage.setItem('gameId', data.gameId);
+      sessionStorage.setItem('gameId', data._id);
       window.location.href = '/game';
   
       return data.gameId;

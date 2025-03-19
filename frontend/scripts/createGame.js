@@ -15,34 +15,29 @@ if (!User()) {
 
 
 async function createGame(userId, gameCode) {
-    try {
-      const response = await fetch(apiBase + "game/create", {  
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ userId, gameCode })
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Server error: ${response.status}`);
-      }
-  
-      const data = await response.json();
-      console.log("Game ID:", data.gameId);
-      getElementById("gameId").textContent = data.gameId;
-      
+  try {
+    const response = await fetch(apiBase + "game/create", {  
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, gameCode })
+    });
 
-      // Save the gameId in session storage so the /game page can access it
-      sessionStorage.setItem('gameId', data.gameId);
-
-      window.location.href = '/game';
-
-      return data.gameId;
-    } catch (error) {
-      console.error("Error creating game:", error);
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status}`);
     }
+
+    const data = await response.json();
+    console.log("Game created:", data);
+
+    // Store the _id from the MongoDB document
+    sessionStorage.setItem('gameId', data._id);
+    window.location.href = '/game';
+
+    return data._id;
+  } catch (error) {
+    console.error("Error creating game:", error);
   }
+}
   
   document.addEventListener("DOMContentLoaded", () => {
     const createGameButton = getElementById("createGameButton");
