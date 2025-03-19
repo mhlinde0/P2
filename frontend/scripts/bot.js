@@ -1,4 +1,54 @@
 import { randomizeShipPlacement, resetShipPlacement, createBoards } from './game.js';
+import { getElementById, querySelectorAll } from './helperFunctions.js';
+
+/** Represents a ship.* 
+ * @class */
+class Ship {
+    /** constuctor method creates a ship with following properties
+     * @param {string} name - "destoryer", "submarine", "cruiser", "battliship", "carrier"
+     * @param {number} length - how many squares the ship take up
+     * @param {string} rotation - either "vertical" or "horizontal"
+     * @param {object|null} location - ships placement. Null means 'unplaced';
+     */
+    constructor(name, length, rotation, location) {
+        this.name = name;
+        this.length = length;
+        this.rotation = rotation;
+        this.location = location;
+    }
+}
+
+const destroyer = new Ship("destroyer", 2, "vertical", null);
+const submarine = new Ship("submarine", 3, "vertical", null);
+const cruiser = new Ship("cruiser", 3, "vertical", null);
+const battleship = new Ship("battleship", 4, "vertical", null);
+const carrier = new Ship("carrier", 5, "vertical", null);
+
+
+
+/** Array of ship div elements
+ * @type {Array<Ship>} */
+const shipsClass = [destroyer, submarine, cruiser, battleship, carrier];
+
+/** Array of ship div elements 
+ * @type {Array<HTMLElement>} */
+const shipsDiv = querySelectorAll(".ship");
+
+/** Array of squares that are filled by ships 
+ *  @type {Array<HTMLElement>}  */
+const occupiedSquareArrayLeft = [];
+
+/** Array of squares that are filled by ships 
+ *  @type {Array<HTMLElement>}*/
+const occupiedSquareArrayRight = [];
+
+/** Array of squares that are filled by ships 
+ *  @type {Array<HTMLElement>}  */
+const leftSquareArray = [];
+
+/** Array of squares that are filled by ships 
+ *  @type {Array<HTMLElement>}  */
+const rightSquareArray = [];
 
 let targetList = createTargetList()
 let enemyHits = 0;
