@@ -5,7 +5,6 @@ import Game from "../models/game.js";
  * // Create a new game (lobby creation)
  * @param {any} req 
  * @param {any} res 
- * @returns 
  */
 export const createGame = async (req, res) => {
   try {
@@ -43,7 +42,6 @@ export const createGame = async (req, res) => {
  * Join a game using a lobby code
  * @param {any} req 
  * @param {any} res 
- * @returns 
  */
 export const joinGame = async (req, res) => {
   try {
@@ -88,7 +86,6 @@ export const joinGame = async (req, res) => {
  * Update game details (e.g., updating ship placements and setting "ready")
  * @param {any} req 
  * @param {any} res 
- * @returns 
  */
 export const updateGame = async (req, res) => {
   try {
