@@ -581,4 +581,17 @@ let ownHits = 0;
 let battleBegun = 0;
 initializeBotGame(); // starts bot game
 
+const cancelButton = document.getElementById('cancelButton');
+const banner = document.getElementById('banner');
 
+function showBanner() {
+    banner.style.visibility = 'visible';
+}
+
+function hideBanner() {
+    banner.style.visibility = 'hidden';
+}
+
+cancelButton.addEventListener('click', hideBanner);
+
+showBanner();
