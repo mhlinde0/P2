@@ -67,18 +67,25 @@ const leftSquareArray = [];
  *  @type {Array<HTMLElement>}  */
 const rightSquareArray = [];
 
+// Sets a timer that calls checkGameStatus every 1 seconds
+const checkGameStatusTimer = setInterval(checkGameStatus, 1000);
 
+// Sets time that calls checkCurrentTurn
+const checkCurrentTurnTimer = setInterval(checkCurrentTurn, 1000);
 let firedShots = [];
 
 let currentHoveredShip = null;
-let turn = 1;
 
+let turn = 1;
+let battleBegun = 0;
+let enemyHits = 0;
+let ownHits = 0;
 
 
 /** Creates 2 game boards
  * @function
  */
-function createBoards() {
+export function createBoards() {
     const leftGameBoardWrapper = document.createElement("div");
     leftGameBoardWrapper.classList.add("gameBoard");
 
@@ -328,7 +335,7 @@ document.addEventListener("keydown", (e) => {
 /** 
  * @function
  */
-function resetShipPlacement() {
+export function resetShipPlacement() {
     // Finder alle left elementer og fjerner occupiedSquare classen hvis de har den
     const squares = querySelectorAll(".left")
     squares.forEach((square) => square.classList.remove("occupiedSquare"));
@@ -347,7 +354,7 @@ function resetShipPlacement() {
 /** skriv
  * @function
  */
-function randomizeShipPlacement(boardSide) {
+export function randomizeShipPlacement(boardSide) {
     resetShipPlacement();
 
     // Går over arrayet af ship classes for at placere alle skibene
@@ -408,11 +415,12 @@ function randomizeShipPlacement(boardSide) {
  * Update the game state on the backend with the player's board and ready status.
  *
  * @param {string} userId - The current user's ID.
- * @param {object} board - The board object following the new schema (e.g., { ships: [...], shots: [...] }).
+ * @param {object} ships - The ships object including name, length, rotation and location
+ * @param {array} shots - Array of shots fired by the user
  * @param {boolean} ready - The readiness flag.
  * @returns {Promise<object>} - The updated game data from the backend.
  */
-export async function updateGameState(userId, board, ready) {
+export async function updateGameState(userId, ships, shots, ready) {
     // Retrieve the gameId from sessionStorage
     const gameId = sessionStorage.getItem("gameId");
     console.log("Game ID from sessionStorage:", gameId);
@@ -425,7 +433,7 @@ export async function updateGameState(userId, board, ready) {
       const response = await fetch(`/game`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ gameId, userId, board, ready })
+        body: JSON.stringify({ gameId, userId, ships, shots, ready })
       });
   
       if (!response.ok) {
@@ -444,19 +452,62 @@ export async function updateGameState(userId, board, ready) {
   const readyButton = document.getElementById("readyButton");
   readyButton?.addEventListener("click", () => {
     const userId = User()._id;
-    const board = {
-      ships: shipsClass.map(ship => ({
-        name: ship.name,
-        length: ship.length,
-        rotation: ship.rotation,
-        location: ship.location
-      })),
-      shots: firedShots
-    };
+
+    const ships = shipsClass.map(ship => ({
+      name: ship.name,
+      length: ship.length,
+      rotation: ship.rotation,
+      location: ship.location
+    }));
   
-    updateGameState(userId, board, true);
+    const shots = firedShots;
+  
+    updateGameState(userId, ships, shots, true);
   });
 
+  // Checks for game status
+async function checkGameStatus() {
+    const gameId = sessionStorage.getItem('gameId');
+    if (!gameId) return;
+  
+    try {
+    // Fetch from the dedicated endpoint
+    const response = await fetch(`/game/data?gameId=${gameId}`);
+    if (!response.ok) throw new Error(`Server error: ${response.status}`);
+      
+    const gameData = await response.json();
+
+    if (gameData.status === 'active') {
+        hideBanner();
+        clearInterval(checkGameStatusTimer); // Removes the timer if game status is active
+    }
+    } catch (error) {
+        console.error("Error checking game state:", error);
+    }
+}
+
+async function checkCurrentTurn() {
+    const gameId = sessionStorage.getItem('gameId');
+    const userId = User()._id;
+    if (!gameId) return;
+
+    try {
+        const response = await fetch(`/game/data?gameId=${gameId}`);
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+        const gameData = await response.json();
+
+        if (gameData.currentTurn === userId) {
+            turn = 1;
+            clearInterval(checkCurrentTurnTimer);
+        }
+    } catch (error) {
+        console.error("Error checking game state:", error);
+    }
+
+
+
+}
 
 function fireCannon(e) {
     if (battleBegun === 1) {
@@ -483,87 +534,9 @@ function fireCannon(e) {
       turn = 0;
       console.log(turn);
       console.log(firedAtSquare.id);
-      gameLoop();
     }
   }
 
-
-function createTargetList() {
-    let targetList = [];
-    for (let i = 1; i <= 100; i++) {
-        targetList.push(i);
-    }
-    console.log(targetList);
-    return targetList
-}
-
-function botFireCannon() {
-
-    const firedAtSquare = getElementById(`leftsquare${getNextRandomTarget()}`);
-
-    if (rightSquareArray.includes(firedAtSquare)) {
-        alert("bot should not fire at its own board");
-        return;
-    }
-    else if (occupiedSquareArrayLeft.includes(firedAtSquare)) {
-        firedAtSquare.classList.remove("occupiedSquare");
-        firedAtSquare.classList.add("hitSquare");
-        console.log("Hit shot");
-        enemyHits += 1;
-    }
-    else {
-        firedAtSquare?.classList.add("missedSquare");
-        console.log("Missed shot");
-    }
-    turn = 1;
-    gameLoop();
-    console.log("Bot fired at:", firedAtSquare?.id);
-}
-
-function getNextRandomTarget() {
-    const randomIndex = Math.floor(Math.random() * targetList.length);
-    const randomTarget = targetList[randomIndex];
-    targetList.splice(randomIndex, 1);
-
-    return randomTarget;
-}
-
-function checkWinCondition() {
-    if (enemyHits === 17) {
-        return 1;
-    }
-    else if (ownHits === 17) {
-        return 2;
-    }
-
-}
-
-if (turn == 0) {
-    console.log("test")
-    botFireCannon();
-    turn = 1;
-}
-
-function gameLoop() {
-    if (checkWinCondition() === 1) {
-        alert("The bot won!");
-    }
-    else if (checkWinCondition() === 2) {
-        alert("You have won!");
-    }
-    if (turn === 0) {
-        console.log("Bot's Turn");
-        botFireCannon();
-    } else {
-        console.log("Player's Turn");
-    }
-}
-
-function initializeBotGame() {
-    createBoards();
-    randomizeShipPlacement("right");
-    gameLoop();
-}
 
 function removeButtonEventListener() {
     getElementById("resetButton").removeEventListener("click", resetShipPlacement);
@@ -575,10 +548,19 @@ function removeButtonEventListener() {
 getElementById("resetButton")?.addEventListener("click", resetShipPlacement);
 getElementById("randomizeButton")?.addEventListener("click", () => randomizeShipPlacement("left"));
 
-let targetList = createTargetList()
-let enemyHits = 0;
-let ownHits = 0;
-let battleBegun = 0;
-initializeBotGame(); // starts bot game
 
+// Waiting for player banner
+const cancelButton = getElementById('cancelButton');
+const banner = getElementById('banner');
 
+function showBanner() {
+    banner.style.visibility = 'visible';
+}
+
+function hideBanner() {
+    banner.style.visibility = 'hidden';
+}
+
+cancelButton.addEventListener('click', hideBanner);
+
+showBanner();

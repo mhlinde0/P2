@@ -45,21 +45,18 @@ export const createGame = async (req, res) => {
  * @param {any} req 
  * @param {any} res 
  */
-export const joinGame = async (req, res) => {
+export async function joinGame(req, res) {
   try {
-    const { gameCode, userId } = req.body;
-    if (!gameCode || !userId) {
-      return res.status(400).json({ error: 'gameCode and userId are required' });
-    }
-
+    const { userId, gameCode } = req.body;
     const game = await Game.findOne({ gameCode });
+    
     if (!game) {
       return res.status(404).json({ error: 'Game not found' });
     }
-
-    // Check if game already has two players
+    
+    // Prevent adding more than 2 players
     if (game.players.length >= 2) {
-      return res.status(400).json({ error: 'Game already has two players' });
+      return res.status(400).json({ error: 'Game is already full' });
     }
 
     // Ensure the user is not already in the game
@@ -67,21 +64,32 @@ export const joinGame = async (req, res) => {
       return res.status(400).json({ error: 'User already joined the game' });
     }
 
-    // pusher en player objekt til game (tilføjer p2)
+    // Ensure the user is not already in the game
+    if (game.players.some(player => player.userId.toString() === userId)) {
+      return res.status(400).json({ error: 'User already joined the game' });
+    }
+    
+    // Add the new player
     game.players.push({
       userId,
-      ships:[],
+      ships: [],
       shots: [],
       ready: false
     });
-
+    
+    // If both players have joined, update the game status to 'active'
+    if (game.players.length === 2) {
+      game.status = 'active';
+      // Optionally, set the currentTurn (e.g., to the first player's userId)
+      game.currentTurn = game.players[0].userId;
+    }
+    
     const updatedGame = await game.save();
-    res.json(updatedGame);
+    res.status(200).json(updatedGame);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: error.message });
   }
-};
+}
 
 
 
@@ -139,3 +147,20 @@ export const updateGame = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
+
+
+export async function getGameData(req, res) {
+  try {
+    const { gameId } = req.query;
+    if (!gameId) {
+      return res.status(400).json({ error: 'No gameId provided' });
+    }
+    const game = await Game.findById(gameId);
+    if (!game) {
+      return res.status(404).json({ error: 'Game not found' });
+    }
+    res.status(200).json(game);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
