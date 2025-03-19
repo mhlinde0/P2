@@ -148,7 +148,8 @@ export const updateGame = async (req, res) => {
   }
 };
 
-export async function getGameStatus(req, res) {
+
+export async function getGameData(req, res) {
   try {
     const { gameId } = req.query;
     if (!gameId) {
