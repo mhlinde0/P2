@@ -1,91 +1,74 @@
 /** @module game */
 
-import { User, setUser, gameCode, setGameCode, gameID, setGameID } from '../utility/state.js';
+import { User, gameCode, setGameCode, gameID, setGameID } from '../utility/state.js';
 import { setBanner } from '../utility/ui.js';
 import { getElementById, querySelectorAll } from '../utility/helperFunctions.js';
-
-
-let Game = Object;
-
-getElementById("gameCode").innerHTML = `Game Code: ${gameCode()}`;
-
-// Fetches gameData every 2 seconds and udates game object
-setInterval(()=>{
-
-    fetchGameData();
-
-
-}, 2000)
-
+import { createShips } from './ships.js';
+import { boardHeight, boardWidth } from './board.js';
 
 const apiBase = '/';
 
-const gameBoardWrapper = getElementById("gameBoardWrapper");
+
+// holds the game object 
+let Game = {
+    status: 'waiting',
+    '_id': gameID(),
+    'gameCode': gameCode(),
+};
 
 
-/** Board width in squares
- * @type {number} */
-const boardWidth = 10;
+// Initialise game state
+document.addEventListener("DOMContentLoaded", () => {
+    // setBanner(true);
+    getElementById("gameCode").innerHTML = `Game Code: ${gameCode()}`;
+    initializeFields();
+})
 
-/** Board length in squares
- * @type {number} */
-const boardHeight = 10;
+fetchGameData();
 
+// Fetches gameData every x milliseconds and udates game object
+setInterval(() => {
+    fetchGameData();
 
-/** Represents a ship.* 
- * @class */
-class Ship {
-    /** constuctor method creates a ship with following properties
-     * @param {string} name - "destoryer", "submarine", "cruiser", "battliship", "carrier"
-     * @param {number} length - how many squares the ship take up
-     * @param {string} rotation - either "vertical" or "horizontal"
-     * @param {object|null} location - ships placement. Null means 'unplaced';
-     */
-    constructor(name, length, rotation, location) {
-        this.name = name;
-        this.length = length;
-        this.rotation = rotation;
-        this.location = location;
+    if (!Game) {
+        throw new Error("could not get game data");
     }
-}
 
-const destroyer = new Ship("destroyer", 2, "vertical", null);
-const submarine = new Ship("submarine", 3, "vertical", null);
-const cruiser = new Ship("cruiser", 3, "vertical", null);
-const battleship = new Ship("battleship", 4, "vertical", null);
-const carrier = new Ship("carrier", 5, "vertical", null);
-
+    if (Game.status === "active") {
+        setBanner(false)
+    }
+}, 2000)
 
 
 /** Array of ship div elements
- * @type {Array<Ship>} */
-const shipsClass = [destroyer, submarine, cruiser, battleship, carrier];
+ * @type {Array<Object>} */
+const shipsClass = createShips();
 
 /** Array of ship div elements 
  * @type {Array<HTMLElement>} */
 const shipsDiv = querySelectorAll(".ship");
 
-/** Array of squares that are filled by ships 
+/** Array of fields that are filled by ships 
  *  @type {Array<HTMLElement>}  */
-const occupiedSquareArrayLeft = [];
+const occupiedFieldArrayLeft = [];
 
-/** Array of squares that are filled by ships 
+/** Array of fields that are filled by ships 
  *  @type {Array<HTMLElement>}*/
-const occupiedSquareArrayRight = [];
+const occupiedFieldArrayRight = [];
 
-/** Array of squares that are filled by ships 
+/** Array of fields that are filled by ships 
  *  @type {Array<HTMLElement>}  */
-const leftSquareArray = [];
+const leftFieldArray = [];
 
-/** Array of squares that are filled by ships 
+/** Array of fields that are filled by ships 
  *  @type {Array<HTMLElement>}  */
-const rightSquareArray = [];
+const rightFieldArray = [];
 
 // Sets a timer that calls checkGameStatus every 1 seconds
-const checkGameStatusTimer = setInterval(checkGameStatus, 1000);
+//const checkGameStatusTimer = setInterval(checkGameStatus, 1000);
 
 // Sets time that calls checkCurrentTurn
-const checkCurrentTurnTimer = setInterval(checkCurrentTurn, 1000);
+// const checkCurrentTurnTimer = setInterval(checkCurrentTurn, 1000);
 let firedShots = [];
 
 let currentHoveredShip = null;
@@ -99,55 +82,54 @@ let ownHits = 0;
 /** Creates 2 game boards
  * @function
  */
-export function createBoards() {
-    const leftGameBoardWrapper = document.createElement("div");
-    leftGameBoardWrapper.classList.add("gameBoard");
-
-    gameBoardWrapper.append(leftGameBoardWrapper);
-    createSquares(leftGameBoardWrapper, "left");
-
-    const rightGameBoardWrapper = document.createElement("div");
-    rightGameBoardWrapper.classList.add("gameBoard");
-
-    gameBoardWrapper.append(rightGameBoardWrapper);
-    createSquares(rightGameBoardWrapper, "right");
-
-}
 
 
-/** Creates 100 squares to fill the game boards and adds drag and drop functionalty to them
+/** Creates 100 fields to fill the game boards and adds drag and drop functionalty to them
  * @function
- * @param {HTMLElement} gameboard
- * @param {"left"|"right"} side
  */
-function createSquares(gameboard, side) {
-    for (let i = 0; i < boardWidth * boardHeight; i++) {
-        const square = document.createElement("div");
-        square.classList.add("square");
-        square.classList.add(side);
+export function initializeFields() {
+    let gameboard = getElementById("leftGameBoard");
+    let side = "left";
 
-        square.id = side + "square" + (i + 1);
-
-        if (side === "left") {
-            leftSquareArray.push(square);
-        } else {
-            rightSquareArray.push(square);
+    for (let j = 0; j <= 1; j++) {
+        if (j == 1) {
+            gameboard = getElementById("rightGameBoard");
+            side = "right"
         }
 
-        square.dataset.side = side;
-        square.dataset.index = String(i + 1);
+        for (let i = 0; i < boardWidth * boardHeight; i++) {
+            const field = document.createElement("div");
+            field.classList.add("field");
+            field.classList.add(side);
 
-        // Tilføjer nødvendige e listeners til alle squares når de bliver lavet
-        square.addEventListener("dragover", (e) => {
-            e.preventDefault();
-        })
+            field.id = side + "field" + (i + 1);
 
-        square.addEventListener("drop", onShipDrop);
+            if (side === "left") {
+                leftFieldArray.push(field);
+            } else {
+                rightFieldArray.push(field);
+            }
 
-        square.addEventListener("click", fireCannon);
+            field.dataset.side = side;
+            field.dataset.index = String(i + 1);
 
-        // Tilføjer square div til gameboard div
-        gameboard.append(square);
+            // Tilføjer nødvendige e listeners til alle fields når de bliver lavet
+            field.addEventListener("dragenter", (e) => {
+                e.preventDefault();
+                field.style.border = "2px solid black"
+            })
+            field.addEventListener("dragleave", (e) => {
+                e.preventDefault();
+                field.style.border = "1px solid black"
+            })
+
+            field.addEventListener("drop", onShipDrop);
+
+            field.addEventListener("click", fireCannon);
+            console.log("field", field)
+            // Tilføjer field div til gameboard div
+            gameboard.append(field);
+        }
     }
 }
 
@@ -157,8 +139,8 @@ function createSquares(gameboard, side) {
 function onShipDrop(e) {
     e.preventDefault();
 
-    const square = e.currentTarget;
-    const side = square.dataset.side;
+    const field = e.currentTarget;
+    const side = field.dataset.side;
     const shipId = e.dataTransfer.getData("text/plain"); // text/plain fortæller at dataen vi leder efter er ren tekst
     const draggedShipElement = getElementById(shipId);
     let draggedShip = null;
@@ -167,29 +149,29 @@ function onShipDrop(e) {
 
     // finder hvilken class ship vi skal bruge ud fra html elementet
     if (draggedShipElement.id === "destroyerSize2") {
-        draggedShip = destroyer;
+        draggedShip = shipsClass[0] // destoryer
     } else if (draggedShipElement.id === "submarineSize3") {
-        draggedShip = submarine;
+        draggedShip = shipsClass[1]; // submarine
     } else if (draggedShipElement.id === "cruiserSize3") {
-        draggedShip = cruiser;
+        draggedShip = shipsClass[2]; // cruiser
     } else if (draggedShipElement.id === "battleshipSize4") {
-        draggedShip = battleship;
+        draggedShip = shipsClass[3]; // battleship
     } else if (draggedShipElement.id === "carrierSize5") {
-        draggedShip = carrier;
+        draggedShip = shipsClass[4]; // carrier
     }
 
     if (!draggedShip) {
         throw new Error("Couldn't handle ship draggin properly");
     }
 
-    const droppedSquare = parseInt(square.dataset.index, 10);
+    const droppedField = parseInt(field.dataset.index, 10);
     const draggedShipLength = draggedShip.length;
     const draggedShipRotation = parseInt(draggedShipElement.getAttribute("data-rotation") || "0", 10); // Finder skibets nuværende rotation ved at finde attributen "data-rotation" og give den som en int
 
-    const startColumn = (droppedSquare - 1) % boardWidth;
-    const startRow = Math.floor((droppedSquare - 1) / boardWidth);
+    const startColumn = (droppedField - 1) % boardWidth;
+    const startRow = Math.floor((droppedField - 1) / boardWidth);
 
-    let coveredSquares = [];
+    let coveredFields = [];
 
     if (checkForBoardSide(side)) {
         alert("Cannot place ships on opponent's board");
@@ -202,7 +184,7 @@ function onShipDrop(e) {
             return;
         }
         for (let j = 0; j < draggedShipLength; j++) { // Hvis skibet kan være der bliver felterne placeret i arrayet
-            coveredSquares.push(droppedSquare + j * boardWidth);
+            coveredFields.push(droppedField + j * boardWidth);
         }
     } else { // Hvis det ikke er sandt % 180 === 0 betyder det at skibet er vandret
         if (checkForOutOfBounds(startRow, startColumn, draggedShipLength, draggedShipRotation)) {
@@ -210,29 +192,29 @@ function onShipDrop(e) {
             return;
         }
         for (let j = 0; j < draggedShipLength; j++) {
-            coveredSquares.push(droppedSquare + j);
+            coveredFields.push(droppedField + j);
         }
     }
 
-    if (checkForOverlap(coveredSquares, side)) {
+    if (checkForOverlap(coveredFields, side)) {
         alert("Ship overlaps another ship.");
         return;
     }
 
     draggedShip.rotation = String(draggedShipRotation);
     draggedShip.location = {
-        startSquare: droppedSquare,
-        coveredSquares: coveredSquares
+        startField: droppedField,
+        coveredFields: coveredFields
     };
 
     draggedShipElement.style.display = "none"; // Gør html elementet usynligt når skibet bliver placeret
 
-    assignOccupiedSquares(coveredSquares, side);
-    if (occupiedSquareArrayLeft.length === 17) {
+    assignOccupiedFields(coveredFields, side);
+    if (occupiedFieldArrayLeft.length === 17) {
         battleBegun = 1;
         removeButtonEventListener();
     }
-    console.log(occupiedSquareArrayLeft)
+    console.log(occupiedFieldArrayLeft)
 }
 
 
@@ -258,35 +240,35 @@ function checkForBoardSide(side) {
     return false;
 }
 
-/** checks if there already are any ships on the squares
+/** checks if there already are any ships on the fields
  * @function
- * @param {any} coveredSquares
+ * @param {any} coveredFields
  * @param {"left"|"right"} side - side is either "left" or right
  */
-function checkForOverlap(coveredSquares, side) {
-    const occupiedArray = side === "left" ? occupiedSquareArrayLeft : occupiedSquareArrayRight;
+function checkForOverlap(coveredFields, side) {
+    const occupiedArray = side === "left" ? occupiedFieldArrayLeft : occupiedFieldArrayRight;
 
-    for (let i = 0; i < coveredSquares.length; i++) {
-        const squareElement = getElementById(side + "square" + (coveredSquares[i]));
-        if (occupiedArray.includes(squareElement)) {
+    for (let i = 0; i < coveredFields.length; i++) {
+        const fieldElement = getElementById(side + "field" + (coveredFields[i]));
+        if (occupiedArray.includes(fieldElement)) {
             return true;
         }
     }
     return false;
 }
 
-/** Tilføjer elementet occupiedSquare til de squares med skibe på
+/** Tilføjer elementet occupiedField til de fields med skibe på
  * @function
  */
-function assignOccupiedSquares(coveredSquares, side) {
-    coveredSquares.forEach(index => {
-        const squareElement = getElementById(side + "square" + (index));
-        if (squareElement) {
-            squareElement.classList.add("occupiedSquare");
+function assignOccupiedFields(coveredFields, side) {
+    coveredFields.forEach(index => {
+        const fieldElement = getElementById(side + "field" + (index));
+        if (fieldElement) {
+            fieldElement.classList.add("occupiedField");
             if (side === "left") {
-                occupiedSquareArrayLeft.push(squareElement);
+                occupiedFieldArrayLeft.push(fieldElement);
             } else if (side === "right") {
-                occupiedSquareArrayRight.push(squareElement);
+                occupiedFieldArrayRight.push(fieldElement);
             }
         }
     });
@@ -350,11 +332,12 @@ document.addEventListener("keydown", (e) => {
  * @function
  */
 export function resetShipPlacement() {
-    // Finder alle left elementer og fjerner occupiedSquare classen hvis de har den
-    const squares = querySelectorAll(".left")
-    squares.forEach((square) => square.classList.remove("occupiedSquare"));
+    // Finder alle left elementer og fjerner occupiedField classen hvis de har den
+    const fields = querySelectorAll(".left");
 
-    occupiedSquareArrayLeft.length = 0;
+    fields.forEach((field) => field.classList.remove("occupiedField"));
+
+    occupiedFieldArrayLeft.length = 0;
 
     // Finder elementer med class "ship" og gør dem synlige igen og fjerne rotation)
     const ships = querySelectorAll(".ship");
@@ -384,29 +367,29 @@ export function randomizeShipPlacement(boardSide) {
 
             if (checkForOutOfBounds(row, col, ship.length, rotation)) continue; // Prøver en ny position
 
-            let droppedSquare = row * boardWidth + col + 1;
-            let coveredSquares = [];
+            let droppedField = row * boardWidth + col + 1;
+            let coveredFields = [];
 
             if (rotation % 180 === 0) {
                 for (let j = 0; j < ship.length; j++) { // Lodret placering
-                    coveredSquares.push(droppedSquare + j * boardWidth);
+                    coveredFields.push(droppedField + j * boardWidth);
                 }
             } else {
                 for (let j = 0; j < ship.length; j++) { // Vandret placering
-                    coveredSquares.push(droppedSquare + j);
+                    coveredFields.push(droppedField + j);
                 }
             }
 
-            if (checkForOverlap(coveredSquares, boardSide)) {
+            if (checkForOverlap(coveredFields, boardSide)) {
                 continue;
             }
 
-            assignOccupiedSquares(coveredSquares, boardSide);
+            assignOccupiedFields(coveredFields, boardSide);
 
             ship.rotation = String(rotation);
             ship.location = {
-                startSquare: droppedSquare,
-                coveredSquares: coveredSquares
+                startField: droppedField,
+                coveredFields: coveredFields
             };
 
             if (boardSide === "left") {
@@ -418,7 +401,7 @@ export function randomizeShipPlacement(boardSide) {
             placed = true;
         }
     })
-    console.log(boardSide === "left" ? occupiedSquareArrayLeft : occupiedSquareArrayRight);
+    console.log(boardSide === "left" ? occupiedFieldArrayLeft : occupiedFieldArrayRight);
     if (boardSide === "left") {
         battleBegun = 1;
         removeButtonEventListener();
@@ -445,7 +428,7 @@ export async function updateGameState(userId, ships, shots, ready) {
         const response = await fetch(`/game`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({id, userId, ships, shots, ready })
+            body: JSON.stringify({ id, userId, ships, shots, ready })
         });
 
         if (!response.ok) {
@@ -489,15 +472,14 @@ async function fetchGameData() {
 
         const gameData = await response.json();
         Game = gameData
-        console.log("game:",Game)
+        console.log("game:", Game)
 
     } catch (error) {
         console.error("Error fetching gameData:", error);
     }
 }
 
-
-
+/*
 // Checks for game status
 async function checkGameStatus() {
 
@@ -519,6 +501,7 @@ async function checkGameStatus() {
     }
 }
 
+
 async function checkCurrentTurn() {
     const userId = User()._id;
 
@@ -538,32 +521,32 @@ async function checkCurrentTurn() {
         console.error("Error checking game state:", error);
     }
 }
-
+*/
 function fireCannon(e) {
     if (battleBegun === 1) {
-        const firedAtSquare = e.currentTarget;
-        const squareNumber = parseInt(firedAtSquare.dataset.index, 10); // Get the square number
+        const firedAtField = e.currentTarget;
+        const fieldNumber = parseInt(firedAtField.dataset.index, 10); // Get the field number
 
-        if (!firedShots.includes(squareNumber)) {
-            firedShots.push(squareNumber);
+        if (!firedShots.includes(fieldNumber)) {
+            firedShots.push(fieldNumber);
         }
 
-        if (leftSquareArray.includes(firedAtSquare)) {
+        if (leftFieldArray.includes(firedAtField)) {
             alert("Cannot fire at your own board");
             return;
-        } else if (occupiedSquareArrayRight.includes(firedAtSquare)) {
-            firedAtSquare.classList.remove("occupiedSquare");
-            firedAtSquare.classList.add("hitSquare");
+        } else if (occupiedFieldArrayRight.includes(firedAtField)) {
+            firedAtField.classList.remove("occupiedField");
+            firedAtField.classList.add("hitField");
             console.log("Hit shot");
             ownHits += 1;
         } else {
-            firedAtSquare.classList.add("missedSquare");
+            firedAtField.classList.add("missedField");
             console.log("Missed shot");
         }
 
         turn = 0;
         console.log(turn);
-        console.log(firedAtSquare.id);
+        console.log(firedAtField.id);
     }
 }
 
@@ -581,7 +564,6 @@ getElementById("randomizeButton")?.addEventListener("click", () => randomizeShip
 
 // Waiting for player banner
 const cancelButton = getElementById('cancelButton');
-setBanner(true);
 
 
 cancelButton.addEventListener('click', () => {
