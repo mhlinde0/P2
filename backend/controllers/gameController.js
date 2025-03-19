@@ -94,7 +94,7 @@ export const updateGame = async (req, res) => {
   try {
 
     // Expect gameId to be sent in the request body (this is the _id from MongoDB)
-    const { gameId, userId, board, ready } = req.body;
+    const { gameId, userId, ships, shots, ready } = req.body;
     console.log("Updating game with ID:", gameId); // Debug log
     
     if (!userId || !gameId) {
