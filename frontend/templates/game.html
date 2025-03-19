@@ -6,17 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Battleships</title>
     <link rel="stylesheet" href="../styles/game.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js" defer></script> <!--Howler library for sounds-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js" defer></script>
+    <!--Howler library for sounds-->
 </head>
 
 <body>
 
-            <div id="gameBoardWrapper" class="center"></div>
-        </div>
+    <div id="gameBoardWrapper" class="center">
+        <div class="gameBoard" id="leftGameBoard"></div>
+        <div class="gameBoard" id="rightGameBoard"></div>
+    </div>
+    
     <div class="functionWrapper">
         <div class="shipSelectionWrapper center">
             <div id="carrierSize5" class="ship" draggable="true"></div>
-            <div id="battleshipSize4"class="ship" draggable="true"></div>
+            <div id="battleshipSize4" class="ship" draggable="true"></div>
             <div id="submarineSize3" class="ship" draggable="true"></div>
             <div id="cruiserSize3" class="ship" draggable="true"></div>
             <div id="destroyerSize2" class="ship" draggable="true"></div>
@@ -32,18 +36,19 @@
                 <input id="resetButton" type="button" value="Reset">
             </div>
         </div>
-    </div> 
+    </div>
 
     <div id="banner" class="banner">
         <div class="bannerWrapper">
             <h2>Awaiting Opponent</h2>
+            <h3 id="gameCode"> Game Code: ... </h3>
             <input id="cancelButton" type="button" value="Cancel">
         </div>
     </div>
 
-    <script type="module" src="../scripts/audioManager.js"></script>
-    <script type="module" src="../scripts/game.js"></script>
-    <script type="module" src="../scripts/banner.js"></script>
+    <script type="module" src="../scripts/utility/audioManager.js"></script>
+    <script type="module" src="../scripts/gameLogic/game.js"></script>
+
     </div>
 </body>
 

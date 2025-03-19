@@ -39,15 +39,16 @@ body {
     justify-content: space-between;
 }
 
-.square {
+.field {
     height: 30px;
     width: 30px;
     border: 1px black;
     border-style: solid;
     box-sizing: border-box;
+    cursor: pointer;
 }
 
-.occupiedSquare {
+.occupiedField {
     height: 30px;
     width: 30px;
     border: 1px black;
@@ -56,8 +57,8 @@ body {
     background-color: var(--link-color);
 }
 
-/* Laver et rødt kryds på hitSquare ved at dele background-image op i 2 med hældningen 45% (den er transparent fra start til 50% - 1px og 50% + 1px til slut*/
-.hitSquare { 
+/* Laver et rødt kryds på hitField ved at dele background-image op i 2 med hældningen 45% (den er transparent fra start til 50% - 1px og 50% + 1px til slut*/
+.hitField { 
     background-image: 
     linear-gradient(45deg, transparent calc(50% - 1px), red calc(50% - 1px), red calc(50% + 1px), transparent calc(50% + 1px)),
     linear-gradient(-45deg, transparent calc(50% - 1px), red calc(50% - 1px), red calc(50% + 1px), transparent calc(50% + 1px));
@@ -65,11 +66,11 @@ body {
     background-repeat: no-repeat;
 }
 
-.missedSquare {
+.missedField {
     position: relative;
   }
   
-.missedSquare::after {
+.missedField::after {
     content: "";
     position: absolute;
     top: 50%;
@@ -159,15 +160,15 @@ body {
     background-color: rgb(103, 0, 103);
 }
 
-.square.right {
+.field.right {
     background-color: var(--secondary);
 }
 
-.square.right:hover {
+.field.right:hover {
     filter: brightness(80%);
 }
 
-.square.right.missedSquare:hover {
+.field.right.missedField:hover {
     background-color: inherit; 
 }
 

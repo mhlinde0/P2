@@ -6,8 +6,8 @@ const ShipSchema = new Schema({
   length: { type: Number, required: true },
   rotation: { type: String, required: true },     // e.g., "vertical", "90", "horizontal"
   location: {
-    startSquare: { type: Number },                // The starting square number
-    coveredSquares: { type: [Number] }              // An array of square numbers occupied by the ship
+    startField: { type: Number },                // The starting field number
+    coveredFields: { type: [Number] }              // An array of field numbers occupied by the ship
   }
 }, { _id: false });
 

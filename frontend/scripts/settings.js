@@ -1,7 +1,7 @@
 /** @module settings */
 
-import { volume, setVolume } from './state.js'
-import { getInputElement } from './helperFunctions.js';
+import { volume, setVolume } from "./utility/state.js";
+import { getInputElement } from './utility/helperFunctions.js';
 
 const volumeElmmt = getInputElement('volume');
 
