@@ -1,8 +1,23 @@
 /** @module game */
 
-import { setLoading } from './loading.js';
-import { User, setUser } from './state.js';
-import { getElementById, querySelectorAll } from './helperFunctions.js';
+import { User, setUser } from '../utility/state.js';
+import { getElementById, querySelectorAll } from '../utility/helperFunctions.js';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const apiBase = '/';
 

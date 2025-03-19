@@ -1,8 +1,8 @@
 /** @module profile */
 
 
-import { User } from "./state.js";
-import { getElementById } from "./helperFunctions.js";
+import { User } from "./utility/state.js";
+import { getElementById } from "./utility/helperFunctions.js";
 
 if (!User()) {
     window.location.href = "/login"; // go to front page

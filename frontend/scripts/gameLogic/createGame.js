@@ -1,7 +1,7 @@
 /** @module createGame */
 
-import { getElementById, getInputElement } from "./helperFunctions.js";
-import { User, setUser } from './state.js';
+import { getElementById, getInputElement } from "../utility/helperFunctions.js";
+import { User, setUser } from '../utility/state.js';
 
 const apiBase = '/';
 

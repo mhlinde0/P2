@@ -20,6 +20,9 @@ export function setUser(user) {
 }
 
 
+
+
+
 /**
  * gets the volume settings from browser storage
  * @function

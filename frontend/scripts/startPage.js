@@ -1,7 +1,7 @@
 /** @module register */
 
-import { User, setUser } from './state.js'
-import { getElementById } from './helperFunctions.js'
+import { User, setUser } from './utility/state.js'
+import { getElementById } from './utility/helperFunctions.js'
 
 // Helper function to show/hide an element by removing or adding the 'hidden' class
 function showElement(id) {

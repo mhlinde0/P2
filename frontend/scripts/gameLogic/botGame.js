@@ -1,5 +1,5 @@
 import { randomizeShipPlacement, resetShipPlacement, createBoards } from './game.js';
-import { getElementById, querySelectorAll } from './helperFunctions.js';
+import { getElementById, querySelectorAll } from '../utility/helperFunctions.js';
 
 /** Represents a ship.* 
  * @class */

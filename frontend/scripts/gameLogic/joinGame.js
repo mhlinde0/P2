@@ -1,6 +1,6 @@
 /** @module joinGame */
-import { User } from "./state.js";
-import { getElementById, getInputElement } from "./helperFunctions.js";
+import { User } from "../utility/state.js";
+import { getElementById, getInputElement } from "../utility/helperFunctions.js";
 
 /*
 if (!User()) {

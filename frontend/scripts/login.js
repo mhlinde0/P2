@@ -1,8 +1,7 @@
 /** @module login */
-import { setCookie, getCookie } from './cookies.js';
-import { setLoading } from './loading.js';
-import { setUser, User } from './state.js';
-import { getElementById, getInputElement } from './helperFunctions.js';
+import { setLoading } from './utility/loading.js';
+import { setUser, User } from './utility/state.js';
+import { getElementById, getInputElement, getCookie, setCookie } from './utility/helperFunctions.js';
 
 
 const loginForm = getElementById("loginForm");
