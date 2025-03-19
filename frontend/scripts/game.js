@@ -408,11 +408,12 @@ function randomizeShipPlacement(boardSide) {
  * Update the game state on the backend with the player's board and ready status.
  *
  * @param {string} userId - The current user's ID.
- * @param {object} board - The board object following the new schema (e.g., { ships: [...], shots: [...] }).
+ * @param {object} ships - The ships object including name, length, rotation and location
+ * @param {array} shots - Array of shots fired by the user
  * @param {boolean} ready - The readiness flag.
  * @returns {Promise<object>} - The updated game data from the backend.
  */
-export async function updateGameState(userId, board, ready) {
+export async function updateGameState(userId, ships, shots, ready) {
     // Retrieve the gameId from sessionStorage
     const gameId = sessionStorage.getItem("gameId");
     console.log("Game ID from sessionStorage:", gameId);
@@ -425,7 +426,7 @@ export async function updateGameState(userId, board, ready) {
       const response = await fetch(`/game`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ gameId, userId, board, ready })
+        body: JSON.stringify({ gameId, userId, ships, shots, ready })
       });
   
       if (!response.ok) {
@@ -444,19 +445,40 @@ export async function updateGameState(userId, board, ready) {
   const readyButton = document.getElementById("readyButton");
   readyButton?.addEventListener("click", () => {
     const userId = User()._id;
-    const board = {
-      ships: shipsClass.map(ship => ({
-        name: ship.name,
-        length: ship.length,
-        rotation: ship.rotation,
-        location: ship.location
-      })),
-      shots: firedShots
-    };
+
+    const ships = shipsClass.map(ship => ({
+      name: ship.name,
+      length: ship.length,
+      rotation: ship.rotation,
+      location: ship.location
+    }));
   
-    updateGameState(userId, board, true);
+    const shots = firedShots;
+  
+    updateGameState(userId, ships, shots, true);
   });
 
+  // Checks for game status
+  async function checkGameState() {
+    const gameId = sessionStorage.getItem('gameId');
+    if (!gameId) return;
+  
+    try {
+      // Fetch from the dedicated endpoint
+      const response = await fetch(`/game/state?gameId=${gameId}`);
+      if (!response.ok) throw new Error(`Server error: ${response.status}`);
+      
+      const gameData = await response.json();
+      if (gameData.status === 'active') {
+        hideBanner();
+        clearInterval(pollingInterval); // Removes the timer if game status is active
+      }
+    } catch (error) {
+      console.error("Error checking game state:", error);
+    }
+  }
+  // Sets a timer that calls checkGameState every 1 seconds
+  const pollingInterval = setInterval(checkGameState, 1000);
 
 function fireCannon(e) {
     if (battleBegun === 1) {
@@ -581,8 +603,8 @@ let ownHits = 0;
 let battleBegun = 0;
 initializeBotGame(); // starts bot game
 
-const cancelButton = document.getElementById('cancelButton');
-const banner = document.getElementById('banner');
+const cancelButton = getElementById('cancelButton');
+const banner = getElementById('banner');
 
 function showBanner() {
     banner.style.visibility = 'visible';
