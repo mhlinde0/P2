@@ -5,7 +5,6 @@ import Game from "../models/game.js";
  * // Create a new game (lobby creation)
  * @param {any} req 
  * @param {any} res 
- * @returns 
  */
 export const createGame = async (req, res) => {
   try {
@@ -22,12 +21,14 @@ export const createGame = async (req, res) => {
 
     // Create a game document with the creator as the only player initially
     const newGame = new Game({
+
       gameCode,
       players: [{
         userId,
-        board: { ships: [], shots: [] },
+        ships: [],
+        shots: [],
         ready: false
-      }],
+      }],//board: { ships: [], shots: [] }, //<----
       status: 'waiting'
     });
 
@@ -43,7 +44,6 @@ export const createGame = async (req, res) => {
  * Join a game using a lobby code
  * @param {any} req 
  * @param {any} res 
- * @returns 
  */
 export const joinGame = async (req, res) => {
   try {
@@ -70,7 +70,8 @@ export const joinGame = async (req, res) => {
     // pusher en player objekt til game (tilføjer p2)
     game.players.push({
       userId,
-      board: { ships: [], shots: [] },
+      ships:[],
+      shots: [],
       ready: false
     });
 
@@ -88,16 +89,17 @@ export const joinGame = async (req, res) => {
  * Update game details (e.g., updating ship placements and setting "ready")
  * @param {any} req 
  * @param {any} res 
- * @returns 
  */
 export const updateGame = async (req, res) => {
   try {
+
     // Expect gameId to be sent in the request body (this is the _id from MongoDB)
     const { gameId, userId, board, ready } = req.body;
     console.log("Updating game with ID:", gameId); // Debug log
     
     if (!userId || !gameId) {
       return res.status(400).json({ error: 'userId and gameId are required' });
+
     }
 
     const game = await Game.findById(gameId);
@@ -114,8 +116,11 @@ export const updateGame = async (req, res) => {
     }
 
     // Update board (ship placements) and readiness flag if provided
-    if (board) {
-      player.board = board;
+    if(ships){
+      player.ships=ships;
+    }
+    if(shots){
+      player.shots=shots;
     }
     if (typeof ready === 'boolean') {
       player.ready = ready;

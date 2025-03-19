@@ -4,6 +4,7 @@ import { setLoading } from './loading.js';
 import { setUser, User } from './state.js';
 import { getElementById, getInputElement } from './helperFunctions.js';
 
+
 const loginForm = getElementById("loginForm");
 const rememberMeBox = getInputElement("rememberMe");
 const apiBase = '/'
