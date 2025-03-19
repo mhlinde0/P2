@@ -92,14 +92,19 @@ export const joinGame = async (req, res) => {
  */
 export const updateGame = async (req, res) => {
   try {
-    const gameId = req.params.id;
-    //const { userId, board, ready } = req.body; //<---
-    const { userId,ships,shots, ready } = req.body; //<---
-    if (!userId) {
-      return res.status(400).json({ error: 'userId is required' });
+
+    // Expect gameId to be sent in the request body (this is the _id from MongoDB)
+    const { gameId, userId, board, ready } = req.body;
+    console.log("Updating game with ID:", gameId); // Debug log
+    
+    if (!userId || !gameId) {
+      return res.status(400).json({ error: 'userId and gameId are required' });
+
     }
 
     const game = await Game.findById(gameId);
+    console.log("Game found:", game); // Debug log
+
     if (!game) {
       return res.status(404).json({ error: 'Game not found' });
     }
@@ -124,7 +129,6 @@ export const updateGame = async (req, res) => {
     // If both players have joined and are ready, update the game status and set the current turn
     if (game.players.length === 2 && game.players.every(p => p.ready)) {
       game.status = 'active';
-      // Set currentTurn to one of the players (e.g., the first one)
       game.currentTurn = game.players[0].userId;
     }
 

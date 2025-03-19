@@ -10,6 +10,6 @@ router.post('/create', createGame);
 router.put('/join', joinGame);
 
 // Route to update game details (e.g., ship placements and readiness)
-router.put('/:id', updateGame);
+router.put('/', updateGame);
 
 export default router;

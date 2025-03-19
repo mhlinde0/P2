@@ -37,7 +37,7 @@ router.get('/settings', (req, res) => {
     res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'settings.html'));
 });
 
-router.get('/game:id', (req, res) => {
+router.get('/game:id?', (req, res) => {
     res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'game.html'));
 });
 
