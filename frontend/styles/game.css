@@ -1,8 +1,7 @@
 @import url(styles.css);
 
 body {
-    background-image: none;
-    background-color: var(--background);
+
 }
 
 .gameBoard {
@@ -54,7 +53,7 @@ body {
     border: 1px black;
     border-style: solid;
     box-sizing: border-box;
-    background-color: red;
+    background-color: var(--link-color);
 }
 
 /* Laver et rødt kryds på hitSquare ved at dele background-image op i 2 med hældningen 45% (den er transparent fra start til 50% - 1px og 50% + 1px til slut*/
@@ -77,7 +76,7 @@ body {
     left: 50%;
     width: 20px; 
     height: 20px;
-    background-color: white;
+    background-color: rgb(0, 0, 0);
     border-radius: 50%;
     transform: translate(-50%, -50%);
 }
@@ -85,9 +84,12 @@ body {
 .shipSelectionWrapper {
     width: 500px;
     height: 200px;
-    background-color:var(--secondary);
-    border: 2px black;
-    border-style: solid;
+    padding: 35px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.692);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.507);
     display: flex;
 }
 
@@ -171,6 +173,7 @@ body {
 
 #gameButtonWrapper {
     height: 25px;
+    padding: 3px;
 }
 
 
