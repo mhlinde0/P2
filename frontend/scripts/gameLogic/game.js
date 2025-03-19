@@ -16,7 +16,6 @@ let Game = {
     'gameCode': gameCode(),
 };
 
-
 // Initialise game state
 document.addEventListener("DOMContentLoaded", () => {
     setBanner(true);
@@ -36,7 +35,7 @@ setInterval(() => {
     if (Game.status === "active") {
         setBanner(false)
     }
-}, 2000)
+}, 1500)
 
 
 /** Array of ship div elements
@@ -113,8 +112,9 @@ export function initializeFields() {
             field.dataset.index = String(i + 1);
 
             // Adds hover effect when dragging ship to left squares
-            if (side == "left ") {
-                field.addEventListener("dragenter", (e) => {
+    
+            if (side == "left") {
+                field.addEventListener("dragover", (e) => {
                     e.preventDefault();
                     field.style.border = "2px solid black"
                 })
