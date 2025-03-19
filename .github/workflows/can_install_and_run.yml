@@ -13,8 +13,8 @@ jobs:
 
     - name: add .env file
       run: |
-        echo "ATLAS_URI='mongodb+srv://cls0:BqoQvMjBEVSU3myD@cluster0.qzam1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'" > .env
-    
+        echo "ATLAS_URI='mongodb+srv://cls0:BqoQvMjBEVSU3myD@cluster0.qzam1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'" > backend/.env
+
     - name: Install dependencies
       run: |
         npm install
