@@ -1,23 +1,21 @@
 /** @module game */
 
-import { User, setUser } from '../utility/state.js';
+import { User, setUser, gameCode, setGameCode, gameID, setGameID } from '../utility/state.js';
 import { setBanner } from '../utility/ui.js';
 import { getElementById, querySelectorAll } from '../utility/helperFunctions.js';
 
 
+let Game = Object;
+
+getElementById("gameCode").innerHTML = `Game Code: ${gameCode()}`;
+
+// Fetches gameData every 2 seconds and udates game object
+setInterval(()=>{
+
+    fetchGameData();
 
 
-
-
-
-
-
-
-
-
-
-
-
+}, 2000)
 
 
 const apiBase = '/';
@@ -437,78 +435,97 @@ export function randomizeShipPlacement(boardSide) {
  * @returns {Promise<object>} - The updated game data from the backend.
  */
 export async function updateGameState(userId, ships, shots, ready) {
-    // Retrieve the gameId from sessionStorage
-    const gameId = sessionStorage.getItem("gameId");
-    console.log("Game ID from sessionStorage:", gameId);
-    if (!gameId) {
-      console.error("Game ID not found in session storage");
-      return;
+    const id = gameID();
+    if (!id) {
+        console.error("Game ID not found in session storage");
+        return;
     }
-  
-    try {
-      const response = await fetch(`/game`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ gameId, userId, ships, shots, ready })
-      });
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-  
-      const updatedGame = await response.json();
-      console.log("Game updated successfully:", updatedGame);
-      return updatedGame;
-    } catch (error) {
-      console.error("Error updating game:", error);
-      throw error;
-    }
-  }
 
-  const readyButton = document.getElementById("readyButton");
-  readyButton?.addEventListener("click", () => {
+    try {
+        const response = await fetch(`/game`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({id, userId, ships, shots, ready })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const updatedGame = await response.json();
+        console.log("Game updated successfully:", updatedGame);
+        return updatedGame;
+    } catch (error) {
+        console.error("Error updating game:", error);
+        throw error;
+    }
+}
+
+const readyButton = document.getElementById("readyButton");
+readyButton?.addEventListener("click", () => {
     const userId = User()._id;
 
     const ships = shipsClass.map(ship => ({
-      name: ship.name,
-      length: ship.length,
-      rotation: ship.rotation,
-      location: ship.location
+        name: ship.name,
+        length: ship.length,
+        rotation: ship.rotation,
+        location: ship.location
     }));
-  
+
     const shots = firedShots;
-  
+
     updateGameState(userId, ships, shots, true);
-  });
+});
 
-  // Checks for game status
-async function checkGameStatus() {
-    const gameId = sessionStorage.getItem('gameId');
-    if (!gameId) return;
-  
+// Checks for game status
+async function fetchGameData() {
+
+    if (!gameID()) return;
+
     try {
-    // Fetch from the dedicated endpoint
-    const response = await fetch(`/game/data?gameId=${gameId}`);
-    if (!response.ok) throw new Error(`Server error: ${response.status}`);
-      
-    const gameData = await response.json();
+        // Fetch from the dedicated endpoint
+        const response = await fetch(`/game/data?gameId=${gameID()}`);
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
-    if (gameData.status === 'active') {
-        hideBanner();
-        clearInterval(checkGameStatusTimer); // Removes the timer if game status is active
+        const gameData = await response.json();
+        Game = gameData
+        console.log("game:",Game)
+
+    } catch (error) {
+        console.error("Error fetching gameData:", error);
     }
+}
+
+
+
+// Checks for game status
+async function checkGameStatus() {
+
+    if (!gameID()) return;
+
+    try {
+        // Fetch from the dedicated endpoint
+        const response = await fetch(`/game/data?gameId=${gameID()}`);
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+        const gameData = await response.json();
+
+        if (gameData.status === 'active') {
+            setBanner(true);
+            clearInterval(checkGameStatusTimer); // Removes the timer if game status is active
+        }
     } catch (error) {
         console.error("Error checking game state:", error);
     }
 }
 
 async function checkCurrentTurn() {
-    const gameId = sessionStorage.getItem('gameId');
     const userId = User()._id;
-    if (!gameId) return;
+
+    if (!gameID()) return;
 
     try {
-        const response = await fetch(`/game/data?gameId=${gameId}`);
+        const response = await fetch(`/game/data?gameId=${gameID()}`);
         if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
         const gameData = await response.json();
@@ -520,38 +537,35 @@ async function checkCurrentTurn() {
     } catch (error) {
         console.error("Error checking game state:", error);
     }
-
-
-
 }
 
 function fireCannon(e) {
     if (battleBegun === 1) {
-      const firedAtSquare = e.currentTarget;
-      const squareNumber = parseInt(firedAtSquare.dataset.index, 10); // Get the square number
-      
-      if (!firedShots.includes(squareNumber)) {
-        firedShots.push(squareNumber);
-      }
-      
-      if (leftSquareArray.includes(firedAtSquare)) {
-        alert("Cannot fire at your own board");
-        return;
-      } else if (occupiedSquareArrayRight.includes(firedAtSquare)) {
-        firedAtSquare.classList.remove("occupiedSquare");
-        firedAtSquare.classList.add("hitSquare");
-        console.log("Hit shot");
-        ownHits += 1;
-      } else {
-        firedAtSquare.classList.add("missedSquare");
-        console.log("Missed shot");
-      }
-      
-      turn = 0;
-      console.log(turn);
-      console.log(firedAtSquare.id);
+        const firedAtSquare = e.currentTarget;
+        const squareNumber = parseInt(firedAtSquare.dataset.index, 10); // Get the square number
+
+        if (!firedShots.includes(squareNumber)) {
+            firedShots.push(squareNumber);
+        }
+
+        if (leftSquareArray.includes(firedAtSquare)) {
+            alert("Cannot fire at your own board");
+            return;
+        } else if (occupiedSquareArrayRight.includes(firedAtSquare)) {
+            firedAtSquare.classList.remove("occupiedSquare");
+            firedAtSquare.classList.add("hitSquare");
+            console.log("Hit shot");
+            ownHits += 1;
+        } else {
+            firedAtSquare.classList.add("missedSquare");
+            console.log("Missed shot");
+        }
+
+        turn = 0;
+        console.log(turn);
+        console.log(firedAtSquare.id);
     }
-  }
+}
 
 
 function removeButtonEventListener() {
@@ -572,7 +586,9 @@ setBanner(true);
 
 cancelButton.addEventListener('click', () => {
     setBanner(false);
-    window.location.href = "/createGame";
+    setGameID(null)
+    setGameCode(null)
+    window.location.href = "/";
 });
 
 

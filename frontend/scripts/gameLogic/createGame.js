@@ -1,7 +1,7 @@
 /** @module createGame */
 
 import { getElementById, getInputElement } from "../utility/helperFunctions.js";
-import { User, setUser } from '../utility/state.js';
+import { User, setGameCode, setGameID } from '../utility/state.js';
 
 const apiBase = '/';
 
@@ -30,10 +30,10 @@ async function createGame(userId, gameCode) {
     console.log("Game created:", data);
 
     // Store the _id from the MongoDB document
-    sessionStorage.setItem('gameId', data._id);
+    setGameID(data._id)
+    setGameCode(data.gameCode);
     window.location.href = '/game';
 
-    return data._id;
   } catch (error) {
     console.error("Error creating game:", error);
   }
@@ -47,13 +47,13 @@ async function createGame(userId, gameCode) {
       createGameButton.addEventListener("click", () => {
         console.log("Create game button clicked");
         const userId = User()._id;
-        const gameCode = gameCodeInput.value.trim();
-        console.log(gameCode);
-        if (!gameCode) {
+        const gc = gameCodeInput.value.trim();
+        console.log(gc);
+        if (!gc) {
           alert("Please enter a game code.");
           return;
         }
-        createGame(userId, gameCode);
+        createGame(userId, gc);
       });
     }
   });

@@ -20,8 +20,41 @@ export function setUser(user) {
 }
 
 
+/**
+ * 
+ * @returns string
+ */
+export const gameCode = () => {
+    const id = localStorage.getItem("gameCode")
+    return id ? JSON.parse(id) : null;
+}
 
+/**
+ *  SAVES THE USER IN BROWSER STORAGE, SO WE WONT GET LOGGED OUT EACH TIME WE LEAVE PAGE
+ * @function
+ * @param {string|null} id - object with user data
+ */
+export function setGameCode(id) {
+    localStorage.setItem("gameCode", JSON.stringify(id));
+}
 
+/**
+ * 
+ * @returns string
+ */
+export const gameID = () => {
+    const id = localStorage.getItem("gameID")
+    return id ? JSON.parse(id) : null;
+}
+
+/**
+ *  SAVES THE USER IN BROWSER STORAGE, SO WE WONT GET LOGGED OUT EACH TIME WE LEAVE PAGE
+ * @function
+ * @param {string|null} id - object with user data
+ */
+export function setGameID(id) {
+    localStorage.setItem("gameID", JSON.stringify(id));
+}
 
 /**
  * gets the volume settings from browser storage
