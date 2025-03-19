@@ -19,12 +19,11 @@ let Game = {
 
 // Initialise game state
 document.addEventListener("DOMContentLoaded", () => {
-    // setBanner(true);
+    setBanner(true);
     getElementById("gameCode").innerHTML = `Game Code: ${gameCode()}`;
     initializeFields();
 })
 
-fetchGameData();
 
 // Fetches gameData every x milliseconds and udates game object
 setInterval(() => {
@@ -522,6 +521,7 @@ async function checkCurrentTurn() {
     }
 }
 */
+
 function fireCannon(e) {
     if (battleBegun === 1) {
         const firedAtField = e.currentTarget;
