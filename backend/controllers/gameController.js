@@ -147,3 +147,19 @@ export const updateGame = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
+
+export async function getGameStatus(req, res) {
+  try {
+    const { gameId } = req.query;
+    if (!gameId) {
+      return res.status(400).json({ error: 'No gameId provided' });
+    }
+    const game = await Game.findById(gameId);
+    if (!game) {
+      return res.status(404).json({ error: 'Game not found' });
+    }
+    res.status(200).json(game);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}

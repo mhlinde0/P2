@@ -67,7 +67,11 @@ const leftSquareArray = [];
  *  @type {Array<HTMLElement>}  */
 const rightSquareArray = [];
 
+// Sets a timer that calls checkGameStatus every 1 seconds
+const checkGameStatusTimer = setInterval(checkGameStatus, 1000);
 
+// Sets time that calls checkCurrentTurn
+const checkCurrentTurnTimer = setInterval(checkCurrentTurn, 1000);
 let firedShots = [];
 
 let currentHoveredShip = null;
@@ -462,26 +466,48 @@ export async function updateGameState(userId, ships, shots, ready) {
   });
 
   // Checks for game status
-  async function checkGameState() {
+async function checkGameStatus() {
     const gameId = sessionStorage.getItem('gameId');
     if (!gameId) return;
   
     try {
-      // Fetch from the dedicated endpoint
-      const response = await fetch(`/game/state?gameId=${gameId}`);
-      if (!response.ok) throw new Error(`Server error: ${response.status}`);
+    // Fetch from the dedicated endpoint
+    const response = await fetch(`/game/data?gameId=${gameId}`);
+    if (!response.ok) throw new Error(`Server error: ${response.status}`);
       
-      const gameData = await response.json();
-      if (gameData.status === 'active') {
+    const gameData = await response.json();
+
+    if (gameData.status === 'active') {
         hideBanner();
-        clearInterval(pollingInterval); // Removes the timer if game status is active
-      }
-    } catch (error) {
-      console.error("Error checking game state:", error);
+        clearInterval(checkGameStatusTimer); // Removes the timer if game status is active
     }
-  }
-  // Sets a timer that calls checkGameState every 1 seconds
-  const pollingInterval = setInterval(checkGameState, 1000);
+    } catch (error) {
+        console.error("Error checking game state:", error);
+    }
+}
+
+async function checkCurrentTurn() {
+    const gameId = sessionStorage.getItem('gameId');
+    const userId = User()._id;
+    if (!gameId) return;
+
+    try {
+        const response = await fetch(`/game/data?gameId=${gameId}`);
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+        const gameData = await response.json();
+
+        if (gameData.currentTurn === userId) {
+            turn = 1;
+            clearInterval(checkCurrentTurnTimer);
+        }
+    } catch (error) {
+        console.error("Error checking game state:", error);
+    }
+
+
+
+}
 
 function fireCannon(e) {
     if (battleBegun === 1) {
