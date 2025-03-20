@@ -15,7 +15,7 @@ const ShipSchema = new Schema({
 const PlayerSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   ships: [ShipSchema],
-  shots: { type: [Number], default: [] },  // Each shot represented as a number (e.g., 45)
+  shots: { type: [Number], default: [], unique: true},  // Each shot represented as a number (e.g., 45)
   ready: { type: Boolean, default: false }
 }, { _id: false });
 

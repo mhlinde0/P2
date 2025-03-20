@@ -7,22 +7,36 @@ import { createShips, Ship } from './ships.js';
 import { boardHeight, boardWidth } from './board.js';
 
 
-const apiBase = '/';
-
-
-// holds the game object 
+const turnElmnt = getElementById("turn")
 
 
 initializeGame()
 
 let fetchDataInterval = null
 
+checkGameState();
+setFetchInterval();
+
+// CONSTANTLY CHECKS WHOS TURN IT IS
+setInterval(() => {
+    if (Game().currentTurn == User()._id) {
+        turnElmnt.innerHTML = "Your turn" 
+        clearInterval(fetchDataInterval);
+        fetchDataInterval = null;
+    } else {
+        turnElmnt.innerHTML = "Enemy turn"
+    }
+}, 500)
+
+
+// FETCHES GAME DATA EVERY 2 SECONDS
 function setFetchInterval() {
-    // Fetches gameData every x milliseconds and udates game object
-    fetchDataInterval = setInterval(() => {
-        fetchGameData();
-        checkGameState();
-    }, 2000)
+    if (!fetchDataInterval) {
+        fetchDataInterval = setInterval(() => {
+            fetchGameData();
+            checkGameState();
+        }, 2000)
+    }
 }
 
 function checkGameState() {
@@ -35,15 +49,8 @@ function checkGameState() {
     if (Game().status === "active") {
         setBanner(false)
     }
-    if (isYourTurn()) {
-        console.log("clearing interval...")
-        clearInterval(fetchDataInterval);
-    }
 }
 
-function isYourTurn() {
-    return Game().currentTurn == User()._id ? true : false;
-}
 
 /** Fetches game data, and initalizes the fields;
  * @function
@@ -84,10 +91,8 @@ const shipsDiv = querySelectorAll(".ship");
 const occupiedFieldArrayLeft = [];
 
 
-let firedShots = [];
 
 let currentHoveredShip = null;
-
 
 /** Creates 100 fields to fill the game boards and adds drag and drop functionalty to them
  * @function
@@ -132,15 +137,10 @@ export function initializeFields() {
                     onShipDrop(e);
                 });
             }
-            if (side == "right") {
-                field.addEventListener("click", (e) => {
-                    console.log("fireCannon triggered");
-                    fireCannon(e);
-                });
-            }
+            if (side == "right") field.addEventListener("click", fireShot); 
+            
             // Tilføjer field div til gameboard div
             gameboard.append(field);
-
         }
     }
 }
@@ -234,40 +234,6 @@ function getShipObjectByID(ID) {
     return draggedShip
 }
 
-/**
- * 
- * @param {Ship} ship 
- * @returns 
- */
-function findPlacementFields(ship) {
-    console.log("dragged ship:", ship)
-    let fieldIDs = [ship.location];
-    console.log(ship.location);
-    if (ship.rotation == "vertical") {
-
-        for (let i = 1; i <= ship.length; i++) {
-            if ((ship.location + i) % 10 === 1) {
-                alert("ship is is is out of bounds");
-                return [];
-            } else {
-                fieldIDs.push(ship.location + i + 10)
-            }
-        }
-    }
-
-    if (ship.rotation == "horizontal") {
-        for (let i = 1; i <= ship.length; i++) {
-            if ((ship.location + i) % 10 === 1) {
-                alert("ship is is is out of bounds");
-                return [];
-            } else {
-                fieldIDs.push(ship.location + i)
-            }
-        }
-    }
-    console.log("fields:", fieldIDs)
-    return fieldIDs;
-}
 
 /** Checks if the ship is out of the board bounds
  * @function
@@ -279,7 +245,6 @@ function checkForOutOfBounds(startRow, startColumn, shipLength, rotation) {
         return (startColumn + shipLength > boardWidth);
     }
 }
-
 
 /** checks if there already are any ships on the fields
  * @function
@@ -342,7 +307,6 @@ shipsDiv.forEach(ship => {
 
     })
 })
-
 
 // Select a ship when hovered
 shipsDiv.forEach((ship) => {
@@ -451,11 +415,10 @@ export function randomizeShipPlacement(boardSide) {
  *
  * @param {string} userId - The current user's ID.
  * @param {object} ships - The ships object including name, length, rotation and location
- * @param {array} shots - Array of shots fired by the user
  * @param {boolean} ready - The readiness flag.
  * @returns {Promise<object>} - The updated game data from the backend.
  */
-export async function updateGameState(userId, ships, shots, ready) {
+export async function submitShips(userId, ships, ready) {
     const id = Game()._id;
     if (!id) {
         console.error("Game ID not found in session storage");
@@ -463,14 +426,14 @@ export async function updateGameState(userId, ships, shots, ready) {
     }
 
     try {
-        const response = await fetch("/game/updateGame", {
+        const response = await fetch("/game/submitShips", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id, userId, ships, shots, ready })
+            body: JSON.stringify({ id, userId, ships, ready })
         });
 
         if (!response.ok) {
-            throw new Error("HTTP error! status: ${response.status}");
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const updatedGame = await response.json();
@@ -482,18 +445,22 @@ export async function updateGameState(userId, ships, shots, ready) {
     }
 }
 
+
+
+
 const readyButton = document.getElementById("readyButton");
+
 readyButton?.addEventListener("click", () => {
     const userId = User()._id;
 
-    updateGameState(userId, shipsClass, firedShots, true);
+    submitShips(userId, shipsClass, true);
 });
 
 
 // Checks for game status
 async function fetchGameData() {
 
-    if (!Game) return;
+    if (!Game()) return;
 
     try {
         // Fetch from the dedicated endpoint
@@ -505,8 +472,14 @@ async function fetchGameData() {
         }
 
         const gameData = await response.json();
+        
         setGame(gameData)
-        console.log("game:", Game())
+        
+        console.log("turn:", Game().currentTurn)
+        console.log("player 0 shots:", Game().players[0].shots)
+        if (Game().players[1]) {
+            console.log("player 1 shots:", Game().players[1].shots)
+        }
 
         if (!Game()) {
             console.log("game")
@@ -521,43 +494,94 @@ async function fetchGameData() {
 }
 
 
+async function fireShot(e) {
+    e.preventDefault();
+    const id = Game()._id;
 
-function fireCannon(e) {
-    if (Game().currentTurn === User()._id) {
-        const firedAtField = e.currentTarget;
-        const fieldNumber = parseInt(firedAtField.dataset.index, 10); // Get the field number
+    if (Game().currentTurn !== User()._id || !id) {
+        return;
+    }
+    if (!Game().players[0].ready || !Game().players[1].ready) {
+        window.alert("Waiting for ships to be placed")
+    }
 
-        if (!firedShots.includes(fieldNumber)) {
-            firedShots.push(fieldNumber);
+    const firedAtField = e.currentTarget;
+    const field = parseInt(firedAtField.dataset.index, 10); // Get the field number
+
+    try {
+    
+        const response = await fetch("/game/fireShot", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id, field })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        if (checkIfHit(fieldNumber)) {
+        const updatedGame = await response.json();
+        console.log("Game updated successfully:", updatedGame);
+
+
+        // UPDATE UI FOR SHOT
+        if (checkIfHit(field)) {
             firedAtField.classList.remove("occupiedField");
             firedAtField.classList.add("hitField");
-
             console.log("Hit shot");
         } else {
             firedAtField.classList.add("missedField");
             console.log("Missed shot");
         }
+
+
+        setGame(updatedGame);
+        checkGameState();
+        setFetchInterval();
+
+    } catch (error) {
+        console.error("Error updating game:", error);
+        throw error;
     }
-    setFetchInterval();
+
+
+
+    // UDSKIFT FIELD MED EN KOPI AF SIG SELV, SÅ MAN IKKE KAN SKYDE TO GANGE
+    firedAtField.parentNode.replaceChild(firedAtField.cloneNode(true), firedAtField)
+    checkGameState();
 }
 
 /**
  * 
- * @param {number} fieldNumber 
+ * @param {number} field 
  * @returns 
  */
-function checkIfHit(fieldNumber) {
 
-    console.log("fieldNumber", fieldNumber)
+async function ss(field) {
+
+}
+
+
+/**
+ * 
+ * @param {number} field 
+ * @returns 
+ */
+function checkIfHit(field) {
+
+    console.log("fieldNumber", field)
+    let checkPlayer = 0;
+    
+    if (Game().players[0].userId == User()._id) {
+        checkPlayer = 1
+    }
+
+
     for (let i = 0; i < 5; i++) {
-        if (Game().players[1].ships[i].location.coveredFields.includes(fieldNumber)) {
+        if (Game().players[checkPlayer].ships[i].location.coveredFields.includes(field)) {
             return true;
         }
     }
-
     return false
 }
 
@@ -587,7 +611,7 @@ async function deleteGame() {
 }
 
 
-getElementById("exitGameButton").addEventListener("click", ()=> {
+getElementById("exitGameButton").addEventListener("click", () => {
     deleteGame();
 })
 
