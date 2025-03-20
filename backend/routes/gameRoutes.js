@@ -1,6 +1,6 @@
 import express from "express";
 import { createGame, joinGame, submitShips, getGameData, deleteGame, fireShot} from "../controllers/gameController.js";
-import Game from "../models/Game.js";
+import Game from "../models/game.js";
 
 
 const router = express.Router();

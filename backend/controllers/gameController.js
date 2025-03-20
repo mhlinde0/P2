@@ -1,4 +1,4 @@
-import Game from "../models/Game.js";
+import Game from "../models/game.js";
 import mongoose from "mongoose";
 
 
