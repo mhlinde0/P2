@@ -1,4 +1,5 @@
 import Game from "../models/game.js";
+import mongoose from "mongoose";
 
 
 /**
@@ -162,5 +163,20 @@ export async function getGameData(req, res) {
     res.status(200).json(game);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+}
+
+
+export const deleteGame = async (req, res) => {
+  const { id } = req.params;
+  console.log("id: ", id); //debugging to see in terminal
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(404).json({ success: false, message: "Invalid Game Id" });
+  }
+  try {
+      await Game.findByIdAndDelete(id);
+      res.status(200).json({ success: true, message: "Game deleted" });
+  } catch (error) {
+      res.status(500).json({ success: false, message: "Server Error" });
   }
 }
