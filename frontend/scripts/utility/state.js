@@ -20,6 +20,31 @@ export function setUser(user) {
 }
 
 
+
+/**
+ * Gets the game from the browser local storage
+ * @function
+ * @returns {object|null} 'game' object with email, name and id
+ */
+export const Game = () => {
+    const game = localStorage.getItem("game")
+    return game ? JSON.parse(game) : null;
+}
+
+/**
+ *  SAVES THE USER IN BROWSER STORAGE, SO WE WONT GET LOGGED OUT EACH TIME WE LEAVE PAGE
+ * @function
+ * @param {object|null} game - object with user data
+ */
+export function setGame(game) {
+    localStorage.setItem("game", JSON.stringify(game));
+}
+
+
+
+
+
+
 /**
  * 
  * @returns string
@@ -37,6 +62,9 @@ export const gameCode = () => {
 export function setGameCode(id) {
     localStorage.setItem("gameCode", JSON.stringify(id));
 }
+
+
+
 
 /**
  * 

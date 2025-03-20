@@ -1,16 +1,16 @@
 /** @module game */
 
-import { User, gameCode, setGameCode, gameID, setGameID } from '../utility/state.js';
+import { User, Game, setGame } from '../utility/state.js';
 import { setBanner, setLoading } from '../utility/ui.js';
 import { getElementById, querySelectorAll } from '../utility/helperFunctions.js';
 import { createShips, Ship } from './ships.js';
 import { boardHeight, boardWidth } from './board.js';
 
+
 const apiBase = '/';
 
 
 // holds the game object 
-let Game = null
 
 
 initializeGame()
@@ -26,13 +26,13 @@ function setFetchInterval() {
 }
 
 function checkGameState() {
-    if (!Game) {
+    if (!Game()) {
         window.location.href = "/"
     }
-    if (Game.status === "waiting") {
+    if (Game().status === "waiting") {
         setBanner(true)
     }
-    if (Game.status === "active") {
+    if (Game().status === "active") {
         setBanner(false)
     }
     if (isYourTurn()) {
@@ -42,7 +42,7 @@ function checkGameState() {
 }
 
 function isYourTurn() {
-    return Game.currentTurn == User()._id ? true : false;
+    return Game().currentTurn == User()._id ? true : false;
 }
 
 /** Fetches game data, and initalizes the fields;
@@ -55,8 +55,8 @@ async function initializeGame() {
 
     await fetchGameData();
 
-    if (Game) {
-        getElementById("gameCode").innerHTML = `Game Code: ${gameCode()}`;
+    if (Game()) {
+        getElementById("gameCode").innerHTML = `Game Code: ${Game().gameCode}`;
         setFetchInterval();
         initializeFields();
     } else {
@@ -456,7 +456,7 @@ export function randomizeShipPlacement(boardSide) {
  * @returns {Promise<object>} - The updated game data from the backend.
  */
 export async function updateGameState(userId, ships, shots, ready) {
-    const id = gameID();
+    const id = Game()._id;
     if (!id) {
         console.error("Game ID not found in session storage");
         return;
@@ -493,20 +493,20 @@ readyButton?.addEventListener("click", () => {
 // Checks for game status
 async function fetchGameData() {
 
-    if (!gameID()) return;
+    if (!Game) return;
 
     try {
         // Fetch from the dedicated endpoint
-        const response = await fetch(`/game/data?gameId=${gameID()}`);
+        const response = await fetch(`/game/data?gameId=${Game()._id}`);
         if (!response.ok) {
             throw new Error(`Server error: ${response.status}`)
         }
 
         const gameData = await response.json();
-        Game = gameData;
-        console.log("game:", Game)
+        setGame(gameData)
+        console.log("game:", Game())
 
-        if (!Game) {
+        if (!Game()) {
             console.log("game")
             // window.location.href = "/"
             throw new Error("could not get game data");
@@ -521,7 +521,7 @@ async function fetchGameData() {
 
 
 function fireCannon(e) {
-    if (Game.currentTurn === User()._id) {
+    if (Game().currentTurn === User()._id) {
         const firedAtField = e.currentTarget;
         const fieldNumber = parseInt(firedAtField.dataset.index, 10); // Get the field number
 
@@ -551,7 +551,7 @@ function checkIfHit(fieldNumber) {
 
     console.log("fieldNumber", fieldNumber)
     for (let i = 0; i < 5; i++) {
-        if (Game.players[1].ships[i].location.coveredFields.includes(fieldNumber)) {
+        if (Game().players[1].ships[i].location.coveredFields.includes(fieldNumber)) {
             return true;
         }
     }
@@ -562,20 +562,18 @@ function checkIfHit(fieldNumber) {
 
 
 async function deleteGame() {
-
-    if (!gameID()) return;
+    if (!Game()) return;
 
     try {
         // Fetch from the dedicated endpoint
-        const response = await fetch(`/game/delete/${gameID()}`, {
+        const response = await fetch(`/game/delete/${Game()._id}`, {
             method: 'DELETE'
         });
         if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
         const gameData = await response.json();
 
-        setGameID(null)
-        setGameCode(null)
+        setGame(null);
         window.location.href = "/";
 
     } catch (error) {
