@@ -499,6 +499,8 @@ async function fetchGameData() {
         // Fetch from the dedicated endpoint
         const response = await fetch(`/game/data?gameId=${Game()._id}`);
         if (!response.ok) {
+            alert("Player left game");
+            setGame(null);
             throw new Error(`Server error: ${response.status}`)
         }
 

@@ -1,16 +1,18 @@
 /** @module register */
+import { User, setUser, Game } from './utility/state.js';
+import { getElementById } from './utility/helperFunctions.js';
+import {showElement, hideElement} from './utility/helperFunctions.js';
+import { setLoading } from './utility/ui.js';
 
-import { User, setUser } from './utility/state.js'
-import { getElementById } from './utility/helperFunctions.js'
 
-// Helper function to show/hide an element by removing or adding the 'hidden' class
-function showElement(id) {
-    getElementById(id).classList.remove('hidden');
+// checks if the user is in a game
+if (Game()) {
+    setLoading(true)
+    setTimeout(()=>{
+        window.location.href = "/game"
+    },1000)
 }
 
-function hideElement(id) {
-    getElementById(id).classList.add('hidden');
-}
 
 // Adjust display based on login state
 if (User()) {
@@ -36,4 +38,5 @@ function signOut() {
     setUser(null); // Removes user from browser storage
     window.location.reload();
 }
+
 
