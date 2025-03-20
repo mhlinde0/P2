@@ -19,7 +19,6 @@ initializeGame()
 /** Fetches game data, and initalizes the fields;
  * @function
  */
-
 async function initializeGame() {
     console.log("Initializing game...")
     setLoading(true)
@@ -27,13 +26,16 @@ async function initializeGame() {
     await fetchGameData();
 
     if (Game) {
-        setBanner(true);
+
         getElementById("gameCode").innerHTML = `Game Code: ${gameCode()}`;
         // Fetches gameData every x milliseconds and udates game object
         setInterval(() => {
             fetchGameData();
             if (!Game) {
                 window.location.href = "/"
+            }
+            if (Game.status === "waiting") {
+                setBanner(true)
             }
             if (Game.status === "active") {
                 setBanner(false)
@@ -47,9 +49,8 @@ async function initializeGame() {
     setLoading(false)
 }
 
-window.onbeforeunload = function() {
-
-    window.alert("Are you sure you want to leave the game?") 
+// makes sure the user cant leave the game by pressing going back, without confirming
+window.onbeforeunload = function () {
     return true;
 };
 
@@ -90,7 +91,6 @@ let turn = 1;
 let battleBegun = 0;
 let enemyHits = 0;
 let ownHits = 0;
-
 
 
 /** Creates 100 fields to fill the game boards and adds drag and drop functionalty to them
@@ -135,7 +135,7 @@ export function initializeFields() {
                 })
             }
             // Adds hover effect when dragging ship
-            if (side == "right") {
+            if (side == "left") {
                 field.addEventListener("drop", (e) => {
                     console.log("onShipDrop triggered");
                     onShipDrop(e);
@@ -160,43 +160,32 @@ function onShipDrop(e) {
     e.preventDefault();
 
     const field = e.currentTarget;
+
     const side = field.dataset.side;
-    const shipId = e.dataTransfer.getData("text/plain"); // text/plain fortæller at dataen vi leder efter er ren tekst
-    const draggedShipElement = getElementById(shipId);
-    let draggedShip = null;
-
-
-
-    // finder hvilken class ship vi skal bruge ud fra html elementet
-    if (draggedShipElement.id === "destroyerSize2") {
-        draggedShip = shipsClass[0] // destoryer
-    } else if (draggedShipElement.id === "submarineSize3") {
-        draggedShip = shipsClass[1]; // submarine
-    } else if (draggedShipElement.id === "cruiserSize3") {
-        draggedShip = shipsClass[2]; // cruiser
-    } else if (draggedShipElement.id === "battleshipSize4") {
-        draggedShip = shipsClass[3]; // battleship
-    } else if (draggedShipElement.id === "carrierSize5") {
-        draggedShip = shipsClass[4]; // carrier
-    }
-
-    if (!draggedShip) {
-        throw new Error("Couldn't handle ship draggin properly");
-    }
-
-    const droppedField = parseInt(field.dataset.index, 10);
-    const draggedShipLength = draggedShip.length;
-    const draggedShipRotation = parseInt(draggedShipElement.getAttribute("data-rotation") || "0", 10); // Finder skibets nuværende rotation ved at finde attributen "data-rotation" og give den som en int
-
-    const startColumn = (droppedField - 1) % boardWidth;
-    const startRow = Math.floor((droppedField - 1) / boardWidth);
-
-    let coveredFields = [];
-
     if (checkForBoardSide(side)) {
         alert("Cannot place ships on opponent's board");
         return;
     }
+
+    const shipId = e.dataTransfer.getData("text/plain"); // text/plain fortæller at dataen vi leder efter er ren tekst
+
+    const shipElmnt = getElementById(shipId);
+
+    const draggedShip = getShipObjectByID(shipElmnt.id);
+
+    const droppedField = parseInt(field.dataset.index, 10);
+
+    const draggedShipLength = draggedShip.length;
+
+    const draggedShipRotation = parseInt(shipElmnt.getAttribute("data-rotation") || "0", 10); // Finder skibets nuværende rotation ved at finde attributen "data-rotation" og give den som en int
+
+    const startColumn = (droppedField - 1) % boardWidth; // finder de næste felter ud fra start
+
+    const startRow = Math.floor((droppedField - 1) / boardWidth);
+
+    let coveredFields = [];
+
+
 
     if (draggedShipRotation % 180 === 0) { // Hvis % 180 === 0 er sandt betyder det at skibet er lodret 
         if (checkForOutOfBounds(startRow, startColumn, draggedShipLength, draggedShipRotation)) {
@@ -227,7 +216,7 @@ function onShipDrop(e) {
         coveredFields: coveredFields
     };
 
-    draggedShipElement.style.display = "none"; // Gør html elementet usynligt når skibet bliver placeret
+    shipElmnt.style.display = "none"; // Gør html elementet usynligt når skibet bliver placeret
 
     assignOccupiedFields(coveredFields, side);
     if (occupiedFieldArrayLeft.length === 17) {
@@ -237,7 +226,63 @@ function onShipDrop(e) {
     console.log(occupiedFieldArrayLeft)
 }
 
+function getShipObjectByID(ID) {
+    let draggedShip = null;
+    // finder hvilken class ship vi skal bruge ud fra html elementet
+    if (ID === "destroyerSize2") {
+        draggedShip = shipsClass[0] // destoryer
+    } else if (ID === "submarineSize3") {
+        draggedShip = shipsClass[1]; // submarine
+    } else if (ID === "cruiserSize3") {
+        draggedShip = shipsClass[2]; // cruiser
+    } else if (ID === "battleshipSize4") {
+        draggedShip = shipsClass[3]; // battleship
+    } else if (ID === "carrierSize5") {
+        draggedShip = shipsClass[4]; // carrier
+    }
+    if (!draggedShip) {
+        throw new Error("Couldn't handle ship draggin properly");
+    }
+    return draggedShip
+}
 
+/**
+ * 
+ * @param {Ship} ship 
+ * @returns 
+ */
+
+/*
+function findPlacementFields(ship) {
+    console.log("dragged ship:", ship)
+    let fieldIDs = [ship.location];
+    console.log(ship.location);
+    if (ship.rotation == "vertical") {
+
+        for (let i = 1; i <= ship.length; i++) {
+            if ((ship.location + i) % 10 === 1) {
+                alert("ship is is is out of bounds");
+                return [];
+            } else {
+                fieldIDs.push(ship.location + i + 10)
+            }
+        }
+    }
+
+    if (ship.rotation == "horizontal") {
+        for (let i = 1; i <= ship.length; i++) {
+            if ((ship.location + i) % 10 === 1) {
+                alert("ship is is is out of bounds");
+                return [];
+            } else {
+                fieldIDs.push(ship.location + i)
+            }
+        }
+    }
+    console.log("fields:",fieldIDs)
+    return fieldIDs;
+}
+*/
 /** Checks if the ship is out of the board bounds
  * @function
  */
