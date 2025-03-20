@@ -103,15 +103,15 @@ export const updateGame = async (req, res) => {
   try {
 
     // Expect gameId to be sent in the request body (this is the _id from MongoDB)
-    const { gameId, userId, ships, shots, ready } = req.body;
-    console.log("Updating game with ID:", gameId); // Debug log
+    const { id, userId, ships, shots, ready } = req.body;
+    console.log("Updating game with ID:", id); // Debug log
     
-    if (!userId || !gameId) {
+    if (!userId || !id) {
       return res.status(400).json({ error: 'userId and gameId are required' });
 
     }
 
-    const game = await Game.findById(gameId);
+    const game = await Game.findById(id);
     console.log("Game found:", game); // Debug log
 
     if (!game) {

@@ -133,18 +133,18 @@ export function initializeFields() {
                     e.preventDefault();
                     field.style.border = "1px solid black"
                 })
-            }
+        
             // Adds hover effect when dragging ship
-            if (side == "left") {
                 field.addEventListener("drop", (e) => {
                     console.log("onShipDrop triggered");
                     onShipDrop(e);
                 });
+            }
+            if (side == "right") {
                 field.addEventListener("click", (e) => {
                     console.log("fireCannon triggered");
                     fireCannon(e);
                 });
-
             }
             // Tilføjer field div til gameboard div
             gameboard.append(field);
@@ -252,7 +252,7 @@ function getShipObjectByID(ID) {
  * @returns 
  */
 
-/*
+
 function findPlacementFields(ship) {
     console.log("dragged ship:", ship)
     let fieldIDs = [ship.location];
@@ -282,7 +282,7 @@ function findPlacementFields(ship) {
     console.log("fields:",fieldIDs)
     return fieldIDs;
 }
-*/
+
 /** Checks if the ship is out of the board bounds
  * @function
  */
@@ -490,14 +490,14 @@ export async function updateGameState(userId, ships, shots, ready) {
     }
 
     try {
-        const response = await fetch(`/game`, {
+        const response = await fetch("/game/updateGame", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id, userId, ships, shots, ready })
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error("HTTP error! status: ${response.status}");
         }
 
         const updatedGame = await response.json();
@@ -513,16 +513,9 @@ const readyButton = document.getElementById("readyButton");
 readyButton?.addEventListener("click", () => {
     const userId = User()._id;
 
-    const ships = shipsClass.map(ship => ({
-        name: ship.name,
-        length: ship.length,
-        rotation: ship.rotation,
-        location: ship.location
-    }));
-
     const shots = firedShots;
 
-    updateGameState(userId, ships, shots, true);
+    updateGameState(userId, shipsClass, shots, true);
 });
 
 
@@ -599,7 +592,7 @@ async function checkCurrentTurn() {
 */
 
 function fireCannon(e) {
-    if (battleBegun === 1) {
+    if (Game.currentTurn === User()._id) {
         const firedAtField = e.currentTarget;
         const fieldNumber = parseInt(firedAtField.dataset.index, 10); // Get the field number
 
@@ -620,7 +613,6 @@ function fireCannon(e) {
             console.log("Missed shot");
         }
 
-        turn = 0;
         console.log(turn);
         console.log(firedAtField.id);
     }
