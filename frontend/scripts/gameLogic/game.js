@@ -3,7 +3,7 @@
 import { User, gameCode, setGameCode, gameID, setGameID } from '../utility/state.js';
 import { setBanner, setLoading } from '../utility/ui.js';
 import { getElementById, querySelectorAll } from '../utility/helperFunctions.js';
-import { createShips } from './ships.js';
+import { createShips, Ship } from './ships.js';
 import { boardHeight, boardWidth } from './board.js';
 
 const apiBase = '/';
@@ -15,6 +15,35 @@ let Game = null
 
 initializeGame()
 
+let fetchDataInterval = null
+
+function setFetchInterval() {
+    // Fetches gameData every x milliseconds and udates game object
+    fetchDataInterval = setInterval(() => {
+        fetchGameData();
+        checkGameState();
+    }, 2000)
+}
+
+function checkGameState() {
+    if (!Game) {
+        window.location.href = "/"
+    }
+    if (Game.status === "waiting") {
+        setBanner(true)
+    }
+    if (Game.status === "active") {
+        setBanner(false)
+    }
+    if (isYourTurn()) {
+        console.log("clearing interval...")
+        clearInterval(fetchDataInterval);
+    }
+}
+
+function isYourTurn() {
+    return Game.currentTurn == User()._id ? true : false;
+}
 
 /** Fetches game data, and initalizes the fields;
  * @function
@@ -22,32 +51,20 @@ initializeGame()
 async function initializeGame() {
     console.log("Initializing game...")
     setLoading(true)
+    setBanner(true)
 
     await fetchGameData();
 
     if (Game) {
-
         getElementById("gameCode").innerHTML = `Game Code: ${gameCode()}`;
-        // Fetches gameData every x milliseconds and udates game object
-        setInterval(() => {
-            fetchGameData();
-            if (!Game) {
-                window.location.href = "/"
-            }
-            if (Game.status === "waiting") {
-                setBanner(true)
-            }
-            if (Game.status === "active") {
-                setBanner(false)
-            }
-
-        }, 1500)
+        setFetchInterval();
         initializeFields();
     } else {
         window.location.href = "/"
     }
     setLoading(false)
 }
+
 
 // makes sure the user cant leave the game by pressing going back, without confirming
 window.onbeforeunload = function () {
@@ -66,31 +83,10 @@ const shipsDiv = querySelectorAll(".ship");
  *  @type {Array<HTMLElement>}  */
 const occupiedFieldArrayLeft = [];
 
-/** Array of fields that are filled by ships 
- *  @type {Array<HTMLElement>}*/
-const occupiedFieldArrayRight = [];
 
-/** Array of fields that are filled by ships 
- *  @type {Array<HTMLElement>}  */
-const leftFieldArray = [];
-
-/** Array of fields that are filled by ships 
- *  @type {Array<HTMLElement>}  */
-const rightFieldArray = [];
-
-// Sets a timer that calls checkGameStatus every 1 seconds
-//const checkGameStatusTimer = setInterval(checkGameStatus, 1000);
-
-// Sets time that calls checkCurrentTurn
-// const checkCurrentTurnTimer = setInterval(checkCurrentTurn, 1000);
 let firedShots = [];
 
 let currentHoveredShip = null;
-
-let turn = 1;
-let battleBegun = 0;
-let enemyHits = 0;
-let ownHits = 0;
 
 
 /** Creates 100 fields to fill the game boards and adds drag and drop functionalty to them
@@ -113,11 +109,7 @@ export function initializeFields() {
 
             field.id = side + "field" + (i + 1);
 
-            if (side === "left") {
-                leftFieldArray.push(field);
-            } else {
-                rightFieldArray.push(field);
-            }
+
 
             field.dataset.side = side;
             field.dataset.index = String(i + 1);
@@ -133,8 +125,8 @@ export function initializeFields() {
                     e.preventDefault();
                     field.style.border = "1px solid black"
                 })
-        
-            // Adds hover effect when dragging ship
+
+                // Adds hover effect when dragging ship
                 field.addEventListener("drop", (e) => {
                     console.log("onShipDrop triggered");
                     onShipDrop(e);
@@ -162,16 +154,12 @@ function onShipDrop(e) {
     const field = e.currentTarget;
 
     const side = field.dataset.side;
-    if (checkForBoardSide(side)) {
-        alert("Cannot place ships on opponent's board");
-        return;
-    }
 
     const shipId = e.dataTransfer.getData("text/plain"); // text/plain fortæller at dataen vi leder efter er ren tekst
 
-    const shipElmnt = getElementById(shipId);
+    const shipElmnt = getElementById(shipId); // htmlElement
 
-    const draggedShip = getShipObjectByID(shipElmnt.id);
+    const draggedShip = getShipObjectByID(shipElmnt.id); // ship object
 
     const droppedField = parseInt(field.dataset.index, 10);
 
@@ -205,7 +193,7 @@ function onShipDrop(e) {
         }
     }
 
-    if (checkForOverlap(coveredFields, side)) {
+    if (checkForOverlap(coveredFields)) {
         alert("Ship overlaps another ship.");
         return;
     }
@@ -219,8 +207,8 @@ function onShipDrop(e) {
     shipElmnt.style.display = "none"; // Gør html elementet usynligt når skibet bliver placeret
 
     assignOccupiedFields(coveredFields, side);
+
     if (occupiedFieldArrayLeft.length === 17) {
-        battleBegun = 1;
         removeButtonEventListener();
     }
     console.log(occupiedFieldArrayLeft)
@@ -251,8 +239,6 @@ function getShipObjectByID(ID) {
  * @param {Ship} ship 
  * @returns 
  */
-
-
 function findPlacementFields(ship) {
     console.log("dragged ship:", ship)
     let fieldIDs = [ship.location];
@@ -279,7 +265,7 @@ function findPlacementFields(ship) {
             }
         }
     }
-    console.log("fields:",fieldIDs)
+    console.log("fields:", fieldIDs)
     return fieldIDs;
 }
 
@@ -295,27 +281,16 @@ function checkForOutOfBounds(startRow, startColumn, shipLength, rotation) {
 }
 
 
-/** Checks what board the player is trying to place ships on
- * @function
- */
-function checkForBoardSide(side) {
-    if (side === "right") {
-        return true;
-    }
-    return false;
-}
-
 /** checks if there already are any ships on the fields
  * @function
  * @param {any} coveredFields
- * @param {"left"|"right"} side - side is either "left" or right
  */
-function checkForOverlap(coveredFields, side) {
-    const occupiedArray = side === "left" ? occupiedFieldArrayLeft : occupiedFieldArrayRight;
+function checkForOverlap(coveredFields) {
+
 
     for (let i = 0; i < coveredFields.length; i++) {
-        const fieldElement = getElementById(side + "field" + (coveredFields[i]));
-        if (occupiedArray.includes(fieldElement)) {
+        const fieldElement = getElementById("leftfield" + (coveredFields[i]));
+        if (occupiedFieldArrayLeft.includes(fieldElement)) {
             return true;
         }
     }
@@ -332,8 +307,6 @@ function assignOccupiedFields(coveredFields, side) {
             fieldElement.classList.add("occupiedField");
             if (side === "left") {
                 occupiedFieldArrayLeft.push(fieldElement);
-            } else if (side === "right") {
-                occupiedFieldArrayRight.push(fieldElement);
             }
         }
     });
@@ -445,7 +418,7 @@ export function randomizeShipPlacement(boardSide) {
                 }
             }
 
-            if (checkForOverlap(coveredFields, boardSide)) {
+            if (checkForOverlap(coveredFields)) {
                 continue;
             }
 
@@ -466,9 +439,9 @@ export function randomizeShipPlacement(boardSide) {
             placed = true;
         }
     })
-    console.log(boardSide === "left" ? occupiedFieldArrayLeft : occupiedFieldArrayRight);
+
     if (boardSide === "left") {
-        battleBegun = 1;
+
         removeButtonEventListener();
     }
 }
@@ -513,9 +486,7 @@ const readyButton = document.getElementById("readyButton");
 readyButton?.addEventListener("click", () => {
     const userId = User()._id;
 
-    const shots = firedShots;
-
-    updateGameState(userId, shipsClass, shots, true);
+    updateGameState(userId, shipsClass, firedShots, true);
 });
 
 
@@ -546,6 +517,99 @@ async function fetchGameData() {
 
     }
 }
+
+
+
+function fireCannon(e) {
+    if (Game.currentTurn === User()._id) {
+        const firedAtField = e.currentTarget;
+        const fieldNumber = parseInt(firedAtField.dataset.index, 10); // Get the field number
+
+        if (!firedShots.includes(fieldNumber)) {
+            firedShots.push(fieldNumber);
+        }
+
+        if (checkIfHit(fieldNumber)) {
+            firedAtField.classList.remove("occupiedField");
+            firedAtField.classList.add("hitField");
+
+            console.log("Hit shot");
+        } else {
+            firedAtField.classList.add("missedField");
+            console.log("Missed shot");
+        }
+    }
+    setFetchInterval();
+}
+
+/**
+ * 
+ * @param {number} fieldNumber 
+ * @returns 
+ */
+function checkIfHit(fieldNumber) {
+
+    console.log("fieldNumber", fieldNumber)
+    for (let i = 0; i < 5; i++) {
+        if (Game.players[1].ships[i].location.coveredFields.includes(fieldNumber)) {
+            return true;
+        }
+    }
+
+    return false
+}
+
+
+
+async function deleteGame() {
+
+    if (!gameID()) return;
+
+    try {
+        // Fetch from the dedicated endpoint
+        const response = await fetch(`/game/delete/${gameID()}`, {
+            method: 'DELETE'
+        });
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+        const gameData = await response.json();
+
+        setGameID(null)
+        setGameCode(null)
+        window.location.href = "/";
+
+    } catch (error) {
+        console.error("Error checking game state:", error);
+    }
+}
+
+
+function removeButtonEventListener() {
+    getElementById("resetButton").removeEventListener("click", resetShipPlacement);
+    getElementById("randomizeButton").removeEventListener("click", () => randomizeShipPlacement("left"));
+}
+
+
+// Event listeners der kalder deres respektive funktioner
+getElementById("resetButton")?.addEventListener("click", resetShipPlacement);
+getElementById("randomizeButton")?.addEventListener("click", () => randomizeShipPlacement("left"));
+
+
+// Waiting for player banner
+const cancelButton = getElementById('cancelButton');
+cancelButton.addEventListener('click', () => {
+    deleteGame();
+
+});
+
+
+
+
+
+
+
+
+
 
 /*
 // Checks for game status
@@ -590,74 +654,3 @@ async function checkCurrentTurn() {
     }
 }
 */
-
-function fireCannon(e) {
-    if (Game.currentTurn === User()._id) {
-        const firedAtField = e.currentTarget;
-        const fieldNumber = parseInt(firedAtField.dataset.index, 10); // Get the field number
-
-        if (!firedShots.includes(fieldNumber)) {
-            firedShots.push(fieldNumber);
-        }
-
-        if (leftFieldArray.includes(firedAtField)) {
-            alert("Cannot fire at your own board");
-            return;
-        } else if (occupiedFieldArrayRight.includes(firedAtField)) {
-            firedAtField.classList.remove("occupiedField");
-            firedAtField.classList.add("hitField");
-            console.log("Hit shot");
-            ownHits += 1;
-        } else {
-            firedAtField.classList.add("missedField");
-            console.log("Missed shot");
-        }
-
-        console.log(turn);
-        console.log(firedAtField.id);
-    }
-}
-
-
-function removeButtonEventListener() {
-    getElementById("resetButton").removeEventListener("click", resetShipPlacement);
-    getElementById("randomizeButton").removeEventListener("click", () => randomizeShipPlacement("left"));
-}
-
-
-// Event listeners der kalder deres respektive funktioner
-getElementById("resetButton")?.addEventListener("click", resetShipPlacement);
-getElementById("randomizeButton")?.addEventListener("click", () => randomizeShipPlacement("left"));
-
-
-// Waiting for player banner
-const cancelButton = getElementById('cancelButton');
-cancelButton.addEventListener('click', () => {
-    deleteGame();
-
-});
-
-
-async function deleteGame() {
-
-    if (!gameID()) return;
-
-    try {
-        // Fetch from the dedicated endpoint
-        const response = await fetch(`/game/delete/${gameID()}`, {
-            method: 'DELETE'
-        });
-        if (!response.ok) throw new Error(`Server error: ${response.status}`);
-
-        const gameData = await response.json();
-
-        setGameID(null)
-        setGameCode(null)
-        window.location.href = "/";
-
-    } catch (error) {
-        console.error("Error checking game state:", error);
-    }
-}
-
-
