@@ -1,5 +1,5 @@
 import express from "express";
-import { createGame, joinGame, updateGame, getGameData} from "../controllers/gameController.js";
+import { createGame, joinGame, updateGame, getGameData, deleteGame} from "../controllers/gameController.js";
 import Game from "../models/game.js";
 
 
@@ -16,5 +16,8 @@ router.put('/', updateGame);
 
 // Route to get data of game
 router.get('/data', getGameData);
+
+router.delete('/delete/:id', deleteGame);
+
 
 export default router;
