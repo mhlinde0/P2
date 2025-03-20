@@ -1,8 +1,12 @@
 @import url(styles.css);
-
-body {
-
+:root {
+    --carrier: #957b5f;
+    --submarine: #fff4db;
+    --battleship: #f88f3a;
+    --cruiser: #bfb368;
+    --destroyer: #65a9cd;
 }
+
 
 .gameBoard {
     background-color:var(--secondary);
@@ -97,7 +101,7 @@ body {
 #carrierSize5 {
     height: 150px;
     width: 30px;
-    background-color: red;
+    background-color: var(--carrier);
     border: 1px black;
     border-style: solid;
     margin: 30px;
@@ -106,7 +110,7 @@ body {
 #battleshipSize4 {
     height: 120px;
     width: 30px;
-    background-color: blue;
+    background-color: var(--battleship);
     border: 1px black;
     border-style: solid;
     margin: 30px;
@@ -115,7 +119,7 @@ body {
 #cruiserSize3 {
     height: 90px;
     width: 30px;
-    background-color: yellow;
+    background-color: var(--cruiser);
     border: 1px black;
     border-style: solid;
     margin: 30px;
@@ -124,7 +128,7 @@ body {
 #submarineSize3 {
     height: 90px;
     width: 30px;
-    background-color: green;
+    background-color: var(--submarine);
     border: 1px black;
     border-style: solid;
     margin: 30px;
@@ -133,32 +137,17 @@ body {
 #destroyerSize2 {
     height: 60px;
     width: 30px;
-    background-color: purple;
+    background-color: var(--destroyer);
     border: 1px black;
     border-style: solid;
     margin: 30px;
 }
 
-#carrierSize5:hover {
-    background-color: rgb(225, 0, 0);
+.ship:hover {
+    cursor: pointer;
+    opacity: 0.6;
 }
 
-#battleshipSize4:hover {
-
-    background-color: rgb(0, 0, 225);
-}
-
-#cruiserSize3:hover {
-    background-color: rgb(225, 225, 0);
-}
-
-#submarineSize3:hover {
-    background-color: rgb(0, 103, 0);
-}
-
-#destroyerSize2:hover {
-    background-color: rgb(103, 0, 103);
-}
 
 .field.right {
     background-color: var(--secondary);
@@ -178,30 +167,6 @@ body {
 }
 
 
-.banner {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    visibility: hidden; 
-}
 
-.bannerWrapper {
-    text-align: center;
-    color: white;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.753);
-    width: 100%;
-}
-
-.banner h2 {
-    margin: 20px 0;
-}
 
 

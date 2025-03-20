@@ -1,6 +1,6 @@
 
 
-class Ship {
+export class Ship {
     /** constuctor method creates a ship with following properties
      * @param {string} name - "destoryer", "submarine", "cruiser", "battliship", "carrier"
      * @param {number} length - how many fields  the ship take up
