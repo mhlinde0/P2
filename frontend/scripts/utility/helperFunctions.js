@@ -46,6 +46,18 @@ export function querySelectorAll(query) {
 }
 
 
+
+// Helper function to show/hide an element by removing or adding the 'hidden' class
+export function showElement(id) {
+    getElementById(id).classList.remove('hidden');
+}
+
+export function hideElement(id) {
+    getElementById(id).classList.add('hidden');
+}
+
+
+
 /**
  * @function
  * @param {string} name 

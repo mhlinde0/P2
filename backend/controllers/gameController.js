@@ -50,11 +50,11 @@ export async function joinGame(req, res) {
   try {
     const { userId, gameCode } = req.body;
     const game = await Game.findOne({ gameCode });
-    
+
     if (!game) {
       return res.status(404).json({ error: 'Game not found' });
     }
-    
+
     // Prevent adding more than 2 players
     if (game.players.length >= 2) {
       return res.status(400).json({ error: 'Game is already full' });
@@ -62,14 +62,14 @@ export async function joinGame(req, res) {
 
     // Ensure the user is not already in the game
     if (game.players.some(player => player.userId.toString() === userId)) {
-      return res.status(400).json({ error: 'User already joined the game' });
+      return res.status(401).json({ error: 'User already joined the game' });
     }
 
     // Ensure the user is not already in the game
     if (game.players.some(player => player.userId.toString() === userId)) {
-      return res.status(400).json({ error: 'User already joined the game' });
+      return res.status(402).json({ error: 'User already joined the game' });
     }
-    
+
     // Add the new player
     game.players.push({
       userId,
@@ -77,77 +77,20 @@ export async function joinGame(req, res) {
       shots: [],
       ready: false
     });
-    
+
     // If both players have joined, update the game status to 'active'
     if (game.players.length === 2) {
       game.status = 'active';
       // Optionally, set the currentTurn (e.g., to the first player's userId)
       game.currentTurn = game.players[0].userId;
     }
-    
+
     const updatedGame = await game.save();
     res.status(200).json(updatedGame);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 }
-
-
-
-/**
- * Update game details (e.g., updating ship placements and setting "ready")
- * @param {any} req 
- * @param {any} res 
- */
-export const updateGame = async (req, res) => {
-  try {
-
-    // Expect gameId to be sent in the request body (this is the _id from MongoDB)
-    const { id, userId, ships, shots, ready } = req.body;
-    console.log("Updating game with ID:", id); // Debug log
-    
-    if (!userId || !id) {
-      return res.status(400).json({ error: 'userId and gameId are required' });
-
-    }
-
-    const game = await Game.findById(id);
-    console.log("Game found:", game); // Debug log
-
-    if (!game) {
-      return res.status(404).json({ error: 'Game not found' });
-    }
-
-    // Find the player in the game document
-    const player = game.players.find(player => player.userId.toString() === userId);
-    if (!player) {
-      return res.status(400).json({ error: 'User not part of this game' });
-    }
-
-    // Update board (ship placements) and readiness flag if provided
-    if(ships){
-      player.ships=ships;
-    }
-    if(shots){
-      player.shots=shots;
-    }
-    if (typeof ready === 'boolean') {
-      player.ready = ready;
-    }
-
-    // If both players have joined and are ready, update the game status and set the current turn
-    if (game.players.length === 2 && game.players.every(p => p.ready)) {
-      game.status = 'active';
-      game.currentTurn = game.players[0].userId;
-    }
-
-    const updatedGame = await game.save();
-    res.json(updatedGame);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Server error' });
-  }
-};
 
 
 export async function getGameData(req, res) {
@@ -171,12 +114,118 @@ export const deleteGame = async (req, res) => {
   const { id } = req.params;
   console.log("id: ", id); //debugging to see in terminal
   if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(404).json({ success: false, message: "Invalid Game Id" });
+    return res.status(404).json({ success: false, message: "Invalid Game Id" });
   }
   try {
-      await Game.findByIdAndDelete(id);
-      res.status(200).json({ success: true, message: "Game deleted" });
+    await Game.findByIdAndDelete(id);
+    res.status(200).json({ success: true, message: "Game deleted" });
   } catch (error) {
-      res.status(500).json({ success: false, message: "Server Error" });
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 }
+
+
+
+
+/**
+ * Update game details (e.g., updating ship placements and setting "ready")
+ * @param {any} req 
+ * @param {any} res 
+ */
+export const submitShips = async (req, res) => {
+  try {
+
+    // Expect gameId to be sent in the request body (this is the _id from MongoDB)
+    const { id, userId, ships, ready } = req.body;
+    console.log("submitShips game with ID:", id); // Debug log
+
+    if (!userId || !id) {
+      return res.status(400).json({ error: 'userId and gameId are required' });
+
+    }
+
+    const game = await Game.findById(id);
+    console.log("Game found:", game); // Debug log
+
+    if (!game) {
+      return res.status(404).json({ error: 'Game not found' });
+    }
+
+    // Find the player in the game document
+    const player = game.players.find(player => player.userId.toString() === userId);
+
+    if (!player) {
+      return res.status(400).json({ error: 'User not part of this game' });
+    }
+    
+    // Update board (ship placements) and readiness flag if provided
+    if (ships) {
+      player.ships = ships;
+    }
+
+    if (typeof ready === 'boolean') {
+      player.ready = ready;
+    }
+
+    // If both players have joined and are ready, update the game status and set the current turn
+    if (game.players.length === 2 && game.players.every(p => p.ready)) {
+      game.status = 'active';
+      game.currentTurn = game.players[0].userId;
+    }
+
+    const updatedGame = await game.save();
+    res.json(updatedGame);
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+
+/**
+ * Update game details (e.g., updating ship placements and setting "ready")
+ * @param {any} req 
+ * @param {any} res 
+ */
+export const fireShot = async (req, res) => {
+  try {
+
+    // Expect gameId to be sent in the request body (this is the _id from MongoDB)
+    const { id, field } = req.body;
+    console.log("fire shot field:", field); // Debug log
+    
+    // game id
+    if (!id) {
+      return res.status(400).json({ error: 'gameId are required' });
+    }
+
+    // find game
+    const game = await Game.findById(id);
+    if (!game) {
+      return res.status(404).json({ error: 'Game not found' });
+    }
+
+    // Find the player in the game document
+    const player = game.players.find(player => player.userId.toString() === game.currentTurn?.toString());
+    if (!player) {
+      return res.status(400).json({ error: 'User not part of this game' });
+    }
+    
+    player.shots.push(field);
+
+    if (game.players[0].userId.toString() == game.currentTurn?.toString()) {
+      game.currentTurn = game.players[1].userId;
+    } else {
+      game.currentTurn = game.players[0].userId;
+    }
+
+    const updatedGame = await game.save();
+    res.json(updatedGame);
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+

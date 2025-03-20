@@ -1,28 +1,43 @@
 /** @module createGame */
 
 import { getElementById, getInputElement } from "../utility/helperFunctions.js";
-import { User, setGameCode, setGameID } from '../utility/state.js';
+import { User, setGame } from '../utility/state.js';
+import { setLoading } from "../utility/ui.js";
 
 const apiBase = '/';
 
-/*
-import { User  } from "./state.js";
 
 if (!User()) {
     window.location.href = "/login"; // go to front page
 }
-*/
 
+const form = getElementById("createGameForm");
+
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const gameCodeInput = getInputElement("gameCodeInput");
+  const gameCode = gameCodeInput.value.trim();
+  createGame(User()._id, gameCode);
+});
+
+/**
+ * 
+ * @param {string} userId 
+ * @param {string} gameCode 
+ */
 
 async function createGame(userId, gameCode) {
+  setLoading(true);
   try {
-    const response = await fetch(apiBase + "game/create", {  
+    const response = await fetch(apiBase + "game/create", {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, gameCode })
     });
 
     if (!response.ok) {
+      window.alert(response.statusText)
       throw new Error(`Server error: ${response.status}`);
     }
 
@@ -30,32 +45,15 @@ async function createGame(userId, gameCode) {
     console.log("Game created:", data);
 
     // Store the _id from the MongoDB document
-    setGameID(data._id)
-    setGameCode(data.gameCode);
+    setGame(data);
     window.location.href = '/game';
 
   } catch (error) {
     console.error("Error creating game:", error);
   }
+  setLoading(false);
 }
-  
-  document.addEventListener("DOMContentLoaded", () => {
-    const createGameButton = getElementById("createGameButton");
-    const gameCodeInput = getInputElement("gameCodeInput") ;
 
-    if (createGameButton) {
-      createGameButton.addEventListener("click", () => {
-        console.log("Create game button clicked");
-        const userId = User()._id;
-        const gc = gameCodeInput.value.trim();
-        console.log(gc);
-        if (!gc) {
-          alert("Please enter a game code.");
-          return;
-        }
-        createGame(userId, gc);
-      });
-    }
-  });
-  
-  export { createGame };
+
+
+

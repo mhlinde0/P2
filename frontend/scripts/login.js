@@ -4,8 +4,10 @@ import { setUser, User } from './utility/state.js';
 import { getElementById, getInputElement, getCookie, setCookie } from './utility/helperFunctions.js';
 
 
+
 const loginForm = getElementById("loginForm");
 const rememberMeBox = getInputElement("rememberMe");
+
 const apiBase = '/'
 
 document.addEventListener("DOMContentLoaded", getUserCookies);
