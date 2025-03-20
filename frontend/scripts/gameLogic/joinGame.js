@@ -1,15 +1,27 @@
 /** @module joinGame */
-import { User, setGameCode, setGameID } from "../utility/state.js";
+import { User, setGame, Game } from "../utility/state.js";
 import { getElementById, getInputElement } from "../utility/helperFunctions.js";
+import { setLoading } from "../utility/ui.js";
 
-/*
+
 if (!User()) {
     window.location.href = "/login";
 }
-    */
+  
+const apiBase = "/";
 
 const form = getElementById('joinGameForm');
-const apiBase = "/";
+const joinGameButton = getElementById("joinGameButton");
+const gameCodeInput = getInputElement("gameCode");
+
+
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const gameCode = gameCodeInput.value.trim();
+
+  joinGame(User()._id, gameCode);
+});
 
 
 
@@ -19,6 +31,7 @@ const apiBase = "/";
  * @param {string} gameCode - The game code entered by the user.
  */
 async function joinGame(userId, gameCode) {
+  setLoading(true);
   try {
     const response = await fetch(apiBase + "game/join", {
       method: 'PUT',
@@ -29,39 +42,24 @@ async function joinGame(userId, gameCode) {
     });
 
     if (!response.ok) {
+      window.alert(response.statusText)
       throw new Error(`Server error: ${response.status}`);
     }
 
     const data = await response.json();
     console.log("Joined game successfully:", data);
 
-    // Save the gameId in session storage so the /game page can access it
-
-    setGameID(data._id)
-    setGameCode(data.gameCode);
+    // Save the game so the /game page can access it
+    setGame(data);
     window.location.href = '/game';
-    
-    return data.gameId;
+
   } catch (error) {
     console.error("Error joining game:", error);
   }
+  setLoading(false);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const joinGameButton = getElementById("joinGameButton");
-  const gameCodeInput = getInputElement("gameCode");
 
-  if (joinGameButton) {
-    joinGameButton.addEventListener("click", () => {
-      console.log("Join game button clicked");
-      const userId = User()._id;
-      const gameCode = gameCodeInput.value.trim();
-      console.log(gameCode);
-      if (!gameCode) {
-        alert("Please enter a lobby code.");
-        return;
-      }
-      joinGame(userId, gameCode);
-    });
-  }
-});
+
+
+

@@ -50,11 +50,11 @@ export async function joinGame(req, res) {
   try {
     const { userId, gameCode } = req.body;
     const game = await Game.findOne({ gameCode });
-    
+
     if (!game) {
       return res.status(404).json({ error: 'Game not found' });
     }
-    
+
     // Prevent adding more than 2 players
     if (game.players.length >= 2) {
       return res.status(400).json({ error: 'Game is already full' });
@@ -62,14 +62,14 @@ export async function joinGame(req, res) {
 
     // Ensure the user is not already in the game
     if (game.players.some(player => player.userId.toString() === userId)) {
-      return res.status(400).json({ error: 'User already joined the game' });
+      return res.status(401).json({ error: 'User already joined the game' });
     }
 
     // Ensure the user is not already in the game
     if (game.players.some(player => player.userId.toString() === userId)) {
-      return res.status(400).json({ error: 'User already joined the game' });
+      return res.status(402).json({ error: 'User already joined the game' });
     }
-    
+
     // Add the new player
     game.players.push({
       userId,
@@ -77,14 +77,14 @@ export async function joinGame(req, res) {
       shots: [],
       ready: false
     });
-    
+
     // If both players have joined, update the game status to 'active'
     if (game.players.length === 2) {
       game.status = 'active';
       // Optionally, set the currentTurn (e.g., to the first player's userId)
       game.currentTurn = game.players[0].userId;
     }
-    
+
     const updatedGame = await game.save();
     res.status(200).json(updatedGame);
   } catch (error) {
@@ -105,7 +105,7 @@ export const updateGame = async (req, res) => {
     // Expect gameId to be sent in the request body (this is the _id from MongoDB)
     const { id, userId, ships, shots, ready } = req.body;
     console.log("Updating game with ID:", id); // Debug log
-    
+
     if (!userId || !id) {
       return res.status(400).json({ error: 'userId and gameId are required' });
 
@@ -125,11 +125,11 @@ export const updateGame = async (req, res) => {
     }
 
     // Update board (ship placements) and readiness flag if provided
-    if(ships){
-      player.ships=ships;
+    if (ships) {
+      player.ships = ships;
     }
-    if(shots){
-      player.shots=shots;
+    if (shots) {
+      player.shots = shots;
     }
     if (typeof ready === 'boolean') {
       player.ready = ready;
@@ -171,12 +171,12 @@ export const deleteGame = async (req, res) => {
   const { id } = req.params;
   console.log("id: ", id); //debugging to see in terminal
   if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(404).json({ success: false, message: "Invalid Game Id" });
+    return res.status(404).json({ success: false, message: "Invalid Game Id" });
   }
   try {
-      await Game.findByIdAndDelete(id);
-      res.status(200).json({ success: true, message: "Game deleted" });
+    await Game.findByIdAndDelete(id);
+    res.status(200).json({ success: true, message: "Game deleted" });
   } catch (error) {
-      res.status(500).json({ success: false, message: "Server Error" });
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 }

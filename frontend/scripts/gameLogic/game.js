@@ -561,7 +561,9 @@ function checkIfHit(fieldNumber) {
 
 
 
+
 async function deleteGame() {
+    setLoading(true);
     if (!Game()) return;
 
     try {
@@ -579,7 +581,13 @@ async function deleteGame() {
     } catch (error) {
         console.error("Error checking game state:", error);
     }
+    setLoading(false);
 }
+
+
+getElementById("exitGameButton").addEventListener("click", ()=> {
+    deleteGame();
+})
 
 
 function removeButtonEventListener() {
