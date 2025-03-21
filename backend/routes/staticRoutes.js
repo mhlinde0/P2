@@ -29,6 +29,10 @@ router.get('/createGame', (req, res) => {
     res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'createGame.html'));
 });
 
+router.get('/createBotGame?', (req, res) => {
+    res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'createBotGame.html'));
+});
+
 router.get('/profile', (req, res) => {
     res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'profile.html'));
 });
@@ -40,5 +44,7 @@ router.get('/settings', (req, res) => {
 router.get('/game:id?', (req, res) => {
     res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'game.html'));
 });
+
+
 
 export default router;
