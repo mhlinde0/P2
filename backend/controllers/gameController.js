@@ -9,7 +9,7 @@ import mongoose from "mongoose";
  */
 export const createGame = async (req, res) => {
   try {
-    const { gameCode, userId } = req.body;
+    const { gameCode, userId, name } = req.body;
     if (!gameCode || !userId) {
       return res.status(400).json({ error: 'gameCode and userId are required' });
     }
@@ -26,6 +26,7 @@ export const createGame = async (req, res) => {
       gameCode,
       players: [{
         userId,
+        name,
         ships: [],
         shots: [],
         ready: false
@@ -48,7 +49,7 @@ export const createGame = async (req, res) => {
  */
 export async function joinGame(req, res) {
   try {
-    const { userId, gameCode } = req.body;
+    const { userId, gameCode, name } = req.body;
     const game = await Game.findOne({ gameCode });
 
     if (!game) {
@@ -73,6 +74,7 @@ export async function joinGame(req, res) {
     // Add the new player
     game.players.push({
       userId,
+      name,
       ships: [],
       shots: [],
       ready: false

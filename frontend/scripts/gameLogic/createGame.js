@@ -18,7 +18,7 @@ form.addEventListener("submit", (e) => {
   e.preventDefault();
   const gameCodeInput = getInputElement("gameCodeInput");
   const gameCode = gameCodeInput.value.trim();
-  createGame(User()._id, gameCode);
+  createGame(User()._id, gameCode, User().name);
 });
 
 /**
@@ -27,13 +27,13 @@ form.addEventListener("submit", (e) => {
  * @param {string} gameCode 
  */
 
-async function createGame(userId, gameCode) {
+async function createGame(userId, gameCode, name) {
   setLoading(true);
   try {
     const response = await fetch(apiBase + "game/create", {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, gameCode })
+      body: JSON.stringify({ userId, gameCode, name })
     });
 
     if (!response.ok) {

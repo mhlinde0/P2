@@ -7,37 +7,44 @@ import { createShips, Ship } from './ships.js';
 import { boardHeight, boardWidth } from './board.js';
 
 
+
+let fetchDataInterval = null
+
+
 const turnElmnt = getElementById("turn")
 
 
 initializeGame()
 
-let fetchDataInterval = null
 
-checkGameState();
-setFetchInterval();
-
-// CONSTANTLY CHECKS WHOS TURN IT IS
-setInterval(() => {
-    if (Game().currentTurn == User()._id) {
-        turnElmnt.innerHTML = "Your turn" 
-        clearInterval(fetchDataInterval);
-        fetchDataInterval = null;
-    } else {
-        turnElmnt.innerHTML = "Enemy turn"
+function setGameNames() {
+    if (Game().status == 'active') {
+        if (Game().players[0].name == User().name) {
+            getElementById("enemyName").innerHTML = Game().players[1].name;
+        } else {
+            getElementById("enemyName").innerHTML = Game().players[0].name;
+        }
     }
-}, 500)
+}
 
 
-// FETCHES GAME DATA EVERY 2 SECONDS
-function setFetchInterval() {
+
+function startOrStopGameFetchIfNeeded() {
     if (!fetchDataInterval) {
         fetchDataInterval = setInterval(() => {
             fetchGameData();
             checkGameState();
+   
         }, 2000)
-    }
+    } 
+
 }
+
+
+
+
+
+
 
 function checkGameState() {
     if (!Game()) {
@@ -47,6 +54,15 @@ function checkGameState() {
         setBanner(true)
     }
     if (Game().status === "active") {
+        setGameNames();
+
+        if (Game().currentTurn == User()._id) {
+            turnElmnt.innerHTML = "Your turn" 
+            clearInterval(fetchDataInterval);
+            fetchDataInterval = null;
+        } else {
+            turnElmnt.innerHTML = "Enemy turn"
+        }
         setBanner(false)
     }
 }
@@ -64,8 +80,13 @@ async function initializeGame() {
 
     if (Game()) {
         getElementById("gameCode").innerHTML = `Game Code: ${Game().gameCode}`;
-        setFetchInterval();
+        
+        // sets the names
+        getElementById("yourName").innerHTML = User().name;
+
         initializeFields();
+        checkGameState();
+        startOrStopGameFetchIfNeeded();
     } else {
         window.location.href = "/"
     }
@@ -537,14 +558,12 @@ async function fireShot(e) {
 
         setGame(updatedGame);
         checkGameState();
-        setFetchInterval();
+        startOrStopGameFetchIfNeeded();
 
     } catch (error) {
         console.error("Error updating game:", error);
         throw error;
     }
-
-
 
     // UDSKIFT FIELD MED EN KOPI AF SIG SELV, SÅ MAN IKKE KAN SKYDE TO GANGE
     firedAtField.parentNode.replaceChild(firedAtField.cloneNode(true), firedAtField)
