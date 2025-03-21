@@ -20,7 +20,7 @@ form.addEventListener("submit", (e) => {
   e.preventDefault();
   const gameCode = gameCodeInput.value.trim();
 
-  joinGame(User()._id, gameCode);
+  joinGame(User()._id, gameCode, User().name);
 });
 
 
@@ -30,7 +30,7 @@ form.addEventListener("submit", (e) => {
  * @param {string} userId - The user's ID.
  * @param {string} gameCode - The game code entered by the user.
  */
-async function joinGame(userId, gameCode) {
+async function joinGame(userId, gameCode, name) {
   setLoading(true);
   try {
     const response = await fetch(apiBase + "game/join", {
@@ -38,7 +38,7 @@ async function joinGame(userId, gameCode) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ userId, gameCode })
+      body: JSON.stringify({ userId, gameCode, name })
     });
 
     if (!response.ok) {
