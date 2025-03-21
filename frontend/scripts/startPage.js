@@ -17,6 +17,7 @@ if (Game()) {
 // Adjust display based on login state
 if (User()) {
     hideElement("login");
+    hideElement("register")
     showElement("joinGame");
     showElement("createGame");
     showElement("signOut");
@@ -24,6 +25,7 @@ if (User()) {
     showElement("profileButton");
 } else {
     showElement("login");
+    showElement("register")
     hideElement("joinGame");
     hideElement("createGame");
     hideElement("signOut");
