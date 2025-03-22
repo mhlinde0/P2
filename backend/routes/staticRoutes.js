@@ -41,9 +41,14 @@ router.get('/settings', (req, res) => {
     res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'settings.html'));
 });
 
-router.get('/game:id?', (req, res) => {
+router.get('/gameLobby', (req, res) => {
+    res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'gameLobby.html'));
+});
+
+router.get('/game', (req, res) => {
     res.sendFile(join(__dirname, '..', '..', 'frontend', 'templates', 'game.html'));
 });
+
 
 
 

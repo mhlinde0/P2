@@ -24,7 +24,6 @@ export async function createGame(userId, gameCode, name) {
 
         return gameData;
 
-
     } catch (error) {
         console.error("Error creating game:", error);
     }
@@ -93,10 +92,11 @@ export async function joinGame(userId, gameCode, name) {
  * @returns {Promise<object>} 
  */
 export async function deleteGame(gameId) {
+
     try {
         // Fetch from the dedicated endpoint
         const response = await fetch(`/game/delete/${gameId}`, {
-            method: 'DELETE'
+            method: 'DELETE',
         });
         if (!response.ok) {
             throw new Error(`Server error: ${response.status}`)

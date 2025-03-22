@@ -77,7 +77,7 @@ async function handleFetchGameData() {
 async function initializeGame() {
     console.log("Initializing game...")
     setLoading(true)
-    setBanner(true)
+
 
     handleFetchGameData()
 
