@@ -1,9 +1,8 @@
 /** @module login */
-import { setLoading } from './utility/ui.js';
-import { setUser, User } from './utility/state.js';
-import { getElementById, getInputElement, getCookie, setCookie } from './utility/helperFunctions.js';
-
-
+import { setLoading } from '../utility/ui.js';
+import { setUser, User } from '../utility/state.js';
+import { getElementById, getInputElement, getCookie, setCookie } from '../utility/helperFunctions.js';
+import { login } from './userFunctions.js';
 
 const loginForm = getElementById("loginForm");
 const rememberMeBox = getInputElement("rememberMe");
@@ -40,45 +39,32 @@ function setUserCookies(username, password) {
 }
 
 
-loginForm.addEventListener("submit", login)
+loginForm.addEventListener("submit", handleLogin)
 
 
-/** calls the database for user validation and then sets the user in the frontend to a user object returned by the database
- * @function
- * @param {Event} e
- */
-async function login(e) {
-    e.preventDefault();
+async function handleLogin(e) {
+    e.preventDefault()
+    setLoading(true);
 
     const username = getInputElement("username").value;
     const password = getInputElement("password").value;
-    try {
-        setLoading(true);
 
-
-        const response = await fetch(apiBase + 'auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: username, password: password })
-        })
-        let data = await response.json()
-
-        if (!response.ok) {
-            window.alert(`${response.status}: Invalid username or password`);
-            throw new Error("User not found");
-        }
-
-        console.log("Fetched User: ", data);
-
-        // Update frontend userState
-        setUser(data.user);
-        //setIsLoggedIn(true);
+    const user = await login(username, password);
+    
+    if (user) {
+    // Update frontend userState
+        setUser(user);
         setUserCookies(username, password);
         window.location.href = "/"; // go to front page
     }
-    catch (err) {
-        console.log(err);
-    }
     setLoading(false);
+
 }
+
+
+
+
+
+
+
 

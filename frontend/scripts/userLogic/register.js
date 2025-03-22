@@ -1,11 +1,11 @@
 /** @module register */
 
-import { setUser, User } from './utility/state.js';
-import { setLoading } from './utility/ui.js';
-import { getElementById, getInputElement } from './utility/helperFunctions.js';
+import { setUser, User } from '../utility/state.js';
+import { setLoading } from '../utility/ui.js';
+import { getElementById, getInputElement } from '../utility/helperFunctions.js';
+import { registerUser } from './userFunctions.js';
 
 const registerForm = document.getElementById("registerForm");
-const apiBase = '/'
 
 registerForm?.addEventListener("submit", (e) => {
     e.preventDefault()
@@ -26,7 +26,7 @@ function isValidPassword() {
         Error("element returned null")
         return false;
     }
-    
+
     if (password.length < 6) {
         getElementById("password").style.border = "1px solid red"
         window.alert("Passwords must contain at least 6 characters")
@@ -43,42 +43,28 @@ function isValidPassword() {
     return true;
 }
 
-async function registerUser() {
-    const user = {
+
+async function handeRegister(e) {
+    e.preventDefault()
+
+    setLoading(true);
+
+    const userData = {
         name: getInputElement("username").value,
         email: getInputElement("email").value,
         password: getInputElement("password").value,
     }
 
-    try {
-        let data
-        setLoading(true);
+    const user = await registerUser(userData);
 
-        // API CALL TO REGISTER USER
-        const response = await fetch(apiBase + 'auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(user)
-        })
-        data = await response.json()
-
-        if (!response.ok) {
-            throw new Error("User could not be registered");
-        }
-
-        console.log("Response: ", data.data);
-
+    if (user) {
         // Update frontend userState
-        setUser(data.data);
-        //setIsLoggedIn(true);
-        console.log("New user:", User());
+        setUser(user);
         window.location.href = "/"; // go to front page
-    }
-
-    catch (err) {
-        console.log(err);
     }
     setLoading(false);
 }
+
+
 
 
