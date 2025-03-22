@@ -35,7 +35,7 @@ export async function fetchGameData(gameId) {
         // Fetch from the dedicated endpoint
         const response = await fetch(`/game/data?gameId=${gameId}`);
         if (!response.ok) {
-            alert("Player left game");
+            alert(`${response.statusText} while fetching`);
             throw new Error(`Server error: ${response.status}`)
         }
 
@@ -155,3 +155,46 @@ export async function fireShot(gameId, field) {
     }
 }
 
+/*
+// Checks for game status
+async function checkGameStatus() {
+
+    if (!gameID()) return;
+
+    try {
+        // Fetch from the dedicated endpoint
+        const response = await fetch(`/game/data?gameId=${gameID()}`);
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+        const gameData = await response.json();
+
+        if (gameData.status === 'active') {
+            setBanner(true);
+            clearInterval(checkGameStatusTimer); // Removes the timer if game status is active
+        }
+    } catch (error) {
+        console.error("Error checking game state:", error);
+    }
+}
+
+
+async function checkCurrentTurn() {
+    const userId = User()._id;
+
+    if (!gameID()) return;
+
+    try {
+        const response = await fetch(`/game/data?gameId=${gameID()}`);
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+        const gameData = await response.json();
+
+        if (gameData.currentTurn === userId) {
+            turn = 1;
+            clearInterval(checkCurrentTurnTimer);
+        }
+    } catch (error) {
+        console.error("Error checking game state:", error);
+    }
+}
+*/

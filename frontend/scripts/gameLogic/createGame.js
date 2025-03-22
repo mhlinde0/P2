@@ -25,7 +25,6 @@ async function handleCreateGame(e) {
   
   const gameData = await createGame(User()._id, gameCode, User().name);
 
-
   if (gameData) {
     // Store the _id from the MongoDB document
     setGame(gameData);

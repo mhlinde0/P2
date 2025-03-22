@@ -19,7 +19,8 @@ const gameCodeInput = getInputElement("gameCode");
 form.addEventListener("submit", handleJoinGame);
 
 
-async function handleJoinGame() {  
+async function handleJoinGame(e) {  
+  e.preventDefault()
   setLoading(true)
   const gameCode = gameCodeInput.value.trim();
 
@@ -30,7 +31,7 @@ async function handleJoinGame() {
         setGame(gameData);
         window.location.href = '/game'; 
   }
-  
+
   setLoading(false)
 }
 

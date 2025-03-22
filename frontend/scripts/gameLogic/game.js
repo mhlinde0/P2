@@ -29,7 +29,7 @@ function setGameNames() {
 function startOrStopGameFetchIfNeeded() {
     if (!fetchDataInterval) {
         fetchDataInterval = setInterval(() => {
-            fetchGameData();
+            handleFetchGameData();
             checkGameState();
    
         }, 2000)
@@ -59,6 +59,17 @@ function checkGameState() {
     }
 }
 
+async function handleFetchGameData() {
+
+    const gameData = await fetchGameData(Game()._id);
+    
+    if (gameData) {
+        setGame(gameData)
+    }
+
+}
+
+
 
 /** Fetches game data, and initalizes the fields;
  * @function
@@ -68,8 +79,7 @@ async function initializeGame() {
     setLoading(true)
     setBanner(true)
 
-    const gameData = await fetchGameData();
-    setGame(gameData);
+    handleFetchGameData()
 
     if (Game()) {
         getElementById("gameCode").innerHTML = `Game Code: ${Game().gameCode}`;
@@ -515,54 +525,3 @@ getElementById("randomizeButton")?.addEventListener("click", () => randomizeShip
 getElementById('cancelButton').addEventListener('click', handleDeleteGame)
 
 
-
-
-
-
-
-
-
-
-/*
-// Checks for game status
-async function checkGameStatus() {
-
-    if (!gameID()) return;
-
-    try {
-        // Fetch from the dedicated endpoint
-        const response = await fetch(`/game/data?gameId=${gameID()}`);
-        if (!response.ok) throw new Error(`Server error: ${response.status}`);
-
-        const gameData = await response.json();
-
-        if (gameData.status === 'active') {
-            setBanner(true);
-            clearInterval(checkGameStatusTimer); // Removes the timer if game status is active
-        }
-    } catch (error) {
-        console.error("Error checking game state:", error);
-    }
-}
-
-
-async function checkCurrentTurn() {
-    const userId = User()._id;
-
-    if (!gameID()) return;
-
-    try {
-        const response = await fetch(`/game/data?gameId=${gameID()}`);
-        if (!response.ok) throw new Error(`Server error: ${response.status}`);
-
-        const gameData = await response.json();
-
-        if (gameData.currentTurn === userId) {
-            turn = 1;
-            clearInterval(checkCurrentTurnTimer);
-        }
-    } catch (error) {
-        console.error("Error checking game state:", error);
-    }
-}
-*/
