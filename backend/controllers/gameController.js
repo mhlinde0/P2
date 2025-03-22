@@ -95,6 +95,11 @@ export async function joinGame(req, res) {
 }
 
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 export async function getGameData(req, res) {
   try {
     const { gameId } = req.query;
@@ -111,22 +116,24 @@ export async function getGameData(req, res) {
   }
 }
 
-
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const deleteGame = async (req, res) => {
-  const { id } = req.params;
-  console.log("id: ", id); //debugging to see in terminal
-  if (!mongoose.Types.ObjectId.isValid(id)) {
+  const { gameId } = req.params;
+  console.log("gameId: ", gameId); //debugging to see in terminal
+  if (!mongoose.Types.ObjectId.isValid(gameId)) {
     return res.status(404).json({ success: false, message: "Invalid Game Id" });
   }
   try {
-    await Game.findByIdAndDelete(id);
+    await Game.findByIdAndDelete(gameId);
     res.status(200).json({ success: true, message: "Game deleted" });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server Error" });
   }
 }
-
-
 
 
 /**
@@ -138,15 +145,15 @@ export const submitShips = async (req, res) => {
   try {
 
     // Expect gameId to be sent in the request body (this is the _id from MongoDB)
-    const { id, userId, ships, ready } = req.body;
-    console.log("submitShips game with ID:", id); // Debug log
+    const { gameId, userId, ships } = req.body;
+    console.log("submitShips game with ID:", gameId); // Debug log
 
-    if (!userId || !id) {
+    if (!userId || !gameId) {
       return res.status(400).json({ error: 'userId and gameId are required' });
 
     }
 
-    const game = await Game.findById(id);
+    const game = await Game.findById(gameId);
     console.log("Game found:", game); // Debug log
 
     if (!game) {
@@ -165,9 +172,8 @@ export const submitShips = async (req, res) => {
       player.ships = ships;
     }
 
-    if (typeof ready === 'boolean') {
-      player.ready = ready;
-    }
+    player.ready = true;
+  
 
     // If both players have joined and are ready, update the game status and set the current turn
     if (game.players.length === 2 && game.players.every(p => p.ready)) {
@@ -194,16 +200,16 @@ export const fireShot = async (req, res) => {
   try {
 
     // Expect gameId to be sent in the request body (this is the _id from MongoDB)
-    const { id, field } = req.body;
+    const { gameId, field } = req.body;
     console.log("fire shot field:", field); // Debug log
     
-    // game id
-    if (!id) {
+    // game gameId
+    if (!gameId) {
       return res.status(400).json({ error: 'gameId are required' });
     }
 
     // find game
-    const game = await Game.findById(id);
+    const game = await Game.findById(gameId);
     if (!game) {
       return res.status(404).json({ error: 'Game not found' });
     }
