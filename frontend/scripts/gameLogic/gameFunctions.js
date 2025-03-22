@@ -4,6 +4,7 @@ const apiBase = '/';
  * Calls the api for creating game, and returns the response.
  * @param {string} userId 
  * @param {string} gameCode 
+ * @returns {Promise<object>}  
  */
 export async function createGame(userId, gameCode, name) {
 
@@ -32,7 +33,7 @@ export async function createGame(userId, gameCode, name) {
 /**
  * Checks for game status
  * @param {string} gameId 
- * @returns 
+ * @returns {Promise<object>}  
  */
 export async function fetchGameData(gameId) {
     try {
@@ -57,7 +58,8 @@ export async function fetchGameData(gameId) {
  * Sends a POST request to join a game using the provided lobby code and user ID.
  * @param {string} userId - The user's ID.
  * @param {string} gameCode - The game code entered by the user.
- */
+ * @returns {Promise<object>}  
+*/
 export async function joinGame(userId, gameCode, name) {
 
     try {
@@ -88,7 +90,7 @@ export async function joinGame(userId, gameCode, name) {
 /**
  * calls the api for deleting games
  * @param {string} gameId 
- * @returns 
+ * @returns {Promise<object>} 
  */
 export async function deleteGame(gameId) {
     try {
@@ -142,6 +144,7 @@ export async function submitShips(gameId, userId, ships) {
  * 
  * @param {string} gameId 
  * @param {number} field 
+ * @returns {Promise<object>}  
  */
 export async function fireShot(gameId, field) {
 

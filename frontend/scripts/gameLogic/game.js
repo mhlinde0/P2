@@ -483,7 +483,7 @@ async function handleFireShot(e) {
 /**
  * 
  * @param {number} field 
- * @returns 
+ * @returns {boolean}
  */
 function checkIfHit(field) {
 

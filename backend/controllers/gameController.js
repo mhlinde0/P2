@@ -99,7 +99,6 @@ export async function joinGame(req, res) {
  * 
  * @param {*} req 
  * @param {*} res 
- * @returns 
  */
 export async function getGameData(req, res) {
   try {

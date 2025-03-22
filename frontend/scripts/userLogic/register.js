@@ -44,8 +44,7 @@ function isValidPassword() {
 
 
 /**
- * handles the registration process by calling the "registerUser" function and updating the ui
- * @returns 
+ * handles the registration process by calling the "registerUser" function and updating the ui 
  */
 async function handleRegister(e) {
     e.preventDefault()

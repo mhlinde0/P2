@@ -31,7 +31,7 @@ export async function login(username, password) {
 /**
  * calls the api for register user and returns the user
  * @param {object} user 
- * @returns 
+ * @returns {Promise<object>}  
  */
 export async function registerUser(user) {
     try {
