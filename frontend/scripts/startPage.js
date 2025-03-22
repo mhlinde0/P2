@@ -20,6 +20,7 @@ if (User()) {
     hideElement("register")
     showElement("joinGame");
     showElement("createGame");
+    showElement("createBotGame")
     showElement("signOut");
     showElement("settings");
     showElement("profileButton");
