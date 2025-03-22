@@ -27,11 +27,14 @@ export async function login(username, password) {
     }
 }
 
+
+/**
+ * calls the api for register user and returns the user
+ * @param {object} user 
+ * @returns 
+ */
 export async function registerUser(user) {
-
     try {
-
-
         // API CALL TO REGISTER USER
         const response = await fetch(apiBase + 'auth/register', {
             method: 'POST',
@@ -51,5 +54,4 @@ export async function registerUser(user) {
     catch (err) {
         console.log(err);
     }
-
 }

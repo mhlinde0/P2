@@ -95,6 +95,12 @@ export async function joinGame(req, res) {
 }
 
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 export async function getGameData(req, res) {
   try {
     const { gameId } = req.query;
@@ -111,7 +117,11 @@ export async function getGameData(req, res) {
   }
 }
 
-
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 export const deleteGame = async (req, res) => {
   const { gameId } = req.params;
   console.log("gameId: ", gameId); //debugging to see in terminal
@@ -125,8 +135,6 @@ export const deleteGame = async (req, res) => {
     res.status(500).json({ success: false, message: "Server Error" });
   }
 }
-
-
 
 
 /**

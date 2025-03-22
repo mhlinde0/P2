@@ -7,14 +7,13 @@ import { registerUser } from './userFunctions.js';
 
 const registerForm = document.getElementById("registerForm");
 
-registerForm?.addEventListener("submit", (e) => {
-    e.preventDefault()
+registerForm?.addEventListener("submit", handleRegister)
 
-    if (isValidPassword()) {
-        registerUser();
-    }
-})
 
+
+/** validates the password the user has input
+ * @returns {boolean} - true if password is good
+ */
 
 function isValidPassword() {
     const upperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -44,11 +43,20 @@ function isValidPassword() {
 }
 
 
-async function handeRegister(e) {
+/**
+ * handles the registration process by calling the "registerUser" function and updating the ui
+ * @returns 
+ */
+async function handleRegister(e) {
     e.preventDefault()
+
+    if (!isValidPassword()) {
+        return;
+    }
 
     setLoading(true);
 
+    
     const userData = {
         name: getInputElement("username").value,
         email: getInputElement("email").value,

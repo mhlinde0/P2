@@ -1,7 +1,7 @@
 const apiBase = '/';
 
 /**
- * 
+ * Calls the api for creating game, and returns the response.
  * @param {string} userId 
  * @param {string} gameCode 
  */
@@ -29,7 +29,11 @@ export async function createGame(userId, gameCode, name) {
     }
 }
 
-// Checks for game status
+/**
+ * Checks for game status
+ * @param {string} gameId 
+ * @returns 
+ */
 export async function fetchGameData(gameId) {
     try {
         // Fetch from the dedicated endpoint
@@ -80,8 +84,13 @@ export async function joinGame(userId, gameCode, name) {
 
 }
 
-export async function deleteGame(gameId) {
 
+/**
+ * calls the api for deleting games
+ * @param {string} gameId 
+ * @returns 
+ */
+export async function deleteGame(gameId) {
     try {
         // Fetch from the dedicated endpoint
         const response = await fetch(`/game/delete/${gameId}`, {
@@ -129,7 +138,11 @@ export async function submitShips(gameId, userId, ships) {
 }
 
 
-
+/**
+ * 
+ * @param {string} gameId 
+ * @param {number} field 
+ */
 export async function fireShot(gameId, field) {
 
     try {
