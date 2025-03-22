@@ -5,39 +5,38 @@ import { setBanner, setLoading } from '../utility/ui.js';
 import { getElementById, querySelectorAll } from '../utility/helperFunctions.js';
 import { createShips, Ship } from './ships.js';
 import { boardHeight, boardWidth } from './board.js';
+import { deleteGame, fetchGameData, fireShot, submitShips } from './gameFunctions.js';
 
-
-const turnElmnt = getElementById("turn")
-
-
-initializeGame()
 
 let fetchDataInterval = null
 
-checkGameState();
-setFetchInterval();
+const turnElmnt = getElementById("turn")
 
-// CONSTANTLY CHECKS WHOS TURN IT IS
-setInterval(() => {
-    if (Game().currentTurn == User()._id) {
-        turnElmnt.innerHTML = "Your turn" 
-        clearInterval(fetchDataInterval);
-        fetchDataInterval = null;
-    } else {
-        turnElmnt.innerHTML = "Enemy turn"
-    }
-}, 500)
+initializeGame()
 
 
-// FETCHES GAME DATA EVERY 2 SECONDS
-function setFetchInterval() {
-    if (!fetchDataInterval) {
-        fetchDataInterval = setInterval(() => {
-            fetchGameData();
-            checkGameState();
-        }, 2000)
+function setGameNames() {
+    if (Game().status == 'active') {
+        if (Game().players[0].name == User().name) {
+            getElementById("enemyName").innerHTML = Game().players[1].name;
+        } else {
+            getElementById("enemyName").innerHTML = Game().players[0].name;
+        }
     }
 }
+
+
+function startOrStopGameFetchIfNeeded() {
+    if (!fetchDataInterval) {
+        fetchDataInterval = setInterval(() => {
+            handleFetchGameData();
+            checkGameState();
+   
+        }, 2000)
+    } 
+
+}
+
 
 function checkGameState() {
     if (!Game()) {
@@ -47,9 +46,29 @@ function checkGameState() {
         setBanner(true)
     }
     if (Game().status === "active") {
+        setGameNames();
+
+        if (Game().currentTurn == User()._id) {
+            turnElmnt.innerHTML = "Your turn" 
+            clearInterval(fetchDataInterval);
+            fetchDataInterval = null;
+        } else {
+            turnElmnt.innerHTML = "Enemy turn"
+        }
         setBanner(false)
     }
 }
+
+async function handleFetchGameData() {
+
+    const gameData = await fetchGameData(Game()._id);
+    
+    if (gameData) {
+        setGame(gameData)
+    }
+
+}
+
 
 
 /** Fetches game data, and initalizes the fields;
@@ -60,12 +79,14 @@ async function initializeGame() {
     setLoading(true)
     setBanner(true)
 
-    await fetchGameData();
+    handleFetchGameData()
 
     if (Game()) {
         getElementById("gameCode").innerHTML = `Game Code: ${Game().gameCode}`;
-        setFetchInterval();
+        setGameNames();
         initializeFields();
+        checkGameState();
+        startOrStopGameFetchIfNeeded();
     } else {
         window.location.href = "/"
     }
@@ -137,7 +158,7 @@ export function initializeFields() {
                     onShipDrop(e);
                 });
             }
-            if (side == "right") field.addEventListener("click", fireShot); 
+            if (side == "right") field.addEventListener("click", handleFireShot); 
             
             // Tilføjer field div til gameboard div
             gameboard.append(field);
@@ -208,9 +229,6 @@ function onShipDrop(e) {
 
     assignOccupiedFields(coveredFields, side);
 
-    if (occupiedFieldArrayLeft.length === 17) {
-        removeButtonEventListener();
-    }
     console.log(occupiedFieldArrayLeft)
 }
 
@@ -404,103 +422,33 @@ export function randomizeShipPlacement(boardSide) {
         }
     })
 
-    if (boardSide === "left") {
-
-        removeButtonEventListener();
-    }
-}
-
-/**
- * Update the game state on the backend with the player's board and ready status.
- *
- * @param {string} userId - The current user's ID.
- * @param {object} ships - The ships object including name, length, rotation and location
- * @param {boolean} ready - The readiness flag.
- * @returns {Promise<object>} - The updated game data from the backend.
- */
-export async function submitShips(userId, ships, ready) {
-    const id = Game()._id;
-    if (!id) {
-        console.error("Game ID not found in session storage");
-        return;
-    }
-
-    try {
-        const response = await fetch("/game/submitShips", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id, userId, ships, ready })
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const updatedGame = await response.json();
-        console.log("Game updated successfully:", updatedGame);
-        return updatedGame;
-    } catch (error) {
-        console.error("Error updating game:", error);
-        throw error;
-    }
 }
 
 
 
-
-const readyButton = document.getElementById("readyButton");
-
-readyButton?.addEventListener("click", () => {
-    const userId = User()._id;
-
-    submitShips(userId, shipsClass, true);
-});
-
-
-// Checks for game status
-async function fetchGameData() {
-
-    if (!Game()) return;
-
-    try {
-        // Fetch from the dedicated endpoint
-        const response = await fetch(`/game/data?gameId=${Game()._id}`);
-        if (!response.ok) {
-            alert("Player left game");
-            setGame(null);
-            throw new Error(`Server error: ${response.status}`)
-        }
-
-        const gameData = await response.json();
-        
-        setGame(gameData)
-        
-        console.log("turn:", Game().currentTurn)
-        console.log("player 0 shots:", Game().players[0].shots)
-        if (Game().players[1]) {
-            console.log("player 1 shots:", Game().players[1].shots)
-        }
-
-        if (!Game()) {
-            console.log("game")
-            // window.location.href = "/"
-            throw new Error("could not get game data");
-        }
-
-    } catch (error) {
-        console.error("Error fetching gameData:", error);
-
-    }
-}
-
-
-async function fireShot(e) {
+async function handleSubmitShips(e) {
     e.preventDefault();
-    const id = Game()._id;
+    setLoading(true)
 
-    if (Game().currentTurn !== User()._id || !id) {
+    const updatedGame = await submitShips(Game()._id, User()._id, shipsClass)
+
+    if (updatedGame) {
+        setGame(updatedGame);
+    }
+
+    setLoading(false)
+
+}
+getElementById("readyButton").addEventListener("click", handleSubmitShips);
+
+
+async function handleFireShot(e) {
+    e.preventDefault();
+
+    if (Game().currentTurn !== User()._id) {
         return;
     }
+
     if (!Game().players[0].ready || !Game().players[1].ready) {
         window.alert("Waiting for ships to be placed")
     }
@@ -508,56 +456,26 @@ async function fireShot(e) {
     const firedAtField = e.currentTarget;
     const field = parseInt(firedAtField.dataset.index, 10); // Get the field number
 
-    try {
-    
-        const response = await fetch("/game/fireShot", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id, field })
-        });
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const updatedGame = await response.json();
-        console.log("Game updated successfully:", updatedGame);
+    const updatedGame = await fireShot(Game()._id, field)
 
 
-        // UPDATE UI FOR SHOT
-        if (checkIfHit(field)) {
-            firedAtField.classList.remove("occupiedField");
-            firedAtField.classList.add("hitField");
-            console.log("Hit shot");
-        } else {
-            firedAtField.classList.add("missedField");
-            console.log("Missed shot");
-        }
-
-
-        setGame(updatedGame);
-        checkGameState();
-        setFetchInterval();
-
-    } catch (error) {
-        console.error("Error updating game:", error);
-        throw error;
+    // UPDATE UI FOR SHOT
+    if (checkIfHit(field)) {
+        firedAtField.classList.remove("occupiedField");
+        firedAtField.classList.add("hitField");
+        console.log("Hit shot");
+    } else {
+        firedAtField.classList.add("missedField");
+        console.log("Missed shot");
     }
 
-
+    setGame(updatedGame);
+    checkGameState();
+    startOrStopGameFetchIfNeeded();
 
     // UDSKIFT FIELD MED EN KOPI AF SIG SELV, SÅ MAN IKKE KAN SKYDE TO GANGE
     firedAtField.parentNode.replaceChild(firedAtField.cloneNode(true), firedAtField)
-    checkGameState();
-}
-
-/**
- * 
- * @param {number} field 
- * @returns 
- */
-
-async function ss(field) {
 
 }
 
@@ -565,7 +483,7 @@ async function ss(field) {
 /**
  * 
  * @param {number} field 
- * @returns 
+ * @returns {boolean}
  */
 function checkIfHit(field) {
 
@@ -587,102 +505,23 @@ function checkIfHit(field) {
 
 
 
-
-async function deleteGame() {
+async function handleDeleteGame(e) {
     setLoading(true);
-    if (!Game()) return;
-
-    try {
-        // Fetch from the dedicated endpoint
-        const response = await fetch(`/game/delete/${Game()._id}`, {
-            method: 'DELETE'
-        });
-        if (!response.ok) throw new Error(`Server error: ${response.status}`);
-
-        const gameData = await response.json();
-
+    e.preventDefault();
+    const response = await deleteGame(Game()._id)
+    if (response) {
         setGame(null);
         window.location.href = "/";
-
-    } catch (error) {
-        console.error("Error checking game state:", error);
     }
+
     setLoading(false);
 }
 
 
-getElementById("exitGameButton").addEventListener("click", () => {
-    deleteGame();
-})
-
-
-function removeButtonEventListener() {
-    getElementById("resetButton").removeEventListener("click", resetShipPlacement);
-    getElementById("randomizeButton").removeEventListener("click", () => randomizeShipPlacement("left"));
-}
-
-
 // Event listeners der kalder deres respektive funktioner
+getElementById("exitGameButton").addEventListener("click", handleDeleteGame)
 getElementById("resetButton")?.addEventListener("click", resetShipPlacement);
 getElementById("randomizeButton")?.addEventListener("click", () => randomizeShipPlacement("left"));
+getElementById('cancelButton').addEventListener('click', handleDeleteGame)
 
 
-// Waiting for player banner
-const cancelButton = getElementById('cancelButton');
-cancelButton.addEventListener('click', () => {
-    deleteGame();
-
-});
-
-
-
-
-
-
-
-
-
-
-/*
-// Checks for game status
-async function checkGameStatus() {
-
-    if (!gameID()) return;
-
-    try {
-        // Fetch from the dedicated endpoint
-        const response = await fetch(`/game/data?gameId=${gameID()}`);
-        if (!response.ok) throw new Error(`Server error: ${response.status}`);
-
-        const gameData = await response.json();
-
-        if (gameData.status === 'active') {
-            setBanner(true);
-            clearInterval(checkGameStatusTimer); // Removes the timer if game status is active
-        }
-    } catch (error) {
-        console.error("Error checking game state:", error);
-    }
-}
-
-
-async function checkCurrentTurn() {
-    const userId = User()._id;
-
-    if (!gameID()) return;
-
-    try {
-        const response = await fetch(`/game/data?gameId=${gameID()}`);
-        if (!response.ok) throw new Error(`Server error: ${response.status}`);
-
-        const gameData = await response.json();
-
-        if (gameData.currentTurn === userId) {
-            turn = 1;
-            clearInterval(checkCurrentTurnTimer);
-        }
-    } catch (error) {
-        console.error("Error checking game state:", error);
-    }
-}
-*/
