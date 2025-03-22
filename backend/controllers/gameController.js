@@ -138,15 +138,15 @@ export const submitShips = async (req, res) => {
   try {
 
     // Expect gameId to be sent in the request body (this is the _id from MongoDB)
-    const { id, userId, ships, ready } = req.body;
-    console.log("submitShips game with ID:", id); // Debug log
+    const { gameId, userId, ships } = req.body;
+    console.log("submitShips game with ID:", gameId); // Debug log
 
-    if (!userId || !id) {
+    if (!userId || !gameId) {
       return res.status(400).json({ error: 'userId and gameId are required' });
 
     }
 
-    const game = await Game.findById(id);
+    const game = await Game.findById(gameId);
     console.log("Game found:", game); // Debug log
 
     if (!game) {
@@ -165,9 +165,8 @@ export const submitShips = async (req, res) => {
       player.ships = ships;
     }
 
-    if (typeof ready === 'boolean') {
-      player.ready = ready;
-    }
+    player.ready = true;
+  
 
     // If both players have joined and are ready, update the game status and set the current turn
     if (game.players.length === 2 && game.players.every(p => p.ready)) {
