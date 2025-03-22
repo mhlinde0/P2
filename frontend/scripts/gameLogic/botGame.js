@@ -2,6 +2,7 @@ import { initializeFields, randomizeShipPlacement, resetShipPlacement } from './
 import { getElementById, querySelectorAll } from '../utility/helperFunctions.js';
 import { createShips } from './ships.js';
 
+
 /** Array of ship div elements
 * @type {Array<Object>} */
 const shipsClass = createShips();
@@ -25,7 +26,6 @@ const leftFieldArray = [];
 /** Array of fields that are filled by ships 
 *  @type {Array<HTMLElement>}  */
 const rightFieldArray = [];
-
 
 
 let targetList = createTargetList()
